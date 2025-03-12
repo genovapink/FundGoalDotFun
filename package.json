@@ -1,0 +1,21 @@
+{
+  "name": "fund-dot-fun",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "fe": "pnpm --filter=@fund-fun/fe dev",
+    "be": "echo 'soon'",
+    "lint:fe": "pnpm --filter=@fund-fun/fe lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "eslint": "^9.22.0",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^16.0.0",
+    "prettier": "^3.1.1",
+    "typescript-eslint": "^8.26.1"
+  }
+}

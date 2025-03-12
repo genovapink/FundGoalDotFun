@@ -1,0 +1,11 @@
+.DS_Store
+/node_modules
+
+# Log files
+*.log
+*.local
+.cache
+.pnpm-store
+
+# Editor directories and files
+/.idea
