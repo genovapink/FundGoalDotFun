@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "fe": "pnpm --filter=@fund-fun/fe dev",
-    "be": "echo 'soon'",
+    "dev:fe": "pnpm --filter=@fund-fun/fe dev",
+    "dev:be": "echo 'soon'",
     "lint:fe": "pnpm --filter=@fund-fun/fe lint"
   },
   "keywords": [],
