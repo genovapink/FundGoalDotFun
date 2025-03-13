@@ -5,7 +5,7 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "assets/styles/app.css",
+    "css": "app/assets/styles/app.css",
     "baseColor": "zinc",
     "cssVariables": true,
     "prefix": ""
@@ -15,7 +15,7 @@
     "utils": "~/utils/cn",
     "ui": "~/components/shadcn",
     "lib": "~/utils",
-    "hooks": "~/component/hooks"
+    "hooks": "~/components/hooks"
   },
   "iconLibrary": "lucide"
 }
