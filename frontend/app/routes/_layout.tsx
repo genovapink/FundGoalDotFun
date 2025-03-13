@@ -6,7 +6,6 @@ function Layout() {
   return (
     <>
       <Outlet />
-      {/* <BottomNav /> */}
       <FloatingActionButton />
     </>
   );

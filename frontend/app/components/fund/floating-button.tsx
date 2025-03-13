@@ -1,25 +1,40 @@
 import { motion } from "motion/react";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@shadcn/button";
+import { NavLink } from "react-router";
+
+const MENUS = [
+  {
+    text: "Home",
+    to: "/",
+  },
+  {
+    text: "Market",
+    to: "/market",
+  },
+  {
+    text: "Create",
+    to: "/",
+  },
+];
 
 export default function FloatingActionButton() {
   const [active, setActive] = useState(false);
 
-  const images = ["/cake.svg", "/cake.svg", "/cake.svg", "/cake.svg"];
-
   return (
-    // <main className="relative flex min-h-screen w-full items-start justify-center bg-white px-4 py-10 md:items-center">
-    <div className="relative flex w-max items-start justify-start sm:justify-center bg-red-200">
-      <div className="relative flex items-center justify-center gap-4">
+    <div className="fixed container bottom-10 flex items-center justify-center w-full">
+      <div className="relative flex items-center justify-center gap-4 px-2 backdrop-blur-lg rounded-full bg-background/30">
         <motion.div
           className="absolute left-0 z-10 w-full rounded-[40px] bg-background"
           animate={{
             x: active ? "calc(100% + 20px)" : 0,
+            backgroundColor: active ? "rgba(0,0,0,0)" : "var(--background)",
           }}
           transition={{ type: "ease-in", duration: 0.5 }}
         >
           <motion.button
-            className="flex size-12 items-center justify-center rounded-full bg-zinc-400 sm:size-20"
+            className="flex size-12 items-center justify-center rounded-full bg-slate-800 sm:size-20 cursor-pointer"
             onClick={() => setActive(!active)}
             animate={{ rotate: active ? 45 : 0 }}
             transition={{
@@ -30,14 +45,11 @@ export default function FloatingActionButton() {
             <Plus size={40} strokeWidth={3} className="text-white" />
           </motion.button>
         </motion.div>
-        {images.map((src, index) => (
-          <motion.img
-            key={index}
-            src={src}
-            alt={`Image ${index + 1}`}
-            className="size-10 rounded-full sm:size-16"
+        {MENUS.map((val, index) => (
+          <motion.div
+            className="size-10 sm:size-16 flex flex-col gap-2 items-center justify-center cursor-pointer"
             animate={{
-              filter: active ? "blur(0px) invert(100%)" : "blur(2px) invert(100%)",
+              filter: active ? "blur(0px)" : "blur(2px)",
               scale: active ? 1 : 0.9,
               rotate: active ? 0 : 45,
             }}
@@ -45,10 +57,14 @@ export default function FloatingActionButton() {
               type: "ease-in",
               duration: 0.4,
             }}
-          />
+            key={index}
+          >
+            <NavLink to={val.to}>
+              <Button variant="link">{val.text}</Button>
+            </NavLink>
+          </motion.div>
         ))}
       </div>
     </div>
-    // </main>
   );
 }

@@ -12,7 +12,7 @@
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  @apply bg-white dark:bg-background;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
@@ -136,6 +136,30 @@ body {
 }
 
 @utility container {
-  padding-inline: 10px;
+  padding-inline: 2rem;
   margin-inline: auto;
+}
+
+.my-masonry-grid {
+  width: 100%;
+  display: flex;
+}
+.my-masonry-grid_column {
+  background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column > div {
+  /* change div to reference your elements in <masonry> */
+  /* padding: 20px; */
+  margin-bottom: 20px;
+}
+
+@media (min-width: 700px) {
+  .my-masonry-grid {
+    margin-left: -20px;
+  }
+  .my-masonry-grid_column {
+    border-left: 20px solid transparent;
+  }
 }
