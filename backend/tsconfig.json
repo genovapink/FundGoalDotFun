@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"],
+      "@services/*": ["./services/*"],
+      "@packages/*": ["./packages/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "sourceMap": true,
+    "sourceRoot": "./src",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "allowUnusedLabels": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  }
+}
