@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev:fe": "pnpm --filter=@fund-fun/fe dev",
-    "dev:be": "echo 'soon'",
+    "dev:be": "pnpm --filter=@fund-fun/be dev",
     "lint:fe": "pnpm --filter=@fund-fun/fe lint"
   },
   "keywords": [],
