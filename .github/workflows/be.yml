@@ -1,0 +1,38 @@
+name: Backend Build & Publish
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "backend/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Deploy compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: space
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            nvm use lts/iron
+            cd ${{ github.event.repository.name }}/backend
+            git stash
+            git pull origin main
+            npm i
+            npm i -g pm2
+            npm run build
+            pm2 del "fund-be"
+            ls -la
+            set -a
+            source .env
+            set +a
+            pm2 start "npm run start" --name "fund-be"
