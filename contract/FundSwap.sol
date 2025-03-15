@@ -2,57 +2,77 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./FundFactory.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./FeeReceiver.sol";
 
-contract FundSwap is ReentrancyGuard {
-    address public factory;
-    uint256 public platformFee = 15; // 1.5% Fee
+interface ILiquidityManager {
+    function migrateToUniswap(address token) external;
+}
 
-    mapping(address => uint256) public liquidity;
-    mapping(address => uint256) public bondingCurveTarget;
+contract FundSwap is Ownable {
+    address public immutable EDU;
+    FeeReceiver public feeReceiver;
+    ILiquidityManager public liquidityManager;
 
-    event TokenSwapped(address indexed user, address token, uint256 amountIn, uint256 amountOut);
-    event LiquidityAdded(address indexed token, uint256 amount);
-    event LiquidityRemoved(address indexed token, uint256 amount);
+    uint256 public constant FEE_PERCENT = 150; // 1.5% (basis points: 150 / 10000)
 
-    modifier onlyFactory() {
-        require(msg.sender == factory, "Only factory can call this");
-        _;
+    mapping(address => mapping(address => uint256)) public liquidity;
+    mapping(address => mapping(address => uint256)) public balances;
+
+    event Swap(address indexed user, address indexed token, uint256 amountEDU, uint256 amountToken);
+    event AddLiquidity(address indexed provider, address indexed token, uint256 amountEDU, uint256 amountToken);
+    event RemoveLiquidity(address indexed provider, address indexed token, uint256 amountEDU, uint256 amountToken);
+    
+    constructor(address _EDU, address _feeReceiver, address _liquidityManager) {
+        EDU = _EDU;
+        feeReceiver = FeeReceiver(_feeReceiver);
+        liquidityManager = ILiquidityManager(_liquidityManager);
     }
 
-    constructor(address _factory) {
-        factory = _factory;
+    function swapEDUForToken(address token, uint256 amountEDU) external {
+        require(IERC20(EDU).transferFrom(msg.sender, address(this), amountEDU), "Transfer failed");
+        
+        uint256 fee = (amountEDU * FEE_PERCENT) / 10000;
+        uint256 amountAfterFee = amountEDU - fee;
+        
+        feeReceiver.collectFee(EDU, fee);
+        
+        uint256 tokenAmount = getTokenAmount(token, amountAfterFee);
+        require(IERC20(token).transfer(msg.sender, tokenAmount), "Token transfer failed");
+
+        emit Swap(msg.sender, token, amountEDU, tokenAmount);
     }
 
-    function addLiquidity(address token, uint256 amount) external {
-        require(IERC20(token).transferFrom(msg.sender, address(this), amount), "Transfer failed");
-        liquidity[token] += amount;
-        emit LiquidityAdded(token, amount);
+    function addLiquidity(address token, uint256 amountEDU, uint256 amountToken) external {
+        require(IERC20(EDU).transferFrom(msg.sender, address(this), amountEDU), "Transfer failed");
+        require(IERC20(token).transferFrom(msg.sender, address(this), amountToken), "Transfer failed");
+
+        liquidity[msg.sender][token] += amountEDU;
+        balances[msg.sender][token] += amountToken;
+
+        emit AddLiquidity(msg.sender, token, amountEDU, amountToken);
     }
 
-    function removeLiquidity(address token, uint256 amount) external {
-        require(liquidity[token] >= amount, "Not enough liquidity");
-        require(IERC20(token).transfer(msg.sender, amount), "Transfer failed");
-        liquidity[token] -= amount;
-        emit LiquidityRemoved(token, amount);
+    function removeLiquidity(address token, uint256 amountEDU, uint256 amountToken) external {
+        require(liquidity[msg.sender][token] >= amountEDU, "Not enough liquidity");
+        require(balances[msg.sender][token] >= amountToken, "Not enough token balance");
+
+        liquidity[msg.sender][token] -= amountEDU;
+        balances[msg.sender][token] -= amountToken;
+
+        require(IERC20(EDU).transfer(msg.sender, amountEDU), "EDU transfer failed");
+        require(IERC20(token).transfer(msg.sender, amountToken), "Token transfer failed");
+
+        emit RemoveLiquidity(msg.sender, token, amountEDU, amountToken);
     }
 
-    function swap(address token, uint256 amountIn) external nonReentrant {
-        require(liquidity[token] > 0, "No liquidity available");
-
-        uint256 fee = (amountIn * platformFee) / 1000; // Fee 1.5%
-        uint256 amountOut = amountIn - fee;
-
-        require(IERC20(token).transferFrom(msg.sender, address(this), amountIn), "Transfer failed");
-        require(IERC20(token).transfer(msg.sender, amountOut), "Transfer out failed");
-
-        liquidity[token] += fee;
-
-        emit TokenSwapped(msg.sender, token, amountIn, amountOut);
+    function migrateToUniswap(address token) external onlyOwner {
+        liquidityManager.migrateToUniswap(token);
     }
 
-    function checkBondingCurve(address token) external view returns (bool) {
-        return liquidity[token] >= bondingCurveTarget[token];
+    function getTokenAmount(address token, uint256 amountEDU) public view returns (uint256) {
+        uint256 tokenReserve = IERC20(token).balanceOf(address(this));
+        uint256 eduReserve = IERC20(EDU).balanceOf(address(this));
+        return (amountEDU * tokenReserve) / eduReserve;
     }
 }
