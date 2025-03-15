@@ -1,62 +1,41 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.19;
 
 import "./TokenLauncher.sol";
+import "@openzeppelin/contracts/utils/Create2.sol";
 
 contract FundFactory {
-    address public owner;
-    address public swapContract;
-    address public liquidityManager;
-    uint256 public platformFee = 15; // 1.5% Fee
+    address public feeReceiver;
+    address public priceOracle;
+    address public vestingContract;
+    mapping(address => bool) public isDeployedToken;
+    address[] public allFundingTokens;
 
-    struct Fund {
-        address tokenAddress;
-        string name;
-        string symbol;
-        address deployer;
+    event TokenDeployed(address indexed tokenAddress, string name, string symbol, address owner);
+
+    constructor(address _feeReceiver, address _priceOracle, address _vestingContract) {
+        feeReceiver = _feeReceiver;
+        priceOracle = _priceOracle;
+        vestingContract = _vestingContract;
     }
 
-    Fund[] public funds;
-    mapping(address => bool) public isFundDeployed;
+    function deployToken(
+        string memory name,
+        string memory symbol,
+        uint256 initialBuy
+    ) external returns (address) {
+        bytes32 salt = keccak256(abi.encodePacked(msg.sender, name, symbol));
+        address token = Create2.deploy(0, salt, abi.encodePacked(type(TokenLauncher).creationCode, abi.encode(name, symbol, msg.sender, feeReceiver, priceOracle, vestingContract, initialBuy)));
+        require(token != address(0), "Deploy failed");
 
-    event FundCreated(address indexed deployer, address token, string name, string symbol);
-    event PlatformFeeUpdated(uint256 newFee);
+        allFundingTokens.push(token);
+        isDeployedToken[token] = true;
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
-        _;
+        emit TokenDeployed(token, name, symbol, msg.sender);
+        return token;
     }
 
-    constructor() {
-        owner = msg.sender;
-    }
-
-    function setSwapContract(address _swapContract) external onlyOwner {
-        swapContract = _swapContract;
-    }
-
-    function setLiquidityManager(address _liquidityManager) external onlyOwner {
-        liquidityManager = _liquidityManager;
-    }
-
-    function createFund(string memory name, string memory symbol) external {
-        require(bytes(name).length > 0, "Name required");
-        require(bytes(symbol).length > 0, "Symbol required");
-
-        TokenLauncher token = new TokenLauncher(name, symbol, msg.sender, swapContract, liquidityManager);
-        funds.push(Fund(address(token), name, symbol, msg.sender));
-        isFundDeployed[address(token)] = true;
-
-        emit FundCreated(msg.sender, address(token), name, symbol);
-    }
-
-    function getFunds() external view returns (Fund[] memory) {
-        return funds;
-    }
-
-    function updatePlatformFee(uint256 _fee) external onlyOwner {
-        require(_fee <= 50, "Max fee 5%");
-        platformFee = _fee;
-        emit PlatformFeeUpdated(_fee);
+    function getAllTokens() external view returns (address[] memory) {
+        return allFundingTokens;
     }
 }
