@@ -6,3 +6,5 @@
 /build/
 /app/components/fund/icons
 public/sprite.svg
+
+package-lock.json
