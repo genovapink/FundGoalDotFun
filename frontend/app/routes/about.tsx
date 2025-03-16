@@ -1,3 +1,4 @@
+import { ButtonMagnet } from "@fund/button";
 import { DynamicHeader } from "@fund/dynamic-header";
 
 export default function About() {
@@ -5,6 +6,7 @@ export default function About() {
     <>
       <DynamicHeader title="About" />
       <p>About</p>
+      <ButtonMagnet label="Click me" />
     </>
   );
 }
