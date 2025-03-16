@@ -1,4 +1,4 @@
-import type { Route } from "./+types/symbol";
+import type { Route } from "./+types/ca";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const addon = "rei";

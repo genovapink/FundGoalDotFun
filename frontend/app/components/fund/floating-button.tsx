@@ -10,12 +10,12 @@ const MENUS = [
     to: "/",
   },
   {
-    text: "Market",
-    to: "/market",
+    text: "Create",
+    to: "/create",
   },
   {
-    text: "Create",
-    to: "/",
+    text: "About",
+    to: "/about",
   },
 ];
 

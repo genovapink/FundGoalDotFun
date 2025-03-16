@@ -4,9 +4,10 @@ export default [
   layout("./routes/_layout.tsx", [
     index("./routes/index.tsx"),
     route("/about", "./routes/about.tsx"),
-    ...prefix("/market", [
-      index("./routes/market/index.tsx"),
-      route(":symbol", "./routes/market/symbol.tsx"),
-    ]),
+    route("/create", "./routes/create.tsx"),
+    route(":ca", "./routes/ca.tsx"),
+    // ...prefix("/market", [
+    // index("./routes/market/index.tsx"),
+    // ]),
   ]),
 ] satisfies RouteConfig;
