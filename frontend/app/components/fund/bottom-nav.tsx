@@ -19,11 +19,11 @@ const MENUS = [
   },
 ];
 
-export default function FloatingActionButton() {
+export function BottomNavigation() {
   const [active, setActive] = useState(false);
 
   return (
-    <div className="fixed container bottom-10 flex items-center justify-center w-full">
+    <div className="fixed bottom-10 flex items-center justify-center w-full">
       <div className="relative flex items-center justify-center gap-4 px-2 backdrop-blur-lg rounded-full bg-background/30">
         <motion.div
           className="absolute left-0 z-10 w-full rounded-[40px]"
