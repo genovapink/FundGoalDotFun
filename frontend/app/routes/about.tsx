@@ -1,7 +1,10 @@
+import { DynamicHeader } from "@fund/dynamic-header";
+
 export default function About() {
   return (
     <>
-      <p>About Page</p>
+      <DynamicHeader title="About" />
+      <p>About</p>
     </>
   );
 }
