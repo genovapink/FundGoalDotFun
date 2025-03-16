@@ -52,7 +52,7 @@ export default function Home() {
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
+          columnClassName="my-masonry-grid_column flex flex-col gap-y-5"
         >
           {images.map((val, i) => (
             <NavLink
