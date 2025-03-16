@@ -3,6 +3,7 @@
 @plugin "tailwindcss-animate";
 
 /* @custom-variant dark (&:is(.dark *)); */
+@variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans:
@@ -17,6 +18,10 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+
+  /* @media (prefers-color-scheme: light) {
+    color-scheme: dark;
+  } */
 }
 
 :root {
