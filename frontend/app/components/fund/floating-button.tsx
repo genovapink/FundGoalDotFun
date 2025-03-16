@@ -26,10 +26,9 @@ export default function FloatingActionButton() {
     <div className="fixed container bottom-10 flex items-center justify-center w-full">
       <div className="relative flex items-center justify-center gap-4 px-2 backdrop-blur-lg rounded-full bg-background/30">
         <motion.div
-          className="absolute left-0 z-10 w-full rounded-[40px] bg-background"
+          className="absolute left-0 z-10 w-full rounded-[40px]"
           animate={{
-            x: active ? "calc(100% + 20px)" : 0,
-            backgroundColor: active ? "rgba(0,0,0,0)" : "var(--background)",
+            x: active ? "calc(100% + 5px)" : 0,
           }}
           transition={{ type: "ease-in", duration: 0.5 }}
         >
@@ -51,7 +50,7 @@ export default function FloatingActionButton() {
             animate={{
               filter: active ? "blur(0px)" : "blur(2px)",
               scale: active ? 1 : 0.9,
-              rotate: active ? 0 : 45,
+              opacity: active ? 1 : 0,
             }}
             transition={{
               type: "ease-in",
