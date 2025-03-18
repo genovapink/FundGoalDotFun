@@ -5,6 +5,8 @@ import { ClientOnly } from "remix-utils/client-only";
 import Marquee from "react-fast-marquee";
 import { ScrambleText } from "./scramble-text";
 import React from "react";
+import { ButtonMagnet } from "./button";
+import { ConnectWallet } from "./wallet/connect-wallet";
 
 type DynamicHeaderProps = {
   title: string;
@@ -56,7 +58,7 @@ export function DynamicHeader({ title, className }: DynamicHeaderProps) {
       <ClientOnly>
         {() => <ScrambleText title={displayed} className="grow text-center" />}
       </ClientOnly>
-      <Button className="w-max">Connect Wallet Soon</Button>
+      <ConnectWallet />
     </div>
   );
 }

@@ -9,6 +9,10 @@ import {
 
 import type { Route } from "./+types/root";
 import "./assets/styles/app.css";
+import { WagmiProvider } from "wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { FundWalletProvider } from "@fund/wallet/provider";
+import { WAGMI_CONFIG } from "./services/wagmi/config";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +46,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const queryClient = new QueryClient();
+  return (
+    <WagmiProvider config={WAGMI_CONFIG}>
+      <QueryClientProvider client={queryClient}>
+        <FundWalletProvider>
+          <Outlet />
+        </FundWalletProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
