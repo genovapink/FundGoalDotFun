@@ -16,15 +16,15 @@ import { cn } from "~/utils/cn";
 // }
 
 const EXAMPLE_SOURCES = [
-  "https://www.youtube.com/embed/JNFO40e10CA?si=iD9DisOlcqWnAlVQ",
+  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
   "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/JNFO40e10CA?si=iD9DisOlcqWnAlVQ",
+  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
   "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/JNFO40e10CA?si=iD9DisOlcqWnAlVQ",
+  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
   "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/JNFO40e10CA?si=iD9DisOlcqWnAlVQ",
+  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
   "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/JNFO40e10CA?si=iD9DisOlcqWnAlVQ",
+  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
   "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
 ];
 
