@@ -3,14 +3,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState, type JSX } from "react";
 import { HowItWorks } from "./how-it-works";
 import { HowTo } from "./how-to";
-import { WhatIs } from "./what-is";
+import { Introduction } from "./introduction";
 import { AnimatedUnderline } from "@fund/animated-underline";
 import { ScrambleText } from "@fund/scramble-text";
 
 export default function About() {
-  const LIST = ["What is", "How to", "How it works"];
+  const LIST = ["Introduction", "How to", "How it works"];
 
-  const [selected, setSelected] = useState("what-is");
+  const [selected, setSelected] = useState("introduction");
 
   function handleSelected(selected: string) {
     setSelected(selected);
@@ -39,15 +39,15 @@ export default function About() {
           </div>
           <div className="col-span-5">
             <AnimatePresence mode="popLayout">
-              {selected === "what-is" && (
+              {selected === "introduction" && (
                 <motion.div
                   layout
-                  key={"what-is"}
+                  key={"introduction"}
                   className="text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                 >
-                  <WhatIs />
+                  <Introduction />
                 </motion.div>
               )}
               {selected === "how-to" && (
