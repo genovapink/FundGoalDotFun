@@ -63,7 +63,7 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
       </div>
 
       <div className="text-sm text-gray-600">
-        Available: {balance.toFixed(2)} {balanceToken.name}
+        Available: {isConnected ? `${balance.toFixed(2)} ${balanceToken.name}` : "0"}
       </div>
 
       <div className="flex gap-2">
