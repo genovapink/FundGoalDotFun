@@ -22,7 +22,7 @@ contract FundSwap is Ownable {
     event Swap(address indexed user, address indexed token, uint256 amountEDU, uint256 amountToken);
     event AddLiquidity(address indexed provider, address indexed token, uint256 amountEDU, uint256 amountToken);
     event RemoveLiquidity(address indexed provider, address indexed token, uint256 amountEDU, uint256 amountToken);
-    
+
     constructor(address _EDU, address _feeReceiver, address _liquidityManager) {
         EDU = _EDU;
         feeReceiver = FeeReceiver(_feeReceiver);
@@ -31,12 +31,12 @@ contract FundSwap is Ownable {
 
     function swapEDUForToken(address token, uint256 amountEDU) external {
         require(IERC20(EDU).transferFrom(msg.sender, address(this), amountEDU), "Transfer failed");
-        
+
         uint256 fee = (amountEDU * FEE_PERCENT) / 10000;
         uint256 amountAfterFee = amountEDU - fee;
-        
+
         feeReceiver.collectFee(EDU, fee);
-        
+
         uint256 tokenAmount = getTokenAmount(token, amountAfterFee);
         require(IERC20(token).transfer(msg.sender, tokenAmount), "Token transfer failed");
 

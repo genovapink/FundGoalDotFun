@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./FeeReceiver.sol";
-import "src/IUniswapV3Router.sol";
+import "./IUniswapV3Router.sol";
 
 interface IUniswapV3Factory {
     function createPool(address tokenA, address tokenB, uint24 fee) external returns (address);

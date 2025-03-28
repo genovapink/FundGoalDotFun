@@ -19,13 +19,16 @@ contract FundFactory {
         vestingContract = _vestingContract;
     }
 
-    function deployToken(
-        string memory name,
-        string memory symbol,
-        uint256 initialBuy
-    ) external returns (address) {
+    function deployToken(string memory name, string memory symbol, uint256 initialBuy) external returns (address) {
         bytes32 salt = keccak256(abi.encodePacked(msg.sender, name, symbol));
-        address token = Create2.deploy(0, salt, abi.encodePacked(type(TokenLauncher).creationCode, abi.encode(name, symbol, msg.sender, feeReceiver, priceOracle, vestingContract, initialBuy)));
+        address token = Create2.deploy(
+            0,
+            salt,
+            abi.encodePacked(
+                type(TokenLauncher).creationCode,
+                abi.encode(name, symbol, msg.sender, feeReceiver, priceOracle, vestingContract, initialBuy)
+            )
+        );
         require(token != address(0), "Deploy failed");
 
         allFundingTokens.push(token);
