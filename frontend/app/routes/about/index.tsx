@@ -46,7 +46,6 @@ export default function About() {
                   className="text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ type: "spring" }}
                 >
                   <WhatIs />
                 </motion.div>
@@ -58,7 +57,6 @@ export default function About() {
                   className="text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ type: "spring" }}
                 >
                   <HowTo />
                 </motion.div>
@@ -70,7 +68,6 @@ export default function About() {
                   className="text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ type: "spring" }}
                 >
                   <HowItWorks />
                 </motion.div>
