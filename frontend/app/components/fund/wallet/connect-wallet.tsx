@@ -1,17 +1,9 @@
 import { ClientOnly } from "remix-utils/client-only";
 import { useFundWallet } from "./provider";
-import { ButtonMagnet } from "@fund/button";
+import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { LogOut } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@shadcn/dialog";
 import { useEffect, useState } from "react";
-import { Button } from "@shadcn/button";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
 
 export function ConnectWallet() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,26 +29,31 @@ export function ConnectWallet() {
           )}
         </ClientOnly>
       ) : (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <ClientOnly>
-              {() => <ButtonMagnet onClick={() => setIsOpen(true)}>Connect Wallet</ButtonMagnet>}
-            </ClientOnly>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Connect Wallet</DialogTitle>
-              <div className="flex flex-col gap-10 my-10">
+        <Drawer open={isOpen} onOpenChange={setIsOpen}>
+          <ClientOnly>
+            {() => <ButtonMagnet onClick={() => setIsOpen(true)}>Connect Wallet</ButtonMagnet>}
+          </ClientOnly>
+          <DrawerContent className="pb-10">
+            <div className="mx-auto w-full max-w-sm">
+              <DrawerHeader>
+                <DrawerTitle className="text-center font-bold">Connect a Wallet</DrawerTitle>
+              </DrawerHeader>
+              <div className="flex flex-col gap-10">
                 {connectors.map((connector) => (
-                  <Button key={connector.id} onClick={() => connector.connect()} className="py-5">
-                    {connector.icon && <img src={connector.icon} className="size-7" />}
+                  <ButtonArrow
+                    key={connector.id}
+                    onClick={() => connector.connect()}
+                    iconB64={connector.icon}
+                    direction="left"
+                    className="w-max"
+                  >
                     {connector.name}
-                  </Button>
+                  </ButtonArrow>
                 ))}
               </div>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+            </div>
+          </DrawerContent>
+        </Drawer>
       )}
     </>
   );

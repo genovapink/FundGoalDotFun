@@ -6,7 +6,7 @@ export default function About() {
     <>
       <DynamicHeader title="About" />
       <p>About</p>
-      <ButtonMagnet label="Click me" />
+      <ButtonMagnet>about</ButtonMagnet>
     </>
   );
 }

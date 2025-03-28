@@ -9,7 +9,8 @@ import { ButtonMagnet } from "./button";
 import { ConnectWallet } from "./wallet/connect-wallet";
 
 type DynamicHeaderProps = {
-  title: string;
+  title?: string;
+  titleChild?: React.ReactNode;
 } & JSX.IntrinsicElements["div"];
 
 const LIST_TOKENS = [
@@ -33,7 +34,7 @@ const LIST_TOKENS = [
 
 const DISPLAY_TIME = 2000;
 
-export function DynamicHeader({ title, className }: DynamicHeaderProps) {
+export function DynamicHeader({ title, titleChild, className }: DynamicHeaderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [displayed, setDisplayed] = useState(LIST_TOKENS[0].name);
 
@@ -54,7 +55,8 @@ export function DynamicHeader({ title, className }: DynamicHeaderProps) {
     <div
       className={cn("container mt-12 flex flex-row items-center justify-center gap-5", className)}
     >
-      <p className="w-max">{title}</p>
+      {title && <p className="w-max">{title}</p>}
+      {titleChild && titleChild}
       <ClientOnly>
         {() => <ScrambleText title={displayed} className="grow text-center" />}
       </ClientOnly>

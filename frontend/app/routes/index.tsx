@@ -1,5 +1,6 @@
 // import type { Route } from "./+types/index";
 
+import { BackLink, ButtonArrow, ForwardLink } from "@fund/button";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { Button } from "@shadcn/button";
 import { Input } from "@shadcn/input";
@@ -60,7 +61,7 @@ export default function Home() {
               to={`Contract_Address-${i}`}
             >
               <div className="flex flex-col gap-4">
-                <p>Title</p>
+                <p className="font-bold text-xl">Title</p>
                 <p>Subtitle</p>
               </div>
               <iframe
@@ -75,7 +76,9 @@ export default function Home() {
                 referrerPolicy="strict-origin-when-cross-origin"
                 scrolling="no"
               />
-              <p className="text-end text-xs">read more ...</p>
+              <ForwardLink to={`/more-soon`} className="text-inherit justify-end">
+                More
+              </ForwardLink>
             </NavLink>
           ))}
         </Masonry>
