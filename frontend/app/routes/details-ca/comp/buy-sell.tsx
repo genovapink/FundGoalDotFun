@@ -176,22 +176,16 @@ export function BuySellTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="buy" className="mt-4">
-        <TradingForm
-          type="buy"
-          baseToken={pairData.baseToken}
-          quoteToken={pairData.quoteToken}
-          balance={pairData.balance}
-          price={pairData.price}
-        />
+        <div className="mb-4">
+          <p className="text-base font-medium">Quantity</p>
+        </div>
+        <TradingForm type="buy" {...pairData} />
       </TabsContent>
       <TabsContent value="sell" className="mt-4">
-        <TradingForm
-          type="sell"
-          baseToken={pairData.baseToken}
-          quoteToken={pairData.quoteToken}
-          balance={pairData.balance}
-          price={pairData.price}
-        />
+        <div className="mb-4">
+          <p className="text-base font-medium">Quantity</p>
+        </div>
+        <TradingForm type="sell" {...pairData} />
       </TabsContent>
     </Tabs>
   );
