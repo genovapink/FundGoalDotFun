@@ -20,8 +20,8 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
   const [isOpen, setIsOpen] = useState(false);
 
   const displayToken = type === "buy" ? baseToken : quoteToken;
-  const balanceToken = type === "buy" ? quoteToken : baseToken;
-  const receiveToken = type === "buy" ? baseToken : quoteToken;
+  const balanceToken = type === "buy" ? baseToken : quoteToken;
+  const receiveToken = type === "buy" ? quoteToken : baseToken;
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -95,7 +95,7 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
 
       <div className="border-t pt-2">
         <div className="flex justify-between text-sm">
-          <span>You {type === "buy" ? "receive" : "spend"}:</span>
+          <span>What you receive:</span>
           <span>
             {receiveAmount} {receiveToken.name}
           </span>
@@ -110,7 +110,7 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
                 type === "buy" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"
               } text-white`}
             >
-              {type === "buy" ? "Buy" : "Sell"} {baseToken.name}
+              {type === "buy" ? `Buy ` : `Sell `}
             </button>
           ) : (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
