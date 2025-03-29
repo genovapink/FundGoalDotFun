@@ -20,21 +20,27 @@ export function HowTo() {
   ];
 
   return (
-    <div className="space-y-12 mb-20">
+    <div className="space-y-12 mb-20 px-4 sm:px-6">
       {sections.map((section, index) => (
-        <div key={index} className={`flex flex-col gap-2 ${index % 2 === 1 ? "text-end" : ""}`}>
+        <div
+          key={index}
+          className={`flex flex-col gap-4 sm:gap-6 ${
+            index % 2 === 1 ? "sm:text-end" : "sm:text-start"
+          }`}
+        >
           <motion.p
-            className="text-2xl font-bold underline underline-offset-4"
+            className="text-xl sm:text-2xl font-bold underline underline-offset-4"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.2 }}
+            transition={{ duration: 0.4, delay: index * 0.2 }}
           >
             {section.title}
           </motion.p>
           <motion.p
+            className="text-base sm:text-lg leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.2 + 0.1 }}
+            transition={{ duration: 0.4, delay: index * 0.2 + 0.1 }}
           >
             {section.content}
           </motion.p>

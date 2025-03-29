@@ -9,7 +9,6 @@ import { ScrambleText } from "@fund/scramble-text";
 
 export default function About() {
   const LIST = ["Introduction", "How to", "How it works"];
-
   const [selected, setSelected] = useState("introduction");
 
   function handleSelected(selected: string) {
@@ -19,13 +18,13 @@ export default function About() {
   return (
     <>
       <DynamicHeader title="About" />
-      <div className="mt-8 container">
-        <div className="grid grid-cols-12 gap-y-10">
-          <p className="col-span-12 text-9xl my-24">
+      <div className="mt-8 container max-w-screen-lg mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-12 gap-y-10 lg:gap-x-10">
+          <p className="col-span-12 text-4xl sm:text-6xl lg:text-9xl my-12 lg:my-24 text-center">
             <ScrambleText title="About" />
           </p>
-          <div className="col-span-5 col-start-2">
-            <div className="flex flex-col gap-4">
+          <div className="col-span-12 lg:col-span-5 lg:col-start-2">
+            <div className="flex justify-center lg:flex-col gap-4 items-center lg:items-start">
               {LIST.map((item, idx) => (
                 <AnimatedUnderline
                   key={idx}
@@ -37,13 +36,13 @@ export default function About() {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-12 lg:col-span-5">
             <AnimatePresence mode="popLayout">
               {selected === "introduction" && (
                 <motion.div
                   layout
                   key={"introduction"}
-                  className="text-2xl tracking-wide bg-background"
+                  className="text-lg sm:text-xl lg:text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                 >
@@ -54,7 +53,7 @@ export default function About() {
                 <motion.div
                   layout
                   key={"how-to"}
-                  className="text-2xl tracking-wide bg-background"
+                  className="text-lg sm:text-xl lg:text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                 >
@@ -65,7 +64,7 @@ export default function About() {
                 <motion.div
                   layout
                   key={"how-it-works"}
-                  className="text-2xl tracking-wide bg-background"
+                  className="text-lg sm:text-xl lg:text-2xl tracking-wide bg-background"
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                 >

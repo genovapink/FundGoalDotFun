@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 export function HowItWorks() {
   return (
     <motion.div
-      className="mt-10 mb-20 space-y-6"
+      className="mt-10 mb-20 px-4 sm:px-6 space-y-8"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <motion.p
+        className="text-base sm:text-lg leading-relaxed"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
@@ -19,7 +20,7 @@ export function HowItWorks() {
       </motion.p>
 
       <motion.ol
-        className="list-decimal list-inside space-y-2"
+        className="list-decimal list-inside space-y-4 text-base sm:text-lg"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -30,6 +31,7 @@ export function HowItWorks() {
       </motion.ol>
 
       <motion.p
+        className="text-base sm:text-lg leading-relaxed"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
@@ -38,7 +40,7 @@ export function HowItWorks() {
       </motion.p>
 
       <motion.ol
-        className="list-decimal list-inside space-y-2"
+        className="list-decimal list-inside space-y-4 text-base sm:text-lg"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
@@ -50,6 +52,7 @@ export function HowItWorks() {
       </motion.ol>
 
       <motion.p
+        className="text-base sm:text-lg leading-relaxed"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
@@ -60,6 +63,7 @@ export function HowItWorks() {
       </motion.p>
 
       <motion.p
+        className="text-base sm:text-lg leading-relaxed"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
