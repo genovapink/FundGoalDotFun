@@ -60,7 +60,11 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
         data={paginatedInvoices}
       ></LayoutDesktop>
 
-      {/* <LayoutMobile></LayoutMobile> */}
+      <LayoutMobile
+        TIME_SERIES={TIME_SERIES}
+        data={paginatedInvoices}
+        className="flex lg:hidden"
+      ></LayoutMobile>
     </>
   );
 }
