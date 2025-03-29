@@ -7,7 +7,13 @@ type PaginationProps = {
   onBack: () => void;
   onNext: () => void;
 } & JSX.IntrinsicElements["div"];
-function Pagination({ currentPage, totalPages, onBack, onNext, className }: PaginationProps) {
+export function Pagination({
+  currentPage,
+  totalPages,
+  onBack,
+  onNext,
+  className,
+}: PaginationProps) {
   return (
     <div className={cn("flex justify-center items-center gap-2 mt-4", className)}>
       <button
