@@ -7,6 +7,8 @@ const buttonVariants = cva("", {
   variants: {
     color: {
       foreground: "border-foreground text-foreground",
+      green: "border-[#47B172] text-[#47B172] hover:text-white",
+      pink: "border-[#E97B86] text-[#E97B86] hover:text-white",
     },
     size: {
       default: "px-4 py-2 text-lg",
@@ -24,6 +26,8 @@ const bgFlairVarians = cva("", {
   variants: {
     background: {
       foreground: "bg-foreground",
+      pink: "bg-[#E97B86]",
+      green: "bg-[#47B172]",
     },
   },
   defaultVariants: {
@@ -121,10 +125,10 @@ export function ButtonMagnet({ children, color, size, ...props }: ButtonMagnetPr
     <button
       ref={buttonRef}
       className={cn(
-        buttonVariants({ color, size }),
         "relative inline-flex items-center justify-center overflow-hidden transition-colors cursor-pointer whitespace-nowrap",
         "border bg-transparent rounded-full font-semibold h-max",
-        "hover:text-background"
+        "hover:text-background",
+        buttonVariants({ color, size })
       )}
       {...props}
     >

@@ -13,6 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from "@shadcn/table";
+import { cn } from "~/utils/cn";
+import { ForwardLink } from "@fund/button";
+import { Badge } from "@shadcn/badge";
+import { Copy } from "lucide-react";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const addon = "rei";
@@ -47,7 +51,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
           </div>
         }
       />
-      <div className="mt-8 mb-36 px-10 flex flex-row gap-5">
+      <div className="mt-8 px-10 flex flex-row gap-5 h-screen">
         <div className="w-3/4 flex flex-col gap-10">
           <div className="flex flex-row justify-between items-center">
             <div className="flex flex-row items-center gap-5 text-xs">
@@ -81,9 +85,9 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             />
           </div>
 
-          <Table>
+          <Table className="overflow-y-auto mb-36 relative">
             <TableCaption>A list of your recent invoices.</TableCaption>
-            <TableHeader>
+            <TableHeader className="sticky top-0 bg-background">
               <TableRow>
                 <TableHead>User</TableHead>
                 <TableHead>Type</TableHead>
@@ -110,8 +114,42 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
           </Table>
         </div>
 
-        <div className="w-1/4">
+        <div className="w-1/4 flex flex-col gap-10">
           <BuySellTabs />
+          <div className="flex flex-col gap-4">
+            <ForwardLink className="justify-end" to="/">
+              Visit resource
+            </ForwardLink>
+            <iframe
+              className={cn(
+                "rounded-lg h-full w-full overflow-hidden",
+                "aspect-video"
+                // "aspect-square"
+              )}
+              src="https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh"
+              frameBorder="0"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              scrolling="no"
+            />
+            <div className="h-[1px] bg-white/50 w-full self-end my-8" />
+            <div className="flex flex-row gap-2 items-center">
+              <p>creator:</p>
+              <Badge variant="secondary">{"<address>"}</Badge>
+              <Copy className="size-5 cursor-pointer" />
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <p>ca:</p>
+              <Badge>{"<address>"}</Badge>
+              <Copy className="size-5 cursor-pointer" />
+            </div>
+            <div className="h-[1px] bg-white/50 w-full self-start my-8" />
+            <p>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Optio earum culpa, cumque
+              doloremque laudantium minima, harum voluptatum voluptate, nisi molestias ex accusamus
+              modi ipsa nesciunt accusantium pariatur voluptatem officiis! Nam!
+            </p>
+          </div>
         </div>
       </div>
     </>

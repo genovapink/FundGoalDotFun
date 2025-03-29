@@ -3,7 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shadcn/tabs";
 import { useFundWallet } from "@fund/wallet/provider";
 import { ClientOnly } from "remix-utils/client-only";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
-import { ButtonArrow } from "@fund/button";
+import { ButtonArrow, ButtonMagnet } from "@fund/button";
+import { Button } from "@shadcn/button";
 
 // WIP: need to change to real flow
 interface TradingFormProps {
@@ -16,6 +17,9 @@ interface TradingFormProps {
 
 const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFormProps) => {
   const { isConnected, connectors } = useFundWallet();
+
+  const LIST_SHORTCUT = [25, 50, 75, 100];
+
   const [amount, setAmount] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -42,7 +46,11 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
     : "0.00";
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
+      <div>
+        <p className="text-base font-medium">Quantity</p>
+      </div>
+
       <div className="relative">
         <div className="flex items-center border rounded-md p-2">
           <img
@@ -66,31 +74,12 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
         Available: {isConnected ? `${balance.toFixed(2)} ${balanceToken.name}` : "0"}
       </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={() => setPercentage(25)}
-          className="flex-1 py-1 px-2 bg-gray-800 text-gray-200 rounded hover:bg-gray-700 cursor-pointer"
-        >
-          25%
-        </button>
-        <button
-          onClick={() => setPercentage(50)}
-          className="flex-1 py-1 px-2 bg-gray-800 text-gray-200 rounded hover:bg-gray-700 cursor-pointer"
-        >
-          50%
-        </button>
-        <button
-          onClick={() => setPercentage(75)}
-          className="flex-1 py-1 px-2 bg-gray-800 text-gray-200 rounded hover:bg-gray-700 cursor-pointer"
-        >
-          75%
-        </button>
-        <button
-          onClick={() => setPercentage(100)}
-          className="flex-1 py-1 px-2 bg-gray-800 text-gray-200 rounded hover:bg-gray-700 cursor-pointer"
-        >
-          Max
-        </button>
+      <div className="flex flex-row gap-2">
+        {LIST_SHORTCUT.map((val, idx) => (
+          <Button key={idx} onClick={() => setPercentage(val)} variant="outline" className="flex-1">
+            {val == 100 ? "Max" : val}%
+          </Button>
+        ))}
       </div>
 
       <div className="border-t pt-2">
@@ -105,27 +94,19 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
       <ClientOnly>
         {() =>
           isConnected ? (
-            <button
-              className={`w-full py-2 rounded cursor-pointer ${
-                type === "buy" ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"
-              } text-white`}
-            >
+            <ButtonMagnet onClick={() => setIsOpen(true)} color={type === "buy" ? "green" : "pink"}>
               {type === "buy" ? `Buy ` : `Sell `}
-            </button>
+            </ButtonMagnet>
           ) : (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
               <ClientOnly>
                 {() => (
-                  <button
+                  <ButtonMagnet
                     onClick={() => setIsOpen(true)}
-                    className={`w-full py-2 rounded cursor-pointer ${
-                      type === "buy"
-                        ? "bg-green-500 hover:bg-green-600"
-                        : "bg-red-500 hover:bg-red-600"
-                    } text-white`}
+                    color={type === "buy" ? "green" : "pink"}
                   >
                     Connect Wallet
-                  </button>
+                  </ButtonMagnet>
                 )}
               </ClientOnly>
               <DrawerContent className="pb-10">
@@ -176,15 +157,9 @@ export function BuySellTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="buy" className="mt-4">
-        <div className="mb-4">
-          <p className="text-base font-medium">Quantity</p>
-        </div>
         <TradingForm type="buy" {...pairData} />
       </TabsContent>
       <TabsContent value="sell" className="mt-4">
-        <div className="mb-4">
-          <p className="text-base font-medium">Quantity</p>
-        </div>
         <TradingForm type="sell" {...pairData} />
       </TabsContent>
     </Tabs>
