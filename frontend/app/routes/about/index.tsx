@@ -18,7 +18,7 @@ export default function About() {
   return (
     <>
       <DynamicHeader title="About" />
-      <div className="mt-8 container max-w-screen-lg mx-auto px-4 sm:px-6">
+      <div className="mt-8 container max-w-screen-xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-12 gap-y-10 lg:gap-x-10">
           <p className="col-span-12 text-4xl sm:text-6xl lg:text-9xl my-12 lg:my-24 text-center">
             <ScrambleText title="About" />
