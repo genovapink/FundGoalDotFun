@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { ChartFund } from "@fund/chart";
 import { ToggleGroup, ToggleGroupItem } from "@shadcn/toggle-group";
@@ -8,7 +9,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -22,8 +22,10 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function Symbol({ loaderData }: Route.ComponentProps) {
   const { addon, ca } = loaderData;
-
   const TIME_SERIES = ["1m", "5m", "30m", "1h", "4h", "1w"];
+
+  const ITEMS_PER_PAGE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const invoices = new Array(25).fill({
     invoice: "INV001",
@@ -31,6 +33,34 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
     totalAmount: "$250.00",
     paymentMethod: "Credit Card",
   });
+
+  const totalPages = Math.ceil(invoices.length / ITEMS_PER_PAGE);
+  const paginatedInvoices = invoices.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const Pagination = () => (
+    <div className="flex justify-center items-center gap-2 mt-4">
+      <button
+        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+        disabled={currentPage === 1}
+        className="px-3 py-1 text-xs sm:text-sm rounded-md border border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Previous
+      </button>
+      <span className="text-xs sm:text-sm">
+        Page {currentPage} of {totalPages}
+      </span>
+      <button
+        onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+        disabled={currentPage === totalPages}
+        className="px-3 py-1 text-xs sm:text-sm rounded-md border border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Next
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -99,7 +129,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {invoices.slice(0, 10).map((invoice, idx) => (
+                {paginatedInvoices.map((invoice, idx) => (
                   <TableRow
                     key={`${invoice.invoice}-${idx}`}
                     className="odd:bg-transparent even:bg-white/10"
@@ -119,6 +149,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
                 ))}
               </TableBody>
             </Table>
+            <Pagination />
           </div>
         </div>
 
@@ -158,36 +189,39 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               </div>
             </div>
 
-            <Table>
-              <TableCaption className="text-sm">A list of your recent invoices.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-sm">User</TableHead>
-                  <TableHead className="text-sm">Type</TableHead>
-                  <TableHead className="text-sm">Price (TKN)</TableHead>
-                  <TableHead className="text-sm">{"<token_name>"}</TableHead>
-                  <TableHead className="text-sm">ETH</TableHead>
-                  <TableHead className="text-sm">Date</TableHead>
-                  <TableHead className="text-right text-sm">Tx</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {invoices.map((invoice, idx) => (
-                  <TableRow
-                    key={`${invoice.invoice}-${idx}`}
-                    className="odd:bg-transparent even:bg-white/10"
-                  >
-                    <TableCell className="font-medium text-sm">{invoice.invoice}</TableCell>
-                    <TableCell className="text-sm">{invoice.paymentStatus}</TableCell>
-                    <TableCell className="text-sm">{invoice.paymentMethod}</TableCell>
-                    <TableCell className="text-sm">{invoice.totalAmount}</TableCell>
-                    <TableCell className="text-sm">{invoice.totalAmount}</TableCell>
-                    <TableCell className="text-sm">{invoice.totalAmount}</TableCell>
-                    <TableCell className="text-right text-sm">{invoice.totalAmount}</TableCell>
+            <div>
+              <Table>
+                <TableCaption className="text-sm">A list of your recent invoices.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-sm">User</TableHead>
+                    <TableHead className="text-sm">Type</TableHead>
+                    <TableHead className="text-sm">Price (TKN)</TableHead>
+                    <TableHead className="text-sm">{"<token_name>"}</TableHead>
+                    <TableHead className="text-sm">ETH</TableHead>
+                    <TableHead className="text-sm">Date</TableHead>
+                    <TableHead className="text-right text-sm">Tx</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {paginatedInvoices.map((invoice, idx) => (
+                    <TableRow
+                      key={`${invoice.invoice}-${idx}`}
+                      className="odd:bg-transparent even:bg-white/10"
+                    >
+                      <TableCell className="font-medium text-sm">{invoice.invoice}</TableCell>
+                      <TableCell className="text-sm">{invoice.paymentStatus}</TableCell>
+                      <TableCell className="text-sm">{invoice.paymentMethod}</TableCell>
+                      <TableCell className="text-sm">{invoice.totalAmount}</TableCell>
+                      <TableCell className="text-sm">{invoice.totalAmount}</TableCell>
+                      <TableCell className="text-sm">{invoice.totalAmount}</TableCell>
+                      <TableCell className="text-right text-sm">{invoice.totalAmount}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <Pagination />
+            </div>
           </div>
 
           <div className="w-1/4">
