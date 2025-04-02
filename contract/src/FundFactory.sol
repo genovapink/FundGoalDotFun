@@ -1,44 +1,38 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "./TokenLauncher.sol";
-import "@openzeppelin/contracts/utils/Create2.sol";
-
 contract FundFactory {
-    address public feeReceiver;
-    address public priceOracle;
-    address public vestingContract;
-    mapping(address => bool) public isDeployedToken;
-    address[] public allFundingTokens;
+    address[] public multisigWallets;
+    mapping(address => bool) public isMultisig;
 
-    event TokenDeployed(address indexed tokenAddress, string name, string symbol, address owner);
-
-    constructor(address _feeReceiver, address _priceOracle, address _vestingContract) {
-        feeReceiver = _feeReceiver;
-        priceOracle = _priceOracle;
-        vestingContract = _vestingContract;
+    modifier onlyMultisig() {
+        require(isMultisig[msg.sender], "Not authorized");
+        _;
     }
 
-    function deployToken(string memory name, string memory symbol, uint256 initialBuy) external returns (address) {
-        bytes32 salt = keccak256(abi.encodePacked(msg.sender, name, symbol));
-        address token = Create2.deploy(
-            0,
-            salt,
-            abi.encodePacked(
-                type(TokenLauncher).creationCode,
-                abi.encode(name, symbol, msg.sender, feeReceiver, priceOracle, vestingContract, initialBuy)
-            )
-        );
-        require(token != address(0), "Deploy failed");
-
-        allFundingTokens.push(token);
-        isDeployedToken[token] = true;
-
-        emit TokenDeployed(token, name, symbol, msg.sender);
-        return token;
+    constructor() {
+        multisigWallets.push(0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074); // Wallet pertama
+        multisigWallets.push(0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427); // Wallet kedua
+        
+        isMultisig[0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074] = true; // Wallet pertama
+        isMultisig[0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427] = true; // Wallet kedua
     }
 
-    function getAllTokens() external view returns (address[] memory) {
-        return allFundingTokens;
+    function addMultisigWallet(address _wallet) external onlyMultisig {
+        require(!isMultisig[_wallet], "Already a multisig");
+        multisigWallets.push(_wallet);
+        isMultisig[_wallet] = true;
+    }
+
+    function removeMultisigWallet(address _wallet) external onlyMultisig {
+        require(isMultisig[_wallet], "Not a multisig");
+        isMultisig[_wallet] = false;
+        for (uint i = 0; i < multisigWallets.length; i++) {
+            if (multisigWallets[i] == _wallet) {
+                multisigWallets[i] = multisigWallets[multisigWallets.length - 1];
+                multisigWallets.pop();
+                break;
+            }
+        }
     }
 }
