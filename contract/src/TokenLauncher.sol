@@ -8,7 +8,7 @@ import "./Vesting.sol";
 import "./PriceOracle.sol";
 
 contract TokenLauncher is ERC20, Ownable {
-    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18;
     uint256 public immutable initialBuy;
     uint256 public immutable vestingSupply;
     address public feeReceiver;
