@@ -2,24 +2,43 @@
 pragma solidity ^0.8.19;
 
 contract FeeReceiver {
-    address public admin;
-    mapping(address => uint256) public collectedFees;
+    address[] public multisigWallets;
+    mapping(address => bool) public isMultisig;
+    mapping(address => uint256) public feesCollected; // Menyimpan jumlah fee yang dikumpulkan per token
 
-    event FeeCollected(address indexed token, uint256 amount);
+    modifier onlyMultisig() {
+        require(isMultisig[msg.sender], "Not authorized");
+        _;
+    }
 
     constructor() {
-        admin = msg.sender;
+        multisigWallets.push(0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074); // Wallet pertama
+        multisigWallets.push(0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427); // Wallet kedua
+        
+        isMultisig[0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074] = true; // Wallet pertama
+        isMultisig[0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427] = true; // Wallet kedua
     }
 
-    function collectFee(address token, uint256 amount) external {
-        collectedFees[token] += amount;
-        emit FeeCollected(token, amount);
+    function addMultisigWallet(address _wallet) external onlyMultisig {
+        require(!isMultisig[_wallet], "Already a multisig");
+        multisigWallets.push(_wallet);
+        isMultisig[_wallet] = true;
     }
 
-    function withdraw(address token) external {
-        require(msg.sender == admin, "Only admin");
-        uint256 amount = collectedFees[token];
-        collectedFees[token] = 0;
-        payable(admin).transfer(amount);
+    function removeMultisigWallet(address _wallet) external onlyMultisig {
+        require(isMultisig[_wallet], "Not a multisig");
+        isMultisig[_wallet] = false;
+        for (uint i = 0; i < multisigWallets.length; i++) {
+            if (multisigWallets[i] == _wallet) {
+                multisigWallets[i] = multisigWallets[multisigWallets.length - 1];
+                multisigWallets.pop();
+                break;
+            }
+        }
+    }
+
+    // Fungsi untuk mengumpulkan fee
+    function collectFee(address token, uint256 fee) external onlyMultisig {
+        feesCollected[token] += fee;
     }
 }
