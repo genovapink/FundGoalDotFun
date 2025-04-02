@@ -5,6 +5,7 @@ export default [
     index("./routes/index.tsx"),
     route("/about", "./routes/about/index.tsx"),
     route("/create", "./routes/create.tsx"),
+    // route("/create-new", "./routes/create/index.tsx"),
     route(":ca", "./routes/details-ca/index.tsx"),
     route("/profile", "./routes/profile/index.tsx"),
     // ...prefix("/market", [
