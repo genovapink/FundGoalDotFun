@@ -17,6 +17,7 @@ import { cn } from "~/utils/cn";
 import { ForwardLink } from "@fund/button";
 import { Badge } from "@shadcn/badge";
 import { Copy } from "lucide-react";
+import { ShowQR } from "./comp/show-qr";
 
 export type TableItem = {
   invoice: string;
@@ -162,6 +163,12 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               <p>ca:</p>
               <Badge>{"<address>"}</Badge>
               <Copy className="size-5 cursor-pointer" />
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <p>donate to creator</p>
+              <Badge variant="secondary">{"<address>"}</Badge>
+              <Copy className="size-5 cursor-pointer" />
+              <ShowQR address={"address_soon"} />
             </div>
             <div className="h-[1px] bg-white/50 w-full self-start my-8" />
             <p>
