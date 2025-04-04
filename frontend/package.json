@@ -6,7 +6,7 @@
     "build": "react-router build",
     "build:icons": "tsx ./app/builder/build-icons.ts --log verbose",
     "dev": "npm run build:icons && react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
+    "start": "PORT=5173 react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "lint": "eslint ."
   },
