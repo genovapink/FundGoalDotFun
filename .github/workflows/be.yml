@@ -1,12 +1,11 @@
 name: Backend Build & Publish
 
 on:
-  # push:
-  #   branches:
-  #     - main
-  #   paths:
-  #     - "backend/**"
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
 
 jobs:
   deploy:
