@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "start": "node ./dist"
   },
   "keywords": [],
   "author": "",
