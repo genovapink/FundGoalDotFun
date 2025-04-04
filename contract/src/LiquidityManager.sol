@@ -4,14 +4,14 @@ pragma solidity ^0.8.19;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./FeeReceiver.sol";
-import "src/IUniswapV3Router.sol"; 
+import "./IUniswapV3Router.sol";
 
 interface IUniswapV3Factory {
     function createPool(address tokenA, address tokenB, uint24 fee) external returns (address);
 }
 
 contract LiquidityManager is Ownable {
-    address public immutable edu;  // Changed EDU to camelCase
+    address public immutable edu; // Changed EDU to camelCase
     address public immutable weth; // Changed WETH to camelCase
     address public uniswapFactory;
     IUniswapV3Router public uniswapRouter;
@@ -21,18 +21,14 @@ contract LiquidityManager is Ownable {
 
     event LiquidityMigrated(address indexed token, address pairEdu, address pairEth); // Changed event name to camelCase
 
-    constructor(
-        address _edu, 
-        address _weth, 
-        address _uniswapFactory, 
-        address _uniswapRouter, 
-        address _feeReceiver
-    ) {
+    constructor(address _edu, address _weth, address _uniswapFactory, address _uniswapRouter, address _feeReceiver)
+        Ownable(msg.sender)
+    {
         edu = _edu;
         weth = _weth;
         uniswapFactory = _uniswapFactory;
         uniswapRouter = IUniswapV3Router(_uniswapRouter);
-        feeReceiver = FeeReceiver(_feeReceiver);  // Ensure the correct address for FeeReceiver
+        feeReceiver = FeeReceiver(_feeReceiver); // Ensure the correct address for FeeReceiver
     }
 
     function migrateToUniswap(address token) external onlyOwner {
@@ -41,7 +37,7 @@ contract LiquidityManager is Ownable {
         // Transfer fees before migration
         uint256 fee = (IERC20(token).balanceOf(address(this)) * 150) / 10000;
         IERC20(token).transfer(address(feeReceiver), fee);
-        feeReceiver.collectFee(token, fee);  // Calling collectFee
+        feeReceiver.collectFee(token, fee); // Calling collectFee
 
         uint256 amountToken = IERC20(token).balanceOf(address(this));
         uint256 amountEdu = IERC20(edu).balanceOf(address(this)); // Changed EDU to camelCase

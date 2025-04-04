@@ -8,7 +8,7 @@ import "./Vesting.sol";
 import "./PriceOracle.sol";
 
 contract TokenLauncher is ERC20, Ownable {
-    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10**18;
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
     uint256 public immutable initialBuy;
     uint256 public immutable vestingSupply;
     address public feeReceiver;
@@ -26,7 +26,7 @@ contract TokenLauncher is ERC20, Ownable {
         address _priceOracle,
         address _vestingContract,
         uint256 _initialBuy
-    ) ERC20(name, symbol) {
+    ) ERC20(name, symbol) Ownable(msg.sender) {
         _transferOwnership(deployer);
         feeReceiver = _feeReceiver;
         priceOracle = _priceOracle;
@@ -48,12 +48,18 @@ contract TokenLauncher is ERC20, Ownable {
         emit Donated(msg.sender, msg.value);
     }
 
-    function _transfer(address sender, address recipient, uint256 amount) internal override {
-        require(tradingEnabled, "Trading not enabled");
-        uint256 fee = (amount * 15) / 1000; // 1.5%
-        uint256 transferAmount = amount - fee;
+    function _update(address from, address to, uint256 value) internal virtual override {
+        require(from == address(0) || to == address(0) || tradingEnabled, "Trading not enabled");
 
-        super._transfer(sender, feeReceiver, fee);
-        super._transfer(sender, recipient, transferAmount);
+        if (from != address(0) && to != address(0)) {
+            // Only apply fee on transfers, not on mints or burns
+            uint256 fee = (value * 15) / 1000; // 1.5%
+            uint256 transferAmount = value - fee;
+
+            super._update(from, feeReceiver, fee);
+            super._update(from, to, transferAmount);
+        } else {
+            super._update(from, to, value);
+        }
     }
 }
