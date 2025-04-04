@@ -1,6 +1,6 @@
 // import type { Route } from "./+types/index";
 
-import { BackLink, ButtonArrow, ForwardLink } from "@fund/button";
+import { BackLink, ButtonArrow, ButtonMagnet, ForwardLink } from "@fund/button";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { Button } from "@shadcn/button";
 import { Input } from "@shadcn/input";
@@ -82,6 +82,9 @@ export default function Home() {
             </NavLink>
           ))}
         </Masonry>
+        <div className="flex w-full justify-center mt-12 mb-36">
+          <ButtonMagnet size={"lg"}>Load More</ButtonMagnet>
+        </div>
       </div>
     </>
   );
