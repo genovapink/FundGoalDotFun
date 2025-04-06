@@ -52,7 +52,6 @@ contract TokenLauncher is ERC20, Ownable {
         require(from == address(0) || to == address(0) || tradingEnabled, "Trading not enabled");
 
         if (from != address(0) && to != address(0)) {
-            // Only apply fee on transfers, not on mints or burns
             uint256 fee = (value * 15) / 1000; // 1.5%
             uint256 transferAmount = value - fee;
 
@@ -62,4 +61,18 @@ contract TokenLauncher is ERC20, Ownable {
             super._update(from, to, value);
         }
     }
+
+   
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
+    }
+
+
+    function burnFrom(address account, uint256 amount) public {
+        uint256 currentAllowance = allowance(account, msg.sender);
+        require(currentAllowance >= amount, "Burn amount exceeds allowance");
+        _approve(account, msg.sender, currentAllowance - amount);
+        _burn(account, amount);
+    }
 }
+
