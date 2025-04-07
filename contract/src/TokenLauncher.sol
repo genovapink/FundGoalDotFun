@@ -21,25 +21,13 @@ contract ERC20Token is ERC20 {
 }
 
 contract TokenLauncher {
-    address public immutable ADMIN;
-    address public immutable FEE_RECEIVER;
-    address public immutable VESTING;
-    address public immutable LIQUIDITY_MANAGER;
+    address public constant ADMIN = 0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074;
+    address public constant FEE_RECEIVER = 0xB48a0fB4Feb535C380B7b7375779B1b361523766;
+    address public constant VESTING = 0xe9Af4ab286bbc2F4373D661Ae26bD94b6778A4B7;
+    address public constant LIQUIDITY_MANAGER = 0x399317bdDCf70c02d3b35CE685a4536D56983Bd9;
 
     event TokenDeployed(address token, address fundSwap, address vesting);
     event InitialPurchase(address token, address buyer, uint256 amount);
-
-    constructor(address admin, address feeReceiver, address vesting, address liquidityManager) {
-        require(admin != address(0), "Invalid admin address");
-        require(feeReceiver != address(0), "Invalid fee receiver address");
-        require(vesting != address(0), "Invalid vesting address");
-        require(liquidityManager != address(0), "Invalid liquidity manager address");
-
-        ADMIN = admin;
-        FEE_RECEIVER = feeReceiver;
-        VESTING = vesting;
-        LIQUIDITY_MANAGER = liquidityManager;
-    }
 
     function deployToken(string memory name, string memory symbol, uint256 initialBuyAmount)
         external
@@ -58,7 +46,7 @@ contract TokenLauncher {
 
         newToken.transfer(VESTING, vestingAmount);
 
-        FundSwap fundSwap = new FundSwap{value: msg.value}(address(newToken), FEE_RECEIVER, LIQUIDITY_MANAGER);
+        FundSwap fundSwap = new FundSwap{value: initialBuyAmount}(address(newToken), FEE_RECEIVER, LIQUIDITY_MANAGER);
         fundSwapAddr = address(fundSwap);
 
         newToken.transfer(fundSwapAddr, swapAmount);
