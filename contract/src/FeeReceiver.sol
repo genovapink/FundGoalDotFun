@@ -1,44 +1,42 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract FeeReceiver {
-    address[] public multisigWallets;
-    mapping(address => bool) public isMultisig;
-    mapping(address => uint256) public feesCollected; // Menyimpan jumlah fee yang dikumpulkan per token
+    address public constant ADMIN = 0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074;
 
-    modifier onlyMultisig() {
-        require(isMultisig[msg.sender], "Not authorized");
-        _;
+    mapping(address => uint256) public totalReceived;
+
+    event FeeReceived(address indexed token, uint256 amount);
+    event Withdrawn(address indexed to, uint256 amount);
+
+    receive() external payable {
+        totalReceived[address(0)] += msg.value;
+        emit FeeReceived(address(0), msg.value);
     }
 
-    constructor() {
-        multisigWallets.push(0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074); // Wallet pertama
-        multisigWallets.push(0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427); // Wallet kedua
-
-        isMultisig[0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074] = true; // Wallet pertama
-        isMultisig[0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427] = true; // Wallet kedua
+    function receiveERC20(address token, uint256 amount) external {
+        totalReceived[token] += amount;
+        emit FeeReceived(token, amount);
     }
 
-    function addMultisigWallet(address _wallet) external onlyMultisig {
-        require(!isMultisig[_wallet], "Already a multisig");
-        multisigWallets.push(_wallet);
-        isMultisig[_wallet] = true;
+    function totalFeeReceived(address token) external view returns (uint256) {
+        return totalReceived[token];
     }
 
-    function removeMultisigWallet(address _wallet) external onlyMultisig {
-        require(isMultisig[_wallet], "Not a multisig");
-        isMultisig[_wallet] = false;
-        for (uint256 i = 0; i < multisigWallets.length; i++) {
-            if (multisigWallets[i] == _wallet) {
-                multisigWallets[i] = multisigWallets[multisigWallets.length - 1];
-                multisigWallets.pop();
-                break;
-            }
-        }
+    function withdrawETH(uint256 amount, address to) external {
+        require(msg.sender == ADMIN, "Only admin");
+        require(address(this).balance >= amount, "Not enough ETH");
+        (bool sent, ) = payable(to).call{value: amount}("");
+        require(sent, "Transfer failed");
+        emit Withdrawn(to, amount);
     }
 
-    // Fungsi untuk mengumpulkan fee
-    function collectFee(address token, uint256 fee) external onlyMultisig {
-        feesCollected[token] += fee;
+    function withdrawToken(address token, uint256 amount, address to) external {
+        require(msg.sender == ADMIN, "Only admin");
+        bool sent = IERC20(token).transfer(to, amount);
+        require(sent, "Token transfer failed");
+        emit Withdrawn(to, amount);
     }
 }
