@@ -9,6 +9,7 @@ export default function Create() {
     name: "",
     ticker: "",
     description: "",
+    donationAddress: "",
     initialBuyAmount: "1000",
     initialTokens: 42000000,
     website: "",
@@ -66,6 +67,8 @@ export default function Create() {
         description: formData.description,
         initialBuyPerToken: Number(formData.initialBuyAmount),
         marketCap: 5_000, // WIP
+        contractAddress: "", // WIP
+        donationAddress: formData.donationAddress,
         status: "active",
         socialLinks: {
           website: formData.website || undefined,
@@ -156,6 +159,22 @@ export default function Create() {
                   className="w-full p-3 border border-input rounded-lg bg-background min-h-[100px] sm:min-h-[120px] text-sm sm:text-base"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-lg sm:text-xl mb-2">Donation Address (optional)</label>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      name="donationAddress"
+                      placeholder="0x...."
+                      value={formData.donationAddress}
+                      onChange={handleChange}
+                      className="w-full p-3 border border-input rounded-lg bg-background text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -300,7 +319,7 @@ export default function Create() {
           <button
             type="submit"
             disabled={!agreedToTerms}
-            className={`w-full py-3 sm:py-4 font-medium rounded-lg transition-colors ${
+            className={`cursor-pointer w-full py-3 sm:py-4 font-medium rounded-lg transition-colors ${
               agreedToTerms
                 ? "bg-[#e2ffc7] hover:bg-[#d5f5b9] text-black"
                 : "bg-gray-200 text-gray-500 cursor-not-allowed"
@@ -384,14 +403,14 @@ export default function Create() {
                   <div className="flex flex-col sm:flex-row gap-4 mt-6">
                     <button
                       onClick={() => setShowModal(false)}
-                      className="w-full py-3 border border-input rounded-lg hover:bg-secondary transition-colors"
+                      className="w-full py-3 border border-input rounded-lg hover:bg-secondary transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={confirmLaunch}
                       disabled={isLoading}
-                      className={`w-full py-3 bg-[#e2ffc7] hover:bg-[#d5f5b9] text-black font-medium rounded-lg transition-colors flex items-center justify-center ${
+                      className={`cursor-pointer w-full py-3 bg-[#e2ffc7] hover:bg-[#d5f5b9] text-black font-medium rounded-lg transition-colors flex items-center justify-center ${
                         isLoading ? "opacity-70 cursor-not-allowed" : ""
                       }`}
                     >

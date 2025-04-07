@@ -6,6 +6,8 @@ interface IToken extends Document {
   description: string;
   initialBuyPerToken?: number;
   marketCap: number;
+  contractAddress?: string;
+  donationAddress?: string;
   status: 'active' | 'inactive';
   imageUrl?: string;
   socialLinks?: {
@@ -25,6 +27,8 @@ const TokenSchema: Schema = new Schema({
   marketCap: {
     type: Number,
   },
+  contractAddress: { type: String },
+  donationAddress: { type: String },
   status: {
     type: String,
     required: true,
