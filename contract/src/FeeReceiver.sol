@@ -28,7 +28,7 @@ contract FeeReceiver {
     function withdrawETH(uint256 amount, address to) external {
         require(msg.sender == ADMIN, "Only admin");
         require(address(this).balance >= amount, "Not enough ETH");
-        (bool sent, ) = payable(to).call{value: amount}("");
+        (bool sent,) = payable(to).call{value: amount}("");
         require(sent, "Transfer failed");
         emit Withdrawn(to, amount);
     }

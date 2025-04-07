@@ -30,7 +30,7 @@ contract UniswapV3RouterCamelot is IUniswapV3Router {
     /// @notice Dummy implementation for testing or integration
     function swapExactTokensForTokens(
         uint256 amountIn,
-        uint256 /* amountOutMin */,
+        uint256, /* amountOutMin */
         address tokenIn,
         address tokenOut,
         address recipient

@@ -2,11 +2,9 @@
 pragma solidity ^0.8.20;
 
 interface ITokenLauncher {
-    function deployToken(
-        string calldata name,
-        string calldata symbol,
-        uint256 initialBuyAmount
-    ) external returns (address);
+    function deployToken(string calldata name, string calldata symbol, uint256 initialBuyAmount)
+        external
+        returns (address);
 }
 
 contract FundFactory {
@@ -25,11 +23,10 @@ contract FundFactory {
         tokenLauncher = _tokenLauncher;
     }
 
-    function createFundingToken(
-        string calldata name,
-        string calldata symbol,
-        uint256 initialBuyAmount
-    ) external returns (address) {
+    function createFundingToken(string calldata name, string calldata symbol, uint256 initialBuyAmount)
+        external
+        returns (address)
+    {
         address token = ITokenLauncher(tokenLauncher).deployToken(name, symbol, initialBuyAmount);
         emit TokenDeployed(token, name, symbol);
         return token;
