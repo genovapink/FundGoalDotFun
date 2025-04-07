@@ -9,13 +9,11 @@ contract Vesting {
     uint256 public startTime;
     uint256 public released;
 
-
     constructor(address _token, address _deployer) {
-    token = _token;
-    deployer = _deployer;
-    startTime = block.timestamp;
- }
-
+        token = _token;
+        deployer = _deployer;
+        startTime = block.timestamp;
+    }
 
     function release() external {
         require(block.timestamp >= startTime + 30 days, "Vesting period not reached");
