@@ -1,75 +1,50 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "./FeeReceiver.sol";
 import "./Vesting.sol";
-import "./PriceOracle.sol";
+import "./FundSwap.sol";
+import "./FeeReceiver.sol" as CustomFeeReceiver;
+import "./LiquidityManager.sol" as CustomLiquidityManager;
 
-contract TokenLauncher is ERC20, Ownable {
-    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
-    uint256 public immutable initialBuy;
-    uint256 public immutable vestingSupply;
-    address public feeReceiver;
-    address public vestingContract;
-    address public priceOracle;
-    bool public tradingEnabled = false;
+contract TokenLauncher {
+    address public constant ADMIN = 0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074;
+    address public constant FEE_RECEIVER = 0xB48a0fB4Feb535C380B7b7375779B1b361523766;
+    address public constant VESTING = 0xe9Af4ab286bbc2F4373D661Ae26bD94b6778A4B7;
+    address public constant LIQUIDITY_MANAGER = 0x399317bdDCf70c02d3b35CE685a4536D56983Bd9;
 
-    event Donated(address indexed donor, uint256 amount);
+    event TokenDeployed(address token, address fundSwap, address vesting);
 
-    constructor(
+    function deployToken(
         string memory name,
         string memory symbol,
-        address deployer,
-        address _feeReceiver,
-        address _priceOracle,
-        address _vestingContract,
-        uint256 _initialBuy
-    ) ERC20(name, symbol) Ownable(msg.sender) {
-        _transferOwnership(deployer);
-        feeReceiver = _feeReceiver;
-        priceOracle = _priceOracle;
-        vestingContract = _vestingContract;
-        initialBuy = _initialBuy;
-        vestingSupply = (MAX_SUPPLY * 2) / 100;
+        uint256 initialBuyAmount
+    ) external payable returns (address token, address fundSwapAddr) {
+        uint256 totalSupply = 1_000_000_000 ether;
+        ERC20 newToken = new ERC20Token(name, symbol, totalSupply);
 
-        _mint(deployer, MAX_SUPPLY - vestingSupply);
-        _mint(vestingContract, vestingSupply);
-    }
+        // Kirim 2% ke vesting
+        uint256 vestingAmount = (totalSupply * 2) / 100;
+        newToken.transfer(VESTING, vestingAmount);
 
-    function enableTrading() external onlyOwner {
-        tradingEnabled = true;
-    }
+        // Kirim 98% ke FundSwap
+        uint256 swapAmount = totalSupply - vestingAmount;
+        FundSwap fundSwap = new FundSwap{value: initialBuyAmount}(address(newToken), FEE_RECEIVER, LIQUIDITY_MANAGER);
+        fundSwapAddr = address(fundSwap);
+        newToken.transfer(fundSwapAddr, swapAmount);
 
-    function donate() external payable {
-        require(msg.value > 0, "Must send ETH");
-        payable(owner()).transfer(msg.value);
-        emit Donated(msg.sender, msg.value);
-    }
-
-    function _update(address from, address to, uint256 value) internal virtual override {
-        require(from == address(0) || to == address(0) || tradingEnabled, "Trading not enabled");
-
-        if (from != address(0) && to != address(0)) {
-            uint256 fee = (value * 15) / 1000; // 1.5%
-            uint256 transferAmount = value - fee;
-
-            super._update(from, feeReceiver, fee);
-            super._update(from, to, transferAmount);
-        } else {
-            super._update(from, to, value);
+        // Jika initialBuy > 0, otomatis beli
+        if (initialBuyAmount > 0) {
+            fundSwap.buyToken{value: initialBuyAmount}();
         }
-    }
 
-    function burn(uint256 amount) public {
-        _burn(msg.sender, amount);
+        emit TokenDeployed(address(newToken), fundSwapAddr, VESTING);
+        return (address(newToken), fundSwapAddr);
     }
+}
 
-    function burnFrom(address account, uint256 amount) public {
-        uint256 currentAllowance = allowance(account, msg.sender);
-        require(currentAllowance >= amount, "Burn amount exceeds allowance");
-        _approve(account, msg.sender, currentAllowance - amount);
-        _burn(account, amount);
+contract ERC20Token is ERC20 {
+    constructor(string memory name, string memory symbol, uint256 totalSupply) ERC20(name, symbol) {
+        _mint(msg.sender, totalSupply);
     }
 }
