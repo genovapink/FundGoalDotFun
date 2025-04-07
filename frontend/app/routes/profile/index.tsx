@@ -14,6 +14,8 @@ export function meta() {
     { title: "Profile - Gofunding" },
     { name: "description", content: "Profile - Gofunding" },
     { name: "image", content: "/logo.png" },
+    { name: "og:image", content: "/logo.png" },
+    { name: "twitter:image", content: "/logo.png" },
   ];
 }
 

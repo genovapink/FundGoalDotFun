@@ -10,6 +10,8 @@ export function meta() {
     { title: "Cretae - Gofunding" },
     { name: "description", content: "Create - Gofunding" },
     { name: "image", content: "/logo.png" },
+    { name: "og:image", content: "/logo.png" },
+    { name: "twitter:image", content: "/logo.png" },
   ];
 }
 
