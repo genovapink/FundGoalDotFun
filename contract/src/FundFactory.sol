@@ -1,38 +1,42 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
+
+interface ITokenLauncher {
+    function deployToken(
+        string calldata name,
+        string calldata symbol,
+        uint256 initialBuyAmount
+    ) external returns (address);
+}
 
 contract FundFactory {
-    address[] public multisigWallets;
-    mapping(address => bool) public isMultisig;
+    address public constant ADMIN = 0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074;
+    address public tokenLauncher; // ➜ Bukan constant agar bisa di-update
 
-    modifier onlyMultisig() {
-        require(isMultisig[msg.sender], "Not authorized");
+    event TokenDeployed(address token, string name, string symbol);
+
+    modifier onlyAdmin() {
+        require(msg.sender == ADMIN, "Not admin");
         _;
     }
 
-    constructor() {
-        multisigWallets.push(0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074); // Wallet pertama
-        multisigWallets.push(0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427); // Wallet kedua
-
-        isMultisig[0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074] = true; // Wallet pertama
-        isMultisig[0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427] = true; // Wallet kedua
+    constructor(address _tokenLauncher) {
+        require(_tokenLauncher != address(0), "Invalid launcher");
+        tokenLauncher = _tokenLauncher;
     }
 
-    function addMultisigWallet(address _wallet) external onlyMultisig {
-        require(!isMultisig[_wallet], "Already a multisig");
-        multisigWallets.push(_wallet);
-        isMultisig[_wallet] = true;
+    function createFundingToken(
+        string calldata name,
+        string calldata symbol,
+        uint256 initialBuyAmount
+    ) external returns (address) {
+        address token = ITokenLauncher(tokenLauncher).deployToken(name, symbol, initialBuyAmount);
+        emit TokenDeployed(token, name, symbol);
+        return token;
     }
 
-    function removeMultisigWallet(address _wallet) external onlyMultisig {
-        require(isMultisig[_wallet], "Not a multisig");
-        isMultisig[_wallet] = false;
-        for (uint256 i = 0; i < multisigWallets.length; i++) {
-            if (multisigWallets[i] == _wallet) {
-                multisigWallets[i] = multisigWallets[multisigWallets.length - 1];
-                multisigWallets.pop();
-                break;
-            }
-        }
+    function updateTokenLauncher(address newLauncher) external onlyAdmin {
+        require(newLauncher != address(0), "Invalid address");
+        tokenLauncher = newLauncher;
     }
 }
