@@ -26,6 +26,14 @@ export type TableItem = {
   paymentMethod: string;
 };
 
+export function meta() {
+  return [
+    { title: "Details - Gofunding" },
+    { name: "description", content: "Detail - Gofunding" },
+    { name: "image", content: "/logo.png" },
+  ];
+}
+
 export async function loader({ params }: Route.LoaderArgs) {
   const addon = "rei";
 

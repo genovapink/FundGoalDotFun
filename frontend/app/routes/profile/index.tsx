@@ -9,6 +9,14 @@ import {
 import { Badge } from "@shadcn/badge";
 import { Pencil } from "lucide-react";
 
+export function meta() {
+  return [
+    { title: "Profile - Gofunding" },
+    { name: "description", content: "Profile - Gofunding" },
+    { name: "image", content: "/logo.png" },
+  ];
+}
+
 export default function ProfilePage() {
   return (
     <>

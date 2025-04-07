@@ -7,13 +7,15 @@ import { Input } from "@shadcn/input";
 import Masonry from "react-masonry-css";
 import { NavLink } from "react-router";
 import { cn } from "~/utils/cn";
+import type { Route } from "./+types";
 
-// export function meta({}: Route.MetaArgs) {
-//   return [
-//     { title: "New React Router App" },
-//     { name: "description", content: "Welcome to React Router!" },
-//   ];
-// }
+export function meta() {
+  return [
+    { title: "Gofunding" },
+    { name: "description", content: "Gofunding" },
+    { name: "image", content: "/logo.png" },
+  ];
+}
 
 const EXAMPLE_SOURCES = [
   "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",

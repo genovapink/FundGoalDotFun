@@ -5,6 +5,14 @@ import { DynamicHeader } from "@fund/dynamic-header";
 import { ScrambleText } from "@fund/scramble-text";
 import { toast } from "sonner";
 
+export function meta() {
+  return [
+    { title: "Cretae - Gofunding" },
+    { name: "description", content: "Create - Gofunding" },
+    { name: "image", content: "/logo.png" },
+  ];
+}
+
 export default function Create() {
   const [formData, setFormData] = useState({
     name: "",

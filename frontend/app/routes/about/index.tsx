@@ -7,6 +7,14 @@ import { Introduction } from "./introduction";
 import { AnimatedUnderline } from "@fund/animated-underline";
 import { ScrambleText } from "@fund/scramble-text";
 
+export function meta() {
+  return [
+    { title: "About - Gofunding" },
+    { name: "description", content: "About - Gofunding" },
+    { name: "image", content: "/logo.png" },
+  ];
+}
+
 export default function About() {
   const LIST = ["Introduction", "How to", "How it works"];
   const [selected, setSelected] = useState("introduction");
