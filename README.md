@@ -83,3 +83,4 @@ Email: [contact@gofunding.fun](mailto:contact@gofunding.fun) / [fundingdotfun@gm
 \
 Telegram: [t.me/gofundingdotfun](https://t.me/gofundingdotfun)\
 Twitter/X: @gofundingfun
+whitepaper:https://genovaanakdonis-organization.gitbook.io/gofundingdotfun
