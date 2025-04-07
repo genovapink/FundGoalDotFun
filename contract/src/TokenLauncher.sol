@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "./Vesting.sol";
 import "./FundSwap.sol";
 import "./FeeReceiver.sol" as CustomFeeReceiver;
@@ -21,7 +22,7 @@ contract TokenLauncher {
         uint256 initialBuyAmount
     ) external payable returns (address token, address fundSwapAddr) {
         uint256 totalSupply = 1_000_000_000 ether;
-        ERC20 newToken = new ERC20Token(name, symbol, totalSupply);
+        ERC20Token newToken = new ERC20Token(name, symbol, totalSupply);
 
         // Kirim 2% ke vesting
         uint256 vestingAmount = (totalSupply * 2) / 100;
@@ -43,8 +44,11 @@ contract TokenLauncher {
     }
 }
 
-contract ERC20Token is ERC20 {
-    constructor(string memory name, string memory symbol, uint256 totalSupply) ERC20(name, symbol) {
+contract ERC20Token is ERC20Capped {
+    constructor(string memory name, string memory symbol, uint256 totalSupply) 
+        ERC20(name, symbol) 
+        ERC20Capped(totalSupply) 
+    {
         _mint(msg.sender, totalSupply);
     }
 }
