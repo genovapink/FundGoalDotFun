@@ -1,38 +1,22 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract FundSwap {
-    address[] public multisigWallets;
-    mapping(address => bool) public isMultisig;
+    IERC20 public token;
+    address public feeReceiver;
+    address public liquidityManager;
 
-    modifier onlyMultisig() {
-        require(isMultisig[msg.sender], "Not authorized");
-        _;
+    constructor(address _token, address _feeReceiver, address _liquidityManager) payable {
+        token = IERC20(_token);
+        feeReceiver = _feeReceiver;
+        liquidityManager = _liquidityManager;
     }
 
-    constructor() {
-        multisigWallets.push(0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074); // Wallet pertama
-        multisigWallets.push(0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427); // Wallet kedua
-
-        isMultisig[0xbfFf72a006B8A41abF693B7d6db28bd8F1b0a074] = true; // Wallet pertama
-        isMultisig[0xE90A9B7c620923e68FE5C3aB5Ee427f57C64b427] = true; // Wallet kedua
-    }
-
-    function addMultisigWallet(address _wallet) external onlyMultisig {
-        require(!isMultisig[_wallet], "Already a multisig");
-        multisigWallets.push(_wallet);
-        isMultisig[_wallet] = true;
-    }
-
-    function removeMultisigWallet(address _wallet) external onlyMultisig {
-        require(isMultisig[_wallet], "Not a multisig");
-        isMultisig[_wallet] = false;
-        for (uint256 i = 0; i < multisigWallets.length; i++) {
-            if (multisigWallets[i] == _wallet) {
-                multisigWallets[i] = multisigWallets[multisigWallets.length - 1];
-                multisigWallets.pop();
-                break;
-            }
-        }
+    function buyToken() external payable {
+        // Dummy logic: simulasikan pembelian token
+        require(msg.value > 0, "No ETH sent");
+        // Token transfer logic or event can be added here
     }
 }
