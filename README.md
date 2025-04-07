@@ -3,6 +3,7 @@ description: >-
   GoFund dot Fun – The Future of Decentralized Crowdfunding Empowering
   Fundraising with Tokenization & Blockchain Transparency
 ---
+![image](https://github.com/user-attachments/assets/9bd57784-cf87-4bf7-9c7b-ddf754901e2d)
 
 # GoFunding-dot-fun
 
