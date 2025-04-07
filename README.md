@@ -5,6 +5,7 @@ description: >-
 cover: .gitbook/assets/Gofund bg.png
 coverY: 0
 ---
+![image](https://github.com/user-attachments/assets/d17cc026-080e-4b67-b665-ae06c4e7a96e)
 
 # Welcome to GoFundingdotFun!
 
