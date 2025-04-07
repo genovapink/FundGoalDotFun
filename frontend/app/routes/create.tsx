@@ -3,6 +3,7 @@ import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
 import { Upload, Globe, Twitter, Send, X, Check, AlertCircle } from "lucide-react";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { ScrambleText } from "@fund/scramble-text";
+import { toast } from "sonner";
 
 export default function Create() {
   const [formData, setFormData] = useState({
@@ -77,7 +78,7 @@ export default function Create() {
         },
       };
 
-      console.log("Submitting payload:", payload);
+      toast(`Submitting payload...`);
 
       const response = await fetch(`${import.meta.env.VITE_BE_URL}/api/tokens`, {
         method: "POST",
@@ -92,12 +93,11 @@ export default function Create() {
         throw new Error(errorData.message || "Failed to create token");
       }
 
-      const result = await response.json();
-      console.log("Token created successfully:", result);
+      toast(`Token created successfully! 🥳`);
 
       setShowModal(false);
     } catch (error) {
-      console.error("Error creating token:", error);
+      toast(`Error creating token: ${error}`);
     } finally {
       setIsLoading(false);
     }
