@@ -20,7 +20,6 @@ contract FeeReceiver {
         _;
     }
 
-
     constructor(address _tokenLauncher, address _vesting, address _fundSwap) {
         tokenLauncher = _tokenLauncher;
         vesting = _vesting;
@@ -28,7 +27,6 @@ contract FeeReceiver {
         owner = msg.sender;
     }
 
-    
     function setContractAddresses(address _tokenLauncher, address _vesting, address _fundSwap) external onlyOwner {
         tokenLauncher = _tokenLauncher;
         vesting = _vesting;
@@ -40,7 +38,6 @@ contract FeeReceiver {
         totalReceived[address(0)] += fee;
         emit FeeReceived(address(0), fee);
 
-        
         _distributeFee(address(0), fee);
     }
 
@@ -49,7 +46,6 @@ contract FeeReceiver {
         totalReceived[token] += fee;
         emit FeeReceived(token, fee);
 
-        
         _distributeFee(token, fee);
     }
 
@@ -88,7 +84,6 @@ contract FeeReceiver {
         emit Withdrawn(to, amount);
     }
 
-    
     function totalFeeReceived(address token) external view returns (uint256) {
         return totalReceived[token];
     }

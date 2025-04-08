@@ -88,7 +88,11 @@ contract FundSwap is Ownable {
         emit TokenSold(msg.sender, tokenAmount, eduOut);
     }
 
-    function getOutputAmount(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve) public pure returns (uint256) {
+    function getOutputAmount(uint256 inputAmount, uint256 inputReserve, uint256 outputReserve)
+        public
+        pure
+        returns (uint256)
+    {
         require(inputReserve > 0 && outputReserve > 0, "Invalid reserves");
 
         uint256 inputAmountWithFee = inputAmount * 997; // 0.3% fee

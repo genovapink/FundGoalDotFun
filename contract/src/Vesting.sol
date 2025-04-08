@@ -26,7 +26,6 @@ contract Vesting is Ownable {
         _;
     }
 
-    
     function claimByMarketCap(uint256 marketCap) external onlyDeployer {
         require(!burned[DEFAULT_TOKEN], "Vesting burned");
         require(block.timestamp >= startTime + 30 days, "Vesting not started");
@@ -40,7 +39,6 @@ contract Vesting is Ownable {
         emit MarketCapClaimed(amount);
     }
 
-    
     function burnUnclaimed() external onlyDeployer {
         require(!burned[DEFAULT_TOKEN], "Already burned");
         require(block.timestamp >= startTime + 180 days, "Burn not allowed yet");
@@ -52,12 +50,12 @@ contract Vesting is Ownable {
         emit BurnedUnclaimed(DEFAULT_TOKEN, amount);
     }
 
-   
     function getUnlockAmount(uint256 marketCap) public view returns (uint256) {
         uint256 total = IERC20(DEFAULT_TOKEN).balanceOf(address(this)) + released[DEFAULT_TOKEN];
         uint256 unlocked;
 
-        if (marketCap >= 1_000_000 ether) { // Jika market cap >= $1M
+        if (marketCap >= 1_000_000 ether) {
+            // Jika market cap >= $1M
             unlocked = (total * 50) / 100; // 50% token dibuka
         }
 

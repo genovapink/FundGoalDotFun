@@ -56,11 +56,7 @@ contract TokenLauncher {
         burnAddress = _burn;
     }
 
-    function launchToken(
-        address tokenAddress,
-        uint256 totalSupply,
-        uint256 initBuyAmount
-    ) external payable {
+    function launchToken(address tokenAddress, uint256 totalSupply, uint256 initBuyAmount) external payable {
         require(msg.value >= launchFee, "Insufficient fee");
 
         uint256 vestingAmount;
@@ -79,20 +75,21 @@ contract TokenLauncher {
 
         require(IToken(tokenAddress).transfer(vesting, vestingAmount), "Transfer to vesting failed");
 
-        (bool sent, ) = feeReceiver.call{value: msg.value}("");
+        (bool sent,) = feeReceiver.call{value: msg.value}("");
         require(sent, "Fee transfer failed");
 
-        launchedTokens[totalLaunched] = TokenInfo({
-            token: tokenAddress,
-            creator: msg.sender,
-            timestamp: block.timestamp
-        });
+        launchedTokens[totalLaunched] =
+            TokenInfo({token: tokenAddress, creator: msg.sender, timestamp: block.timestamp});
 
         emit TokenLaunched(msg.sender, tokenAddress, totalLaunched);
         totalLaunched++;
     }
 
-    function deployToken(string memory name, string memory symbol, uint256 initBuyAmount) external payable returns (address token, address fs) {
+    function deployToken(string memory name, string memory symbol, uint256 initBuyAmount)
+        external
+        payable
+        returns (address token, address fs)
+    {
         uint256 totalSupply = 1_000_000_000 ether;
 
         MiniToken newToken = new MiniToken(name, symbol, totalSupply, address(this));
@@ -113,7 +110,6 @@ contract TokenLauncher {
         emit UnreleasedTokensBurned(token, amount);
     }
 }
-
 
 contract MiniToken is IToken {
     string public name;
