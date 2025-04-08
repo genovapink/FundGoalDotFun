@@ -1,6 +1,6 @@
 ---
 description: >-
-  GoFund dot Fun – The Future of Decentralized Crowdfunding. Empowering
+  GoFundingdotFun – The Future of Decentralized Crowdfunding. Empowering
   Fundraising with Tokenization & Blockchain Transparency.
 cover: .gitbook/assets/Gofund bg.png
 coverY: 0
@@ -12,7 +12,7 @@ coverY: 0
 
 ## 1. Abstract  
 
-**Funddotfun** is a decentralized token launcher that empowers users to tokenize and crowdfund scholarships, research, startups, and creative projects on **EduChain**. Featuring gamified milestones, deployer incentives, and peer-to-peer donations, it offers a transparent, secure, and scalable way to raise funds onchain.
+**Gofundingdotfun** is a decentralized token launcher that empowers users to tokenize and crowdfund scholarships, research, startups, and creative projects on **EduChain**. Featuring gamified milestones, deployer incentives, and peer-to-peer donations, it offers a transparent, secure, and scalable way to raise funds onchain.
 
 ## 2. Problem Statement  
 
