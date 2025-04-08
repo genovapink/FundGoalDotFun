@@ -5,12 +5,11 @@ import { Request, Response } from "express";
 export const createItem = async (req: Request, res: Response) => {
   try {
     const file = req.file;
-    const jsonData = req.body.data;
+    const jsonData = req.body.payload;
 
     if (!file) res.status(400).json({ error: "Image file missing" });
     if (!jsonData) res.status(400).json({ error: "Data field missing" });
 
-    // parsedData = JSON.parse(jsonData);
     const pinataFile = new File([file!.buffer], file!.originalname, {
       type: file!.mimetype,
     });
@@ -19,7 +18,7 @@ export const createItem = async (req: Request, res: Response) => {
     /* --------------------- this one should be saved to db --------------------- */
     const urlPinata = await pinata.gateways.public.convert(upload.cid);
 
-    res.status(200).json({ message: "Received", upload, urlPinata, data: jsonData });
+    res.status(200).json({ message: "Received", upload, urlPinata, data: JSON.parse(jsonData) });
 
     // const newItem = new TokenModel(req.body);
     // await newItem.save();

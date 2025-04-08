@@ -60,12 +60,17 @@ export default function Create() {
 
       toast(`Submitting payload...`);
 
+      const compiledFD = new FormData();
+      compiledFD.append("image", image!); // file from input
+      compiledFD.append("payload", JSON.stringify(payload));
+
       const response = await fetch(`${import.meta.env.VITE_BE_URL}/api/tokens`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: compiledFD,
+        // body: JSON.stringify({
+        //   image:
+        //   data: JSON.stringify(payload),
+        // }),
       });
 
       if (!response.ok) {
