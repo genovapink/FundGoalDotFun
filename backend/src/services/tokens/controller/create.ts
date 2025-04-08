@@ -1,3 +1,4 @@
+import { extractIframeSrc } from "@/utils/helper";
 import { TokenModel } from "../model";
 import { pinata } from "@packages/pinata";
 import { Request, Response } from "express";
@@ -18,7 +19,22 @@ export const createItem = async (req: Request, res: Response) => {
     /* --------------------- this one should be saved to db --------------------- */
     const urlPinata = await pinata.gateways.public.convert(upload.cid);
 
-    res.status(200).json({ message: "Received", upload, urlPinata, data: JSON.parse(jsonData) });
+    res.status(200).json({
+      message: "Received",
+      upload,
+      urlPinata,
+      data: JSON.parse(jsonData),
+      iframeParser: extractIframeSrc(`<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/cE49NoP2MTI?si=SEAJRlMrZqTlX1nF"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>`),
+    });
 
     // const newItem = new TokenModel(req.body);
     // await newItem.save();
