@@ -16,7 +16,7 @@ contract TokenLauncher {
     address public fundswap = 0xA87c8B49754716270C723d6D4f4F55B164234090;
     address public burnAddress = 0x000000000000000000000000000000000000dEaD;
 
-    uint256 public launchFee = 1000 * 1e18;
+    uint256 public launchFee = 5 * 1e18;
 
     struct TokenInfo {
         address token;
@@ -59,16 +59,20 @@ contract TokenLauncher {
     function launchToken(
         address tokenAddress,
         uint256 totalSupply,
-        uint256 initBuyAmount // amount token yang mau diambil creator duluan (opsional)
+        uint256 initBuyAmount
     ) external payable {
         require(msg.value >= launchFee, "Insufficient fee");
 
-        uint256 vestingAmount = (totalSupply * 2) / 100;
-        uint256 fundswapAmount = totalSupply - vestingAmount;
+        uint256 vestingAmount;
+        uint256 fundswapAmount;
+
+        assembly {
+            vestingAmount := div(mul(totalSupply, 2), 100)
+            fundswapAmount := sub(totalSupply, vestingAmount)
+        }
 
         require(IToken(tokenAddress).transfer(fundswap, fundswapAmount), "Transfer to fundswap failed");
 
-        // Init buy token ke creator (kalau initBuyAmount > 0)
         if (initBuyAmount > 0) {
             require(IToken(tokenAddress).transfer(msg.sender, initBuyAmount), "Transfer initBuy to creator failed");
         }
@@ -94,20 +98,16 @@ contract TokenLauncher {
         MiniToken newToken = new MiniToken(name, symbol, totalSupply, address(this));
         token = address(newToken);
 
-        // newToken.transfer(msg.sender, totalSupply);
-
         TokenLauncher(address(this)).launchToken{value: msg.value}(token, totalSupply, initBuyAmount);
 
         return (token, fundswap);
     }
 
-    //  (dummy example)
     function unlockMilestone(address token, address to, uint256 amount) external onlyAdmin {
         require(IToken(token).transfer(to, amount), "Milestone transfer failed");
         emit MilestoneUnlocked(to, amount);
     }
 
-    // : Auto-burn unreleased tokens in vesting
     function burnUnreleasedTokens(address token, uint256 amount) external onlyAdmin {
         require(IToken(token).transfer(burnAddress, amount), "Burn failed");
         emit UnreleasedTokensBurned(token, amount);
@@ -133,9 +133,25 @@ contract MiniToken is IToken {
     }
 
     function transfer(address to, uint256 amount) external override returns (bool) {
-        require(balanceOf[msg.sender] >= amount, "Insufficient balance");
-        balanceOf[msg.sender] -= amount;
-        balanceOf[to] += amount;
+        address sender = msg.sender;
+        uint256 senderBalance = balanceOf[sender];
+        require(senderBalance >= amount, "Insufficient balance");
+
+        unchecked {
+            assembly {
+                let ptr := mload(0x40)
+                mstore(ptr, sender)
+                mstore(add(ptr, 32), balanceOf.slot)
+                let senderSlot := keccak256(ptr, 64)
+
+                mstore(ptr, to)
+                mstore(add(ptr, 32), balanceOf.slot)
+                let toSlot := keccak256(ptr, 64)
+
+                sstore(senderSlot, sub(sload(senderSlot), amount))
+                sstore(toSlot, add(sload(toSlot), amount))
+            }
+        }
         return true;
     }
 }
