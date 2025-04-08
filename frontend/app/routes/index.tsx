@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
-import { ButtonMagnet, ForwardLink } from "@fund/button";
+import { useEffect, useState, type ReactNode } from "react";
+import { ButtonMagnet } from "@fund/button";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { Button } from "@shadcn/button";
 import { Input } from "@shadcn/input";
 import Masonry from "react-masonry-css";
-import { NavLink } from "react-router";
+import { NavLink, useFetcher, useLoaderData } from "react-router";
 import { cn } from "~/utils/cn";
 import { X } from "lucide-react";
+import type { Route } from "./+types";
+
+const breakpointColumnsObj = {
+  default: 3,
+  1100: 2,
+  700: 1,
+};
 
 export function meta() {
   return [
@@ -18,11 +25,19 @@ export function meta() {
   ];
 }
 
-const breakpointColumnsObj = {
-  default: 3,
-  1100: 2,
-  700: 1,
-};
+export async function loader({ request }: Route.LoaderArgs) {
+  const { searchParams } = new URL(request.url);
+  const searchTerm = searchParams.get("q");
+  const page = Number(searchParams.get("page")) + 1 || 1;
+
+  const apiUrl = searchTerm
+    ? `${process.env.VITE_BE_URL}/api/tokens?q=${encodeURIComponent(searchTerm)}&page=${page}`
+    : `${process.env.VITE_BE_URL}/api/tokens`;
+
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  return { data };
+}
 
 const EXAMPLE_SOURCES = [
   "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
@@ -38,52 +53,82 @@ const EXAMPLE_SOURCES = [
 ]; // WIP
 
 export default function Home() {
-  const [tokens, setTokens] = useState<any[]>([]);
+  const fetcher = useFetcher<Record<string, ReactNode>>();
+  const loaderData = useLoaderData();
+
+  const [data, setData] = useState<{
+    tokens: Record<string, ReactNode>[];
+    shouldLoadMore: boolean;
+  }>({
+    tokens: loaderData.data.items,
+    shouldLoadMore: loaderData.data.shouldLoadMore,
+  });
+
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [page, setPage] = useState(1);
 
-  const handleSearch = () => {
-    fetchTokens(searchTerm);
+  const handleFetch = async () => {
+    if (searchTerm) {
+      setPage(1);
+    }
+    setIsLoading(true);
+    fetcher.load(`/api/list?q=${encodeURIComponent(searchTerm)}&page=${page}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSearch = async () => {
+    setPage(1);
+    await handleFetch();
+  };
+
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleSearch();
+      await handleSearch();
     }
   };
 
   const handleClearSearch = () => {
+    setPage(1);
     setSearchTerm("");
-    fetchTokens();
+    setIsLoading(true);
+    fetcher.load("/api/list");
   };
 
-  const fetchTokens = async (query: string = "") => {
-    setIsLoading(true);
-    try {
-      const url = query
-        ? `http://localhost:3000/api/tokens?q=${encodeURIComponent(query)}`
-        : "http://localhost:3000/api/tokens";
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setTokens(Array.isArray(data) ? data : [data]);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching tokens:", error);
-      setIsLoading(false);
-    }
+  const handleOnNextPage = async () => {
+    await handleFetch();
   };
 
   useEffect(() => {
-    fetchTokens();
+    if (fetcher.state == "idle" && fetcher.data) {
+      setIsLoading(false);
+
+      if (searchTerm) {
+        setData({
+          tokens: fetcher.data!.items as Record<string, ReactNode>[],
+          shouldLoadMore: fetcher.data!.shouldLoadMore as boolean,
+        });
+      } else {
+        setPage(page + 1);
+        setData((old) => {
+          console.log("old", old);
+          return {
+            tokens: [...old.tokens, ...(fetcher.data!.items as Record<string, ReactNode>[])],
+            shouldLoadMore: fetcher.data!.shouldLoadMore as boolean,
+          };
+        });
+      }
+    }
+  }, [fetcher]);
+
+  useEffect(() => {
+    const timeo = setTimeout(() => {
+      setIsLoading(false);
+      clearTimeout(timeo);
+    }, 200);
   }, []);
 
   if (isLoading) {
@@ -114,7 +159,7 @@ export default function Home() {
               className="dark:bg-transparent p-5 pr-10"
               value={searchTerm}
               onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
+              onKeyUp={handleKeyPress}
             />
             {searchTerm && (
               <button
@@ -136,12 +181,12 @@ export default function Home() {
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column flex flex-col gap-y-5"
         >
-          {tokens.map((token, i) => {
+          {data.tokens.map((token, i) => {
             const iframeSrc = EXAMPLE_SOURCES[i % EXAMPLE_SOURCES.length];
 
             return (
               <NavLink
-                key={token._id}
+                key={i}
                 className="flex flex-col w-full rounded-lg border border-white/50 py-3 px-5 gap-y-3"
                 to={`Contract_Address-${token.contractAddress || token.address || token._id}`}
               >
@@ -163,19 +208,18 @@ export default function Home() {
                   referrerPolicy="strict-origin-when-cross-origin"
                   scrolling="no"
                 />
-                <ForwardLink
-                  to={`Contract_Address-${token.contractAddress || token.address || token._id}`}
-                  className="text-inherit justify-end"
-                >
-                  More
-                </ForwardLink>
+                <p className="flex text-inherit justify-end">More ...</p>
               </NavLink>
             );
           })}
         </Masonry>
-        <div className="flex w-full justify-center mt-12 mb-36">
-          <ButtonMagnet size={"lg"}>Load More</ButtonMagnet>
-        </div>
+        {data.shouldLoadMore && (
+          <div className="flex w-full justify-center mt-12 mb-36">
+            <ButtonMagnet size={"lg"} onClick={handleOnNextPage}>
+              Load More
+            </ButtonMagnet>
+          </div>
+        )}
       </div>
     </>
   );
