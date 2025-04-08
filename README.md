@@ -27,7 +27,7 @@ Many innovative educational and research initiatives go unfunded due to these pl
 
 ## 3. Our Solution  
 
-**Funddotfun** offers a permissionless platform to:
+**Gofundingdotfun** offers a permissionless platform to:
 
 - Instantly deploy funding tokens with fixed tokenomics  
 - Receive 2% deployer allocation (with vesting)  
