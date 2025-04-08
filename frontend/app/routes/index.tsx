@@ -69,11 +69,8 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
   const handleFetch = async () => {
-    if (searchTerm) {
-      setPage(1);
-    }
     setIsLoading(true);
-    fetcher.load(`/api/list?q=${encodeURIComponent(searchTerm)}&page=${page}`);
+    fetcher.load(`/api/list?q=${encodeURIComponent(searchTerm)}&page=${searchTerm ? 1 : page}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +111,6 @@ export default function Home() {
       } else {
         setPage(page + 1);
         setData((old) => {
-          console.log("old", old);
           return {
             tokens: [...old.tokens, ...(fetcher.data!.items as Record<string, ReactNode>[])],
             shouldLoadMore: fetcher.data!.shouldLoadMore as boolean,
