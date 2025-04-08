@@ -64,16 +64,17 @@ export default function Home() {
   const fetchTokens = async (query: string = "") => {
     setIsLoading(true);
     try {
-      const url = query
-        ? `http://localhost:3000/api/tokens?q=${encodeURIComponent(query)}`
-        : "http://localhost:3000/api/tokens";
+      const url = `${import.meta.env.VITE_BE_URL}/api/tokens${query ? `?q=${encodeURIComponent(query)}` : ""}`;
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
+
       const data = await response.json();
+
       setTokens(Array.isArray(data) ? data : [data]);
       setIsLoading(false);
     } catch (error) {
