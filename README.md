@@ -57,7 +57,7 @@ If no milestones are reached within 6 months, all **unvested tokens will be burn
 
 ## 7. Fee Structure  
 
-- **Token Creation Fee:** 100 EDU (fixed)  
+- **Token Creation Fee:** 0.003 EDU
 - **Swap Fee per Transaction:** 1.5%  
   - 0.75% to Deployer (until bonding cap)  
   - 0.75% to Platform  
