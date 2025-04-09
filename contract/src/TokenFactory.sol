@@ -39,9 +39,7 @@ contract ERC20Token is ERC20 {
         vestingStartTime = block.timestamp;
     }
 
-    function mint(address to, uint256 amount) external {
-        require(msg.sender == owner, "Only owner");
-
+    function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
         emit TokensMinted(to, amount);
     }
@@ -49,6 +47,16 @@ contract ERC20Token is ERC20 {
     function burn(uint256 amount) external {
         _burn(msg.sender, amount);
         emit TokensBurned(msg.sender, amount);
+    }
+
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        _approve(msg.sender, spender, amount);
+        return true;
+    }
+
+    function burnFrom(address account, uint256 amount) external onlyOwner {
+        _burn(account, amount);
+        emit TokensBurned(account, amount);
     }
 
     function transferOwnership(address newOwner) external onlyOwner {
@@ -77,8 +85,7 @@ contract ERC20Token is ERC20 {
         return (DEPLOYER_ALLOCATION * timeElapsed) / VESTING_DURATION;
     }
 
-    function setMilestonesReached() external {
-        require(msg.sender == owner, "Only owner");
+    function setMilestonesReached() external onlyOwner {
         milestonesReached = true;
         emit MilestonesReached();
     }
@@ -96,6 +103,7 @@ contract ERC20Token is ERC20 {
 contract TokenFactory {
     address public immutable platform;
     uint256 public constant TOKEN_CREATION_FEE = 0.003 ether;
+    uint256 public constant INITIAL_CURVE_FUNDING = 0.05 ether; // Initial liquidity for curve
 
     event TokenCreated(address indexed tokenAddress, string name, string symbol, address indexed deployer);
     event BondingCurveCreated(address indexed bondingCurveAddress, address indexed tokenAddress);
@@ -110,31 +118,52 @@ contract TokenFactory {
         payable
         returns (address tokenAddress, address curveAddress)
     {
-        require(msg.value >= TOKEN_CREATION_FEE, "Insufficient fee");
+        // Require fee + initial liquidity
+        require(msg.value >= TOKEN_CREATION_FEE + INITIAL_CURVE_FUNDING, "Insufficient funds");
 
+        // Create token with factory as initial owner
         ERC20Token newToken = new ERC20Token(
             name,
             symbol,
-            address(this), // Owner
+            address(this), // Temporary owner
             msg.sender // Deployer
         );
 
+        // Create bonding curve
         BondingCurve bondingCurve = new BondingCurve(address(newToken), msg.sender, platform);
 
         tokenAddress = address(newToken);
         curveAddress = address(bondingCurve);
 
+        // Transfer token ownership to bonding curve
+        newToken.transferOwnership(curveAddress);
+
+        // Initialize bonding curve with initial liquidity
+        bondingCurve.initialize{value: INITIAL_CURVE_FUNDING}();
+
+        // Send creation fee to platform
+        uint256 platformFee = TOKEN_CREATION_FEE;
+        (bool success,) = platform.call{value: platformFee}("");
+        require(success, "Fee transfer failed");
+
         emit TokenCreated(tokenAddress, name, symbol, msg.sender);
         emit BondingCurveCreated(curveAddress, tokenAddress);
-
-        (bool success,) = platform.call{value: msg.value}("");
-        require(success, "Fee transfer failed");
 
         return (tokenAddress, curveAddress);
     }
 
-    function transferTokenOwnership(address token, address newOwner) external {
-        require(msg.sender == ERC20Token(token).deployer(), "Only deployer");
-        ERC20Token(token).transferOwnership(newOwner);
+    function recoverTokenOwnership(address token) external {
+        ERC20Token tokenContract = ERC20Token(token);
+        require(msg.sender == tokenContract.deployer(), "Only deployer");
+
+        // Get current owner (should be bonding curve)
+        address currentOwner = tokenContract.owner();
+
+        // Check if bonding curve has graduated
+        BondingCurve curve = BondingCurve(currentOwner);
+        require(curve.hasGraduated(), "Curve not graduated");
+
+        // Transfer ownership to deployer
+        tokenContract.transferOwnership(msg.sender);
     }
 }
