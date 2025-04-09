@@ -41,6 +41,8 @@ export async function loader({ params }: Route.LoaderArgs) {
   const { ca } = params;
   const token = await fetch(`${process.env.VITE_BE_URL}/api/tokens/${ca}`).then((r) => r.json());
 
+  console.log(token);
+
   // return {token};
   return token;
 }

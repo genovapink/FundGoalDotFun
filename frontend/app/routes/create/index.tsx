@@ -6,6 +6,9 @@ import { ScrambleText } from "@fund/scramble-text";
 import { toast } from "sonner";
 import { ImageUploader } from "./comp/image-uploader";
 import { ConfirmLaunchModal } from "./comp/modal";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { ABI } from "~/constants/ABI";
+import { CONTRACT_ADDRESS } from "~/constants/CA";
 
 export function meta() {
   return [
@@ -33,6 +36,17 @@ export default function Create() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [image, setImage] = useState<File | null>(null);
 
+  const {
+    writeContract: createToken,
+    data: hashCreateToken,
+    isPending: loadingCreateToken,
+  } = useWriteContract();
+
+  const { data: createTokenReceipt, isLoading: loadingCreateTokenReceipt } =
+    useWaitForTransactionReceipt({
+      hash: hashCreateToken,
+    });
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -45,6 +59,13 @@ export default function Create() {
 
   const confirmLaunch = async () => {
     setIsLoading(true);
+
+    createToken({
+      abi: ABI,
+      address: CONTRACT_ADDRESS,
+      functionName: "createToken",
+      args: [formData.name, formData.ticker],
+    });
 
     try {
       const payload = {

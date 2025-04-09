@@ -7,8 +7,8 @@ const router = Router();
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.get("/", findItems);
 router.get("/:contractAddress", findItemByContract);
+router.get("/", findItems);
 router.post("/", upload.single("image"), createItem);
 
 export { router };
