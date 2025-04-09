@@ -11,7 +11,9 @@ deploy:
 	--optimize \
 	--optimizer-runs 200 \
 	--skip-simulation \
-	--verify
+	--verify \
+	--verifier-url https://edu-chain-testnet.blockscout.com/api \
+	--verifier blockscout
 
 # --gas-limit 1000000 \
 # --gas-price 1000000000 \
