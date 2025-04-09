@@ -7,6 +7,7 @@ interface IToken extends Document {
   initialBuyPerToken?: number;
   marketCap: number;
   contractAddress?: string;
+  bondingCurveAddress?: string;
   donationAddress?: string;
   status: "active" | "inactive";
   imageUrl?: string;
