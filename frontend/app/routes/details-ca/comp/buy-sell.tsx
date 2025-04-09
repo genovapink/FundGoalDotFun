@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shadcn/tabs";
-
-import { getBalance, getToken } from "@wagmi/core";
-import { WAGMI_CONFIG } from "@services/wagmi/config";
 import { TradingForm } from "~/components/ui/TradingForm";
 import { useFundWallet } from "@fund/wallet/provider";
-import { formatEther, parseUnits } from "viem";
+import { type Address } from "viem";
+import { useBalance, useToken } from "wagmi";
 
 interface BuySellTabsProps {
   contractAddress: string;
@@ -28,24 +26,34 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
     price: 3000,
   };
 
+  const { data: dataBalance, refetch: refetchBalance } = useBalance({
+    address: user?.address as Address,
+  });
+
+  const { data: dataToken, refetch: refetchToken } = useToken({
+    address: contractAddress as Address,
+  });
+
   useEffect(() => {
-    getBalance(WAGMI_CONFIG, {
-      address: user?.address as `0x${string}`,
-    }).then((data) => {
-      if (data?.value) {
-        const eth = parseFloat(formatEther(data.value));
-        setBalance(eth);
-      }
-    });
+    refetchBalance();
   }, [user]);
 
   useEffect(() => {
-    getToken(WAGMI_CONFIG, {
-      address: contractAddress as `0x${string}`,
-    }).then((data) => {
-      if (data?.symbol) setQuoteTokenName(data.symbol);
-    });
+    if (dataBalance?.formatted) {
+      setBalance(parseFloat(dataBalance.formatted));
+    }
+  }, [dataBalance]);
+
+  useEffect(() => {
+    refetchToken();
   }, [contractAddress]);
+
+  useEffect(() => {
+    if (dataToken?.symbol) {
+      setQuoteTokenName(dataToken.symbol);
+      console.log("symbol", dataToken.symbol);
+    }
+  }, [dataToken]);
 
   if (!quoteTokenName) {
     return <div className="text-center text-gray-500 py-10">Loading token info...</div>;
