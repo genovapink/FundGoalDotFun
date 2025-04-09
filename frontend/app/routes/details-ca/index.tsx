@@ -16,9 +16,10 @@ import {
 import { cn } from "~/utils/cn";
 import { ForwardLink } from "@fund/button";
 import { Badge } from "@shadcn/badge";
-import { Copy } from "lucide-react";
+import { ChevronLeft, Copy } from "lucide-react";
 import { ShowQR } from "./comp/show-qr";
 import { addressTrimer } from "~/utils/helper";
+import { NavLink } from "react-router";
 
 export type TableItem = {
   invoice: string;
@@ -40,8 +41,6 @@ export function meta() {
 export async function loader({ params }: Route.LoaderArgs) {
   const { ca } = params;
   const token = await fetch(`${process.env.VITE_BE_URL}/api/tokens/${ca}`).then((r) => r.json());
-
-  console.log(token);
 
   // return {token};
   return token;
@@ -71,6 +70,9 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
   return (
     <div className="grid grid-cols-12 gap-5 mt-8 px-10 h-screen">
       <div className="col-span-full lg:col-span-8 row-auto lg:row-start-1 w-full">
+        <NavLink to="/" className="flex flex-row items-center text-sm gap-x-2 underline">
+          <ChevronLeft className="size-4" /> Back
+        </NavLink>
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row items-center gap-5 text-xs">
             <p>MCap: $22,833</p>
