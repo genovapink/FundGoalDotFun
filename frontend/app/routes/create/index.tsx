@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useRef, type ChangeEvent, type FormEvent } from "react";
+import { useState, useRef, type ChangeEvent, type FormEvent, useEffect } from "react";
 import { Upload, Globe, Twitter, Send, X, Check, AlertCircle } from "lucide-react";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { ScrambleText } from "@fund/scramble-text";
@@ -9,6 +9,7 @@ import { ConfirmLaunchModal } from "./comp/modal";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ABI } from "~/constants/ABI";
 import { CONTRACT_ADDRESS } from "~/constants/CA";
+import { decodeEventLog, parseEther } from "viem";
 
 export function meta() {
   return [
@@ -22,13 +23,18 @@ export function meta() {
 
 export default function Create() {
   const [formData, setFormData] = useState({
+    // name: "Namenya",
+    // ticker: "Tickernya",
+    // description: "Descriptionnya",
+    // donationAddress: "0xfB19AF4B3BEC6F6fbab7265Cb7e3207F007f6fB1",
     name: "",
     ticker: "",
     description: "",
     donationAddress: "",
     initialBuyAmount: "1000",
     initialTokens: 42000000,
-    embedCode: "",
+    embedCode:
+      '<iframe width="560" height="315" src="https://www.youtube.com/embed/b6lNZi8cDuo?si=CpOjeyZVs2jYOK75" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +46,7 @@ export default function Create() {
     writeContract: createToken,
     data: hashCreateToken,
     isPending: loadingCreateToken,
+    error: errorCreateToken,
   } = useWriteContract();
 
   const { data: createTokenReceipt, isLoading: loadingCreateTokenReceipt } =
@@ -60,13 +67,26 @@ export default function Create() {
   const confirmLaunch = async () => {
     setIsLoading(true);
 
-    createToken({
-      abi: ABI,
-      address: CONTRACT_ADDRESS,
-      functionName: "createToken",
-      args: [formData.name, formData.ticker],
-    });
+    try {
+      createToken({
+        abi: ABI,
+        address: CONTRACT_ADDRESS,
+        functionName: "createToken",
+        args: [formData.name, formData.ticker],
+        value: parseEther("0.03"),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+  const saveToken = async ({
+    bondingAddress,
+    tokenAddress,
+  }: {
+    bondingAddress: string;
+    tokenAddress: string;
+  }) => {
     try {
       const payload = {
         name: formData.name,
@@ -74,10 +94,10 @@ export default function Create() {
         description: formData.description,
         initialBuyPerToken: Number(formData.initialBuyAmount),
         marketCap: 5_000, // WIP
-        contractAddress: "", // WIP
+        contractAddress: tokenAddress,
         donationAddress: formData.donationAddress,
         embedCode: formData.embedCode, // added
-        bondingCurveAddress: "", // WIP
+        bondingCurveAddress: bondingAddress, // WIP
         status: "active",
       };
 
@@ -107,6 +127,47 @@ export default function Create() {
     }
   };
 
+  useEffect(() => {
+    const loading = loadingCreateToken || loadingCreateTokenReceipt;
+
+    console.log("loading", loading);
+    // if (!loading) {
+    //   console.log("savetoken");
+    //   saveToken();
+    // }
+
+    if (createTokenReceipt) {
+      for (const log of createTokenReceipt!.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: ABI,
+            data: log.data,
+            topics: log.topics,
+          });
+
+          // const { addr1, addr2 } = decoded.args;
+          if (decoded.eventName == "BondingCurveCreated") {
+            // @ts-expect-error askdlaskdlkasldk
+            const bondingAddress = decoded.args["bondingCurveAddress"];
+            // @ts-expect-error askdlaskdlkasldk
+            const tokenAddress = decoded.args["tokenAddress"];
+
+            console.log("BondingCurveCreated", bondingAddress);
+            console.log("BondingCurveCreated", tokenAddress);
+
+            /* -------------------------------------------------------------------------- */
+            /*                                do test here                                */
+            /* -------------------------------------------------------------------------- */
+            saveToken({ bondingAddress, tokenAddress });
+            toast(`Token created successfully! 🥳`);
+          }
+        } catch (err) {
+          // not our event, ignore
+        }
+      }
+    }
+  }, [loadingCreateToken, loadingCreateTokenReceipt]);
+
   return (
     <>
       <DynamicHeader title="Create" />
@@ -114,7 +175,6 @@ export default function Create() {
         <p className="text-3xl sm:text-5xl lg:text-8xl my-12 lg:my-24 text-center">
           <ScrambleText title="Launch your token" />
         </p>
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6">
             <div className="space-y-6">
@@ -258,7 +318,7 @@ export default function Create() {
             Launch
           </button>
         </form>
-
+        aaaa- {String(loadingCreateToken)} --- {String(loadingCreateTokenReceipt)}
         {showModal && (
           <ConfirmLaunchModal
             onClose={() => setShowModal(false)}
