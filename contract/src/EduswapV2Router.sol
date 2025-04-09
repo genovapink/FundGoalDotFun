@@ -5,7 +5,7 @@
 // File contracts/interfaces/IEduswapV2Factory.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 interface IEduswapV2Factory {
     event PairCreated(address indexed token0, address indexed token1, address pair, uint256);
@@ -30,7 +30,7 @@ interface IEduswapV2Factory {
 // File contracts/interfaces/IERC20.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
@@ -58,7 +58,7 @@ interface IERC20 {
 // File contracts/interfaces/IEduswapV2Pair.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 interface IEduswapV2Pair is IERC20 {
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
@@ -108,7 +108,7 @@ interface IEduswapV2Pair is IERC20 {
 // File contracts/interfaces/IEduswapV2Router.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 interface IEduswapV2Router {
     function factory() external pure returns (address);
@@ -249,7 +249,7 @@ interface IEduswapV2Router {
 // File contracts/interfaces/IWETH.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 interface IWETH {
     function deposit() external payable;
@@ -262,7 +262,7 @@ interface IWETH {
 // File contracts/libraries/EduswapV2Library.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 library EduswapV2Library {
     // returns sorted token addresses, used to handle return values from pairs sorted in this order
@@ -370,7 +370,7 @@ library EduswapV2Library {
 // File contracts/libraries/TransferHelper.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 // helper methods for interacting with ERC20 tokens and sending ETH that do not consistently return true/false
 library TransferHelper {
@@ -408,7 +408,7 @@ library TransferHelper {
 // File contracts/EduswapV2Router.sol
 
 // Original license: SPDX_License_Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.20;
 
 contract EduswapV2Router is IEduswapV2Router {
     address public constant factory = 0xAdC632cf7d62cEEF5cEA6369B49684E835f62f36;

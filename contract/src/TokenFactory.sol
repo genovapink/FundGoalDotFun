@@ -4,13 +4,8 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./BondingCurve.sol";
 
-/**
- * @title ERC20Token
- * @notice Implements ERC20 token with secure vesting mechanism
- * @dev Uses immutable variables and pull payment pattern for security
- */
 contract ERC20Token is ERC20 {
-    address public immutable owner;
+    address public owner;
     address public immutable deployer;
     uint256 public immutable vestingStartTime;
 
@@ -28,6 +23,11 @@ contract ERC20Token is ERC20 {
     event DeployerTokensVested(uint256 amount);
     event UnvestedTokensBurned(uint256 amount);
 
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner");
+        _;
+    }
+
     constructor(string memory tokenName, string memory tokenSymbol, address _owner, address _deployer)
         ERC20(tokenName, tokenSymbol)
     {
@@ -39,27 +39,23 @@ contract ERC20Token is ERC20 {
         vestingStartTime = block.timestamp;
     }
 
-    /**
-     * @notice Mint new tokens (owner only)
-     */
     function mint(address to, uint256 amount) external {
         require(msg.sender == owner, "Only owner");
+
         _mint(to, amount);
         emit TokensMinted(to, amount);
     }
 
-    /**
-     * @notice Burn tokens
-     */
     function burn(uint256 amount) external {
         _burn(msg.sender, amount);
         emit TokensBurned(msg.sender, amount);
     }
 
-    /**
-     * @notice Claim vested tokens (deployer only)
-     * @dev Uses pull payment pattern
-     */
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Zero address");
+        owner = newOwner;
+    }
+
     function claimVestedTokens() external {
         require(msg.sender == deployer, "Only deployer");
 
@@ -73,9 +69,6 @@ contract ERC20Token is ERC20 {
         }
     }
 
-    /**
-     * @notice Calculate currently vested amount
-     */
     function calculateVestedAmount() public view returns (uint256) {
         if (block.timestamp >= vestingStartTime + VESTING_DURATION) {
             return milestonesReached ? DEPLOYER_ALLOCATION : 0;
@@ -84,18 +77,12 @@ contract ERC20Token is ERC20 {
         return (DEPLOYER_ALLOCATION * timeElapsed) / VESTING_DURATION;
     }
 
-    /**
-     * @notice Mark milestones as reached (owner only)
-     */
     function setMilestonesReached() external {
         require(msg.sender == owner, "Only owner");
         milestonesReached = true;
         emit MilestonesReached();
     }
 
-    /**
-     * @notice Burn unvested tokens after vesting period
-     */
     function burnUnvestedTokens() external {
         require(msg.sender == owner || msg.sender == deployer, "Unauthorized");
         require(block.timestamp > vestingStartTime + VESTING_DURATION, "Vesting ongoing");
@@ -106,11 +93,6 @@ contract ERC20Token is ERC20 {
     }
 }
 
-/**
- * @title TokenFactory
- * @notice Secure factory for deploying token and bonding curve pairs
- * @dev Implements checks-effects-interactions pattern
- */
 contract TokenFactory {
     address public immutable platform;
     uint256 public constant TOKEN_CREATION_FEE = 0.003 ether;
@@ -123,10 +105,6 @@ contract TokenFactory {
         platform = _platform;
     }
 
-    /**
-     * @notice Create new token and bonding curve
-     * @dev Uses CEI pattern and pull payments for fees
-     */
     function createToken(string memory name, string memory symbol)
         external
         payable
@@ -153,5 +131,10 @@ contract TokenFactory {
         require(success, "Fee transfer failed");
 
         return (tokenAddress, curveAddress);
+    }
+
+    function transferTokenOwnership(address token, address newOwner) external {
+        require(msg.sender == ERC20Token(token).deployer(), "Only deployer");
+        ERC20Token(token).transferOwnership(newOwner);
     }
 }

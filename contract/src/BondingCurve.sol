@@ -3,13 +3,9 @@ pragma solidity ^0.8.20;
 
 import "./TokenFactory.sol";
 
-/**
- * @title BondingCurve
- * @notice Implements a secure bonding curve with fee distribution and graduation mechanism
- * @dev Uses checks-effects-interactions pattern, immutable variables, and reentrancy guards
- */
 contract BondingCurve {
     ERC20Token public immutable token;
+    uint256 public immutable MAX_SUPPLY;
     address public immutable deployer;
     address public immutable platform;
 
@@ -30,20 +26,22 @@ contract BondingCurve {
     event GraduationReached(uint256 marketCap, uint256 platformPayout);
     event FeesWithdrawn(address indexed recipient, uint256 amount);
 
+    modifier onlyOwner() {
+        require(msg.sender == deployer, "UNAUTHORIZED");
+        _;
+    }
+
     constructor(address _token, address _deployer, address _platform) {
         require(_token != address(0), "Token zero address");
         require(_deployer != address(0), "Deployer zero address");
         require(_platform != address(0), "Platform zero address");
 
         token = ERC20Token(_token);
+        MAX_SUPPLY = ERC20Token(_token).TOTAL_SUPPLY();
         deployer = _deployer;
         platform = _platform;
     }
 
-    /**
-     * @notice Buy tokens from the bonding curve
-     * @dev Implements CEI pattern and protects against reentrancy
-     */
     function buy() external payable {
         require(msg.value > 0, "No ETH sent");
 
@@ -63,10 +61,6 @@ contract BondingCurve {
         token.mint(msg.sender, tokensBought);
     }
 
-    /**
-     * @notice Sell tokens back to the bonding curve
-     * @dev Implements CEI pattern and uses pull-over-push for ETH transfers
-     */
     function sell(uint256 tokenAmount) external {
         require(tokenAmount > 0, "Amount must be > 0");
 
@@ -85,10 +79,6 @@ contract BondingCurve {
         require(success, "ETH transfer failed");
     }
 
-    /**
-     * @notice Withdraw accumulated platform fees
-     * @dev Uses pull payment pattern for security
-     */
     function withdrawPlatformFees() external {
         require(msg.sender == platform, "Unauthorized");
         uint256 amount = platformFeesCollected;
@@ -101,10 +91,6 @@ contract BondingCurve {
         require(success, "Transfer failed");
     }
 
-    /**
-     * @notice Withdraw accumulated deployer fees
-     * @dev Uses pull payment pattern for security
-     */
     function withdrawDeployerFees() external {
         require(msg.sender == deployer, "Unauthorized");
         uint256 amount = deployerFeesCollected;
@@ -115,6 +101,18 @@ contract BondingCurve {
 
         (bool success,) = deployer.call{value: amount}("");
         require(success, "Transfer failed");
+    }
+
+    function initialize() external payable onlyOwner {
+        require(token.totalSupply() == 0, "Already initialized");
+
+        uint256 maxSupply = ERC20Token(token).TOTAL_SUPPLY();
+        uint256 vestingAllocation = ERC20Token(token).DEPLOYER_ALLOCATION();
+        uint256 curveSupply = maxSupply - vestingAllocation;
+
+        require(curveSupply + token.totalSupply() <= maxSupply, "Cap exceeded");
+
+        ERC20Token(token).mint(address(this), curveSupply);
     }
 
     function getCurrentPrice() public view returns (uint256) {
