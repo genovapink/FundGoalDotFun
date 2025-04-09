@@ -25,7 +25,7 @@ export type TableItem = {
   invoice: string;
   paymentStatus: string;
   totalAmount: string;
-  paymentMethod: string;
+  paymentMEDUod: string;
 };
 
 export function meta() {
@@ -58,7 +58,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
     invoice: "INV001",
     paymentStatus: "Paid",
     totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
+    paymentMEDUod: "Credit Card",
   });
 
   const totalPages = Math.ceil(invoices.length / ITEMS_PER_PAGE);
@@ -76,8 +76,8 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row items-center gap-5 text-xs">
             <p>MCap: $22,833</p>
-            <p>price: 0.0000000337 ETH</p>
-            <p>liquidity: 123456789 ETH</p>
+            <p>price: 0.0000000337 EDU</p>
+            <p>liquidity: 123456789 EDU</p>
             <p>remaining: 695,799,225.84</p>
           </div>
           <ToggleGroup type="single">
@@ -118,7 +118,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               <TableHead>Type</TableHead>
               <TableHead>Price (TKN)</TableHead>
               <TableHead>{"<token_name>"}</TableHead>
-              <TableHead>ETH</TableHead>
+              <TableHead>EDU</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Tx</TableHead>
             </TableRow>
@@ -128,7 +128,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               <TableRow key={id} className="odd:bg-transparent even:bg-white/10">
                 <TableCell className="font-medium">{invoice.invoice}</TableCell>
                 <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
+                <TableCell>{invoice.paymentMEDUod}</TableCell>
                 <TableCell>{invoice.totalAmount}</TableCell>
                 <TableCell>{invoice.totalAmount}</TableCell>
                 <TableCell>{invoice.totalAmount}</TableCell>
@@ -148,7 +148,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
 
       <div className="col-span-full lg:col-span-4 row-auto lg:row-start-1 lg:row-end-4 w-full">
         <div className="flex flex-col gap-10">
-          <BuySellTabs />
+          <BuySellTabs contractAddress={loaderData.contractAddress} />
           <div className="flex flex-col gap-4">
             <ForwardLink className="justify-end" to="/">
               Visit resource

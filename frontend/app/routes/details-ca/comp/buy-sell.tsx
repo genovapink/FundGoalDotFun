@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shadcn/tabs";
 import { useFundWallet } from "@fund/wallet/provider";
 import { ClientOnly } from "remix-utils/client-only";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
 import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { Button } from "@shadcn/button";
+import { getToken } from "@wagmi/core";
+import { WAGMI_CONFIG } from "@services/wagmi/config";
 
 // WIP: need to change to real flow
 interface TradingFormProps {
@@ -13,6 +15,10 @@ interface TradingFormProps {
   quoteToken: { icon: string; name: string };
   balance: number;
   price: number;
+}
+
+interface BuySellTabsProps {
+  contractAddress: string;
 }
 
 const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFormProps) => {
@@ -77,7 +83,7 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
       <div className="flex flex-row gap-2">
         {LIST_SHORTCUT.map((val, idx) => (
           <Button key={idx} onClick={() => setPercentage(val)} variant="outline" className="flex-1">
-            {val == 100 ? "Max" : val}%
+            {val == 100 ? "MAX" : val + "%"}
           </Button>
         ))}
       </div>
@@ -137,11 +143,24 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
   );
 };
 
-export function BuySellTabs() {
-  // WIP: change to real data
+export function BuySellTabs({ contractAddress }: BuySellTabsProps) {
+  const [quoteTokenName, setQuoteTokenName] = useState<string | null>(null);
+
+  useEffect(() => {
+    getToken(WAGMI_CONFIG, {
+      address: contractAddress as `0x${string}`,
+    }).then((data) => {
+      if (data?.symbol) setQuoteTokenName(data.symbol);
+    });
+  }, [contractAddress]);
+
+  if (!quoteTokenName) {
+    return <div className="text-center text-gray-500 py-10">Loading token info...</div>;
+  }
+
   const pairData = {
-    baseToken: { icon: "https://placehold.co/50", name: "ETH" },
-    quoteToken: { icon: "https://placehold.co/50", name: "USDC" },
+    baseToken: { icon: "https://placehold.co/50", name: "EDU" },
+    quoteToken: { icon: "https://placehold.co/50", name: quoteTokenName },
     balance: 1000,
     price: 3000,
   };

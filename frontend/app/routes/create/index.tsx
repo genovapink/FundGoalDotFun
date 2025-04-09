@@ -1,6 +1,4 @@
-import type React from "react";
 import { useState, useRef, type ChangeEvent, type FormEvent, useEffect } from "react";
-import { Upload, Globe, Twitter, Send, X, Check, AlertCircle } from "lucide-react";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { ScrambleText } from "@fund/scramble-text";
 import { toast } from "sonner";
@@ -10,6 +8,7 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ABI } from "~/constants/ABI";
 import { CONTRACT_ADDRESS } from "~/constants/CA";
 import { decodeEventLog, parseEther } from "viem";
+import { useNavigate } from "react-router";
 
 export function meta() {
   return [
@@ -22,6 +21,7 @@ export function meta() {
 }
 
 export default function Create() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     // name: "Namenya",
     // ticker: "Tickernya",
@@ -96,12 +96,10 @@ export default function Create() {
         marketCap: 5_000, // WIP
         contractAddress: tokenAddress,
         donationAddress: formData.donationAddress,
-        embedCode: formData.embedCode, // added
+        embedCode: formData.embedCode,
         bondingCurveAddress: bondingAddress, // WIP
         status: "active",
       };
-
-      toast(`Submitting payload...`);
 
       const compiledFD = new FormData();
       compiledFD.append("image", image!); // file from input
@@ -116,8 +114,6 @@ export default function Create() {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to create token");
       }
-
-      toast(`Token created successfully! 🥳`);
 
       setShowModal(false);
     } catch (error) {
@@ -160,6 +156,10 @@ export default function Create() {
             /* -------------------------------------------------------------------------- */
             saveToken({ bondingAddress, tokenAddress });
             toast(`Token created successfully! 🥳`);
+
+            setTimeout(() => {
+              navigate(`/${tokenAddress}`, { replace: true, preventScrollReset: true });
+            }, 3000);
           }
         } catch (err) {
           // not our event, ignore
