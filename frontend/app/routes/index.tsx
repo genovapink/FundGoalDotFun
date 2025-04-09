@@ -39,19 +39,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { data };
 }
 
-const EXAMPLE_SOURCES = [
-  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
-  "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
-  "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
-  "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
-  "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-  "https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh",
-  "https://www.linkedin.com/embed/feed/update/urn:li:share:7305391310591381504?collapsed=1",
-]; // WIP
-
 export default function Home() {
   const fetcher = useFetcher<Record<string, ReactNode>>();
   const loaderData = useLoaderData();
@@ -178,8 +165,7 @@ export default function Home() {
           columnClassName="my-masonry-grid_column flex flex-col gap-y-5"
         >
           {data.tokens.map((token, i) => {
-            const iframeSrc = EXAMPLE_SOURCES[i % EXAMPLE_SOURCES.length];
-
+            const iframeSrc = String(token.postUrl!);
             return (
               <NavLink
                 key={i}

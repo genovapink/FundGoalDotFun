@@ -8,7 +8,7 @@ interface IToken extends Document {
   marketCap: number;
   contractAddress?: string;
   donationAddress?: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   imageUrl?: string;
   socialLinks?: {
     website?: string;
@@ -28,24 +28,26 @@ const TokenSchema: Schema = new Schema({
     type: Number,
   },
   contractAddress: { type: String },
+  bondingCurveAddress: { type: String },
   donationAddress: { type: String },
   status: {
     type: String,
     required: true,
-    enum: ['active', 'inactive'],
-    default: 'active'
+    enum: ["active", "inactive"],
+    default: "active",
   },
   imageUrl: { type: String },
-  socialLinks: {
-    website: { type: String },
-    twitter: { type: String },
-    telegram: { type: String }
-  },
+  postUrl: { type: String },
+  // socialLinks: {
+  //   website: { type: String },
+  //   twitter: { type: String },
+  //   telegram: { type: String },
+  // },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
 });
 
-TokenSchema.pre('save', function (next) {
+TokenSchema.pre("save", function (next) {
   this.updatedAt = new Date();
   next();
 });

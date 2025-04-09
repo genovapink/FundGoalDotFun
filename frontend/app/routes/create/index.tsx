@@ -9,7 +9,7 @@ import { ConfirmLaunchModal } from "./comp/modal";
 
 export function meta() {
   return [
-    { title: "Cretae - Gofunding" },
+    { title: "Create - Gofunding" },
     { name: "description", content: "Create - Gofunding" },
     { name: "image", content: "/logo.png" },
     { name: "og:image", content: "/logo.png" },
@@ -55,6 +55,8 @@ export default function Create() {
         marketCap: 5_000, // WIP
         contractAddress: "", // WIP
         donationAddress: formData.donationAddress,
+        embedCode: formData.embedCode, // added
+        bondingCurveAddress: "", // WIP
         status: "active",
       };
 
