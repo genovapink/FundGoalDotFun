@@ -148,7 +148,10 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
 
       <div className="col-span-full lg:col-span-4 row-auto lg:row-start-1 lg:row-end-4 w-full">
         <div className="flex flex-col gap-10">
-          <BuySellTabs contractAddress={loaderData.contractAddress} />
+          <BuySellTabs
+            contractAddress={loaderData.contractAddress}
+            imageUrl={loaderData.imageUrl}
+          />
           <div className="flex flex-col gap-4">
             <ForwardLink className="justify-end" to="/">
               Visit resource

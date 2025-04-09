@@ -19,6 +19,7 @@ interface TradingFormProps {
 
 interface BuySellTabsProps {
   contractAddress: string;
+  imageUrl: string;
 }
 
 const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFormProps) => {
@@ -143,7 +144,7 @@ const TradingForm = ({ type, baseToken, quoteToken, balance, price }: TradingFor
   );
 };
 
-export function BuySellTabs({ contractAddress }: BuySellTabsProps) {
+export function BuySellTabs({ contractAddress, imageUrl }: BuySellTabsProps) {
   const [quoteTokenName, setQuoteTokenName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -159,8 +160,8 @@ export function BuySellTabs({ contractAddress }: BuySellTabsProps) {
   }
 
   const pairData = {
-    baseToken: { icon: "https://placehold.co/50", name: "EDU" },
-    quoteToken: { icon: "https://placehold.co/50", name: quoteTokenName },
+    baseToken: { icon: imageUrl, name: "EDU" },
+    quoteToken: { icon: imageUrl, name: quoteTokenName },
     balance: 1000,
     price: 3000,
   };
