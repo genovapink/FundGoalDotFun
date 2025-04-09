@@ -1,2 +1,2 @@
-export const CONTRACT_ADDRESS = "0x55e6cbc866dd9f229f1571b88a6b01f9ee6d8c45";
+export const CONTRACT_ADDRESS = "0x3608616a737fff255f71a2a0db7b9cee453758c0";
 // export const CONTRACT_ADDRESS = "0xA7CdEE2B7f5c491E6e7a9763cC37Cf147Ba307b3" // op sepolia

@@ -73,7 +73,7 @@ export default function Create() {
         address: CONTRACT_ADDRESS,
         functionName: "createToken",
         args: [formData.name, formData.ticker],
-        value: parseEther("0.03"),
+        value: parseEther("0.1"), // min buy
       });
     } catch (err) {
       console.log(err);
@@ -318,7 +318,6 @@ export default function Create() {
             Launch
           </button>
         </form>
-        aaaa- {String(loadingCreateToken)} --- {String(loadingCreateTokenReceipt)}
         {showModal && (
           <ConfirmLaunchModal
             onClose={() => setShowModal(false)}

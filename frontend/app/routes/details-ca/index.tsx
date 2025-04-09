@@ -151,6 +151,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
           <BuySellTabs
             contractAddress={loaderData.contractAddress}
             imageUrl={loaderData.imageUrl}
+            bondingCurveAddress={loaderData.bondingCurveAddress}
           />
           <div className="flex flex-col gap-4">
             <ForwardLink className="justify-end" to="/">
