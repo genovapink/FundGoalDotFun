@@ -11,13 +11,16 @@ export const createItem = async (req: Request, res: Response) => {
     if (!file) res.status(400).json({ error: "Image file missing" });
     if (!jsonData) res.status(400).json({ error: "Payload field missing" });
 
-    const pinataFile = new File([file!.buffer], file!.originalname, {
-      type: file!.mimetype,
-    });
-    const upload = await pinata.upload.public.file(pinataFile);
+    let imageUrl = "";
+    if (file) {
+      const pinataFile = new File([file!.buffer], file!.originalname, {
+        type: file!.mimetype,
+      });
+      const upload = await pinata.upload.public.file(pinataFile);
 
-    /* --------------------- this one should be saved to db --------------------- */
-    const urlPinata = await pinata.gateways.public.convert(upload.cid);
+      /* --------------------- this one should be saved to db --------------------- */
+      imageUrl = await pinata.gateways.public.convert(upload.cid);
+    }
 
     // res.status(200).json({
     //   message: "Received",
@@ -28,7 +31,7 @@ export const createItem = async (req: Request, res: Response) => {
 
     const newItem = new TokenModel({
       ...jsonData,
-      imageUrl: urlPinata,
+      imageUrl,
       bondingCurveAddress: jsonData.bondingCurveAddress,
       postUrl: extractIframeSrc(jsonData.embedCode),
     });
