@@ -8,7 +8,7 @@ export const createItem = async (req: Request, res: Response) => {
     const file = req.file;
     const jsonData = JSON.parse(req.body.payload);
 
-    if (!file) res.status(400).json({ error: "Image file missing" });
+    // if (!file) res.status(400).json({ error: "Image file missing" });
     if (!jsonData) res.status(400).json({ error: "Payload field missing" });
 
     let imageUrl = "";
