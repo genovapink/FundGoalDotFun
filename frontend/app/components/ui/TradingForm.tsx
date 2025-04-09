@@ -95,8 +95,8 @@ export const TradingForm = ({
       tx({
         abi: BONDING_CURVE_ABI,
         address: bondingCurveAddress,
-        functionName: type === "buy" ? "buy" : "sell",
-        ...(type === "buy" ? { value: parseEther(amount) } : { args: [parseEther(amount)] }),
+        functionName: "buy",
+        value: parseEther(amount),
       });
     } catch (error) {
       console.error("Transaction error:", error);
@@ -110,8 +110,8 @@ export const TradingForm = ({
       tx({
         abi: BONDING_CURVE_ABI,
         address: bondingCurveAddress,
-        functionName: type === "buy" ? "buy" : "sell",
-        ...(type === "buy" ? { value: parseEther(amount) } : { args: [tokenAmount] }),
+        functionName: "sell",
+        args: [tokenAmount],
       });
     }
   }, [approveReceipt]);
