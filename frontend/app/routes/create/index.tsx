@@ -33,8 +33,8 @@ export default function Create() {
     donationAddress: "",
     initialBuyAmount: "1000",
     initialTokens: 42000000,
-    embedCode:
-      '<iframe width="560" height="315" src="https://www.youtube.com/embed/b6lNZi8cDuo?si=CpOjeyZVs2jYOK75" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    embedCode: "",
+    // '<iframe width="560" height="315" src="https://www.youtube.com/embed/b6lNZi8cDuo?si=CpOjeyZVs2jYOK75" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -318,6 +318,7 @@ export default function Create() {
             Launch
           </button>
         </form>
+        {JSON.stringify(errorCreateToken)}
         {showModal && (
           <ConfirmLaunchModal
             onClose={() => setShowModal(false)}
