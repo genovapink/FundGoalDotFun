@@ -69,10 +69,6 @@ export default function Create() {
       const response = await fetch(`${import.meta.env.VITE_BE_URL}/api/tokens`, {
         method: "POST",
         body: compiledFD,
-        // body: JSON.stringify({
-        //   image:
-        //   data: JSON.stringify(payload),
-        // }),
       });
 
       if (!response.ok) {
