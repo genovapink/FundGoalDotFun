@@ -1,5 +1,5 @@
 import type { Route } from "./+types";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { ChartFund } from "@fund/chart";
 import { ToggleGroup, ToggleGroupItem } from "@shadcn/toggle-group";
 import { BuySellTabs } from "./comp/buy-sell";
@@ -18,6 +18,7 @@ import { ForwardLink } from "@fund/button";
 import { Badge } from "@shadcn/badge";
 import { Copy } from "lucide-react";
 import { ShowQR } from "./comp/show-qr";
+import { addressTrimer } from "~/utils/helper";
 
 export type TableItem = {
   invoice: string;
@@ -119,8 +120,8 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedInvoices.map((invoice) => (
-              <TableRow key={invoice.invoice} className="odd:bg-transparent even:bg-white/10">
+            {paginatedInvoices.map((invoice, id) => (
+              <TableRow key={id} className="odd:bg-transparent even:bg-white/10">
                 <TableCell className="font-medium">{invoice.invoice}</TableCell>
                 <TableCell>{invoice.paymentStatus}</TableCell>
                 <TableCell>{invoice.paymentMethod}</TableCell>
@@ -163,18 +164,24 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             <div className="h-[1px] bg-white/50 w-full self-end my-8" />
             <div className="flex flex-row gap-2 items-center">
               <p>creator:</p>
-              <Badge variant="secondary">{"<address>"}</Badge>
+              <Badge variant="secondary">{"asdasd"}</Badge>
               <Copy className="size-5 cursor-pointer" />
             </div>
             <div className="flex flex-row gap-2 items-center">
               <p>ca:</p>
-              <Badge>{loaderData.contractAddress}</Badge>
-              <Copy className="size-5 cursor-pointer" />
+              <Badge>{addressTrimer(loaderData.contractAddress)}</Badge>
+              <Copy
+                className="size-5 cursor-pointer"
+                onClick={() => navigator.clipboard.writeText(loaderData.contractAddress)}
+              />
             </div>
             <div className="flex flex-row gap-2 items-center">
               <p>donate to creator</p>
-              <Badge variant="secondary">{loaderData.donationAddress}</Badge>
-              <Copy className="size-5 cursor-pointer" />
+              <Badge variant="secondary">{addressTrimer(loaderData.donationAddress)}</Badge>
+              <Copy
+                className="size-5 cursor-pointer"
+                onClick={() => navigator.clipboard.writeText(loaderData.donationAddress)}
+              />
               <ShowQR address={loaderData.donationAddress} />
             </div>
             <div className="h-[1px] bg-white/50 w-full self-start my-8" />
