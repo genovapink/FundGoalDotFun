@@ -118,10 +118,8 @@ contract TokenFactory {
         payable
         returns (address tokenAddress, address curveAddress)
     {
-        // Require fee + initial liquidity
         require(msg.value >= TOKEN_CREATION_FEE + INITIAL_CURVE_FUNDING, "Insufficient funds");
 
-        // Create token with factory as initial owner
         ERC20Token newToken = new ERC20Token(
             name,
             symbol,
@@ -129,19 +127,15 @@ contract TokenFactory {
             msg.sender // Deployer
         );
 
-        // Create bonding curve
         BondingCurve bondingCurve = new BondingCurve(address(newToken), msg.sender, platform);
 
         tokenAddress = address(newToken);
         curveAddress = address(bondingCurve);
 
-        // Transfer token ownership to bonding curve
         newToken.transferOwnership(curveAddress);
 
-        // Initialize bonding curve with initial liquidity
         bondingCurve.initialize{value: INITIAL_CURVE_FUNDING}();
 
-        // Send creation fee to platform
         uint256 platformFee = TOKEN_CREATION_FEE;
         (bool success,) = platform.call{value: platformFee}("");
         require(success, "Fee transfer failed");
@@ -156,14 +150,11 @@ contract TokenFactory {
         ERC20Token tokenContract = ERC20Token(token);
         require(msg.sender == tokenContract.deployer(), "Only deployer");
 
-        // Get current owner (should be bonding curve)
         address currentOwner = tokenContract.owner();
 
-        // Check if bonding curve has graduated
         BondingCurve curve = BondingCurve(currentOwner);
         require(curve.hasGraduated(), "Curve not graduated");
 
-        // Transfer ownership to deployer
         tokenContract.transferOwnership(msg.sender);
     }
 }
