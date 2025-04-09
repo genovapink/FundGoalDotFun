@@ -170,27 +170,29 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             />
             <div className="h-[1px] bg-white/50 w-full self-end my-8" />
             <div className="flex flex-row gap-2 items-center">
-              <p>creator:</p>
-              <Badge variant="secondary">{"asdasd"}</Badge>
+              <p>Name:</p>
+              <Badge variant="secondary">{loaderData.name}</Badge>
               <Copy className="size-5 cursor-pointer" />
             </div>
             <div className="flex flex-row gap-2 items-center">
-              <p>ca:</p>
+              <p>Contract Address:</p>
               <Badge>{addressTrimer(loaderData.contractAddress)}</Badge>
               <Copy
                 className="size-5 cursor-pointer"
                 onClick={() => navigator.clipboard.writeText(loaderData.contractAddress)}
               />
             </div>
-            <div className="flex flex-row gap-2 items-center">
-              <p>donate to creator</p>
-              <Badge variant="secondary">{addressTrimer(loaderData.donationAddress)}</Badge>
-              <Copy
-                className="size-5 cursor-pointer"
-                onClick={() => navigator.clipboard.writeText(loaderData.donationAddress)}
-              />
-              <ShowQR address={loaderData.donationAddress} />
-            </div>
+            {loaderData.donationAddress && (
+              <div className="flex flex-row gap-2 items-center">
+                <p>Donate to Creator</p>
+                <Badge variant="secondary">{addressTrimer(loaderData.donationAddress)}</Badge>
+                <Copy
+                  className="size-5 cursor-pointer"
+                  onClick={() => navigator.clipboard.writeText(loaderData.donationAddress)}
+                />
+                <ShowQR address={loaderData.donationAddress} />
+              </div>
+            )}
             <div className="h-[1px] bg-white/50 w-full self-start my-8" />
             <p>{loaderData.description}</p>
           </div>
