@@ -147,7 +147,7 @@ export const TradingForm = ({
       <div className="relative">
         <div className="flex items-center border rounded-md p-2">
           <img
-            src={displayToken.icon}
+            src={displayToken.icon == "" ? "/logo-color.png" : displayToken.icon}
             alt={displayToken.name || ""}
             className="w-6 h-6 mr-2 rounded-xl"
           />

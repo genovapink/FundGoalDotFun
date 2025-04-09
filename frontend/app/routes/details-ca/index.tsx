@@ -18,7 +18,7 @@ import { ForwardLink } from "@fund/button";
 import { Badge } from "@shadcn/badge";
 import { ChevronLeft, Copy } from "lucide-react";
 import { ShowQR } from "./comp/show-qr";
-import { addressTrimer } from "~/utils/helper";
+import { addressTrimer, generateAddress } from "~/utils/helper";
 import { NavLink } from "react-router";
 
 export type TableItem = {
@@ -54,12 +54,18 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
   const ITEMS_PER_PAGE = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const invoices = new Array(25).fill({
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMEDUod: "Credit Card",
-  });
+  const invoices = Array.from({ length: 20 }, () => ({
+    user: generateAddress().substring(0, 10) + "...",
+    type: Math.random() > 0.5 ? "Buy" : "Sell",
+    price: parseFloat((Math.random() * 0.0001 + 0.000001).toFixed(8)),
+    volume: parseFloat((Math.random() * 0.00001 + 0.000001).toFixed(8)),
+    edu: parseFloat((Math.random() * 0.00001 + 0.000001).toFixed(8)),
+    date: new Date(Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30)) // random within 30 days
+      .toISOString()
+      .split("T")[0]
+      .replace(/-/g, " - "),
+    tx: `0x${Math.random().toString(16).substring(2, 10)}...`,
+  }));
 
   const totalPages = Math.ceil(invoices.length / ITEMS_PER_PAGE);
   const paginatedInvoices = invoices.slice(
@@ -116,8 +122,8 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             <TableRow>
               <TableHead>User</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Price (TKN)</TableHead>
-              <TableHead>{"<token_name>"}</TableHead>
+              <TableHead>Price (EDU)</TableHead>
+              <TableHead>{loaderData.ticker}</TableHead>
               <TableHead>EDU</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Tx</TableHead>
@@ -126,13 +132,13 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
           <TableBody>
             {paginatedInvoices.map((invoice, id) => (
               <TableRow key={id} className="odd:bg-transparent even:bg-white/10">
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMEDUod}</TableCell>
-                <TableCell>{invoice.totalAmount}</TableCell>
-                <TableCell>{invoice.totalAmount}</TableCell>
-                <TableCell>{invoice.totalAmount}</TableCell>
-                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                <TableCell className="font-medium">{invoice.user}</TableCell>
+                <TableCell>{invoice.type}</TableCell>
+                <TableCell>{invoice.price}</TableCell>
+                <TableCell>{invoice.volume}</TableCell>
+                <TableCell>{invoice.edu}</TableCell>
+                <TableCell>{invoice.date}</TableCell>
+                <TableCell className="text-right">{invoice.tx}</TableCell>
               </TableRow>
             ))}
           </TableBody>
