@@ -48,3 +48,11 @@ export const findItems = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to fetch items." });
   }
 };
+
+export const findItemByContract = async (req: Request, res: Response) => {
+  const token = await TokenModel.findOne({ contractAddress: req.params.contractAddress });
+
+  if (!token) throw new Error("No slug found for Article");
+
+  res.status(200).json(token);
+};

@@ -170,7 +170,7 @@ export default function Home() {
               <NavLink
                 key={i}
                 className="flex flex-col w-full rounded-lg border border-white/50 py-3 px-5 gap-y-3"
-                to={`Contract_Address-${token.contractAddress || token.address || token._id}`}
+                to={String(token.contractAddress)}
               >
                 <div className="flex flex-col gap-4">
                   <p className="font-bold text-xl">

@@ -1,5 +1,5 @@
 import type { Route } from "./+types";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ChartFund } from "@fund/chart";
 import { ToggleGroup, ToggleGroupItem } from "@shadcn/toggle-group";
 import { BuySellTabs } from "./comp/buy-sell";
@@ -37,18 +37,15 @@ export function meta() {
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const addon = "rei";
-
   const { ca } = params;
+  const token = await fetch(`${process.env.VITE_BE_URL}/api/tokens/${ca}`).then((r) => r.json());
 
-  return {
-    ca,
-    addon,
-  };
+  // return {token};
+  return token;
 }
 
 export default function Symbol({ loaderData }: Route.ComponentProps) {
-  const { addon, ca } = loaderData;
+  // const { token } = loaderData;
 
   const TIME_SERIES = ["1m", "5m", "30m", "1h", "4h", "1w"];
 
@@ -157,7 +154,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
                 "aspect-video"
                 // "aspect-square"
               )}
-              src="https://www.youtube.com/embed/hz0_f05CXUA?si=vTbARCM3rVIkWHEh"
+              src={String(loaderData.postUrl)}
               frameBorder="0"
               allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
@@ -171,21 +168,17 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             </div>
             <div className="flex flex-row gap-2 items-center">
               <p>ca:</p>
-              <Badge>{"<address>"}</Badge>
+              <Badge>{loaderData.contractAddress}</Badge>
               <Copy className="size-5 cursor-pointer" />
             </div>
             <div className="flex flex-row gap-2 items-center">
               <p>donate to creator</p>
-              <Badge variant="secondary">{"<address>"}</Badge>
+              <Badge variant="secondary">{loaderData.donationAddress}</Badge>
               <Copy className="size-5 cursor-pointer" />
-              <ShowQR address={"address_soon"} />
+              <ShowQR address={loaderData.donationAddress} />
             </div>
             <div className="h-[1px] bg-white/50 w-full self-start my-8" />
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Optio earum culpa, cumque
-              doloremque laudantium minima, harum voluptatum voluptate, nisi molestias ex accusamus
-              modi ipsa nesciunt accusantium pariatur voluptatem officiis! Nam!
-            </p>
+            <p>{loaderData.description}</p>
           </div>
         </div>
       </div>
