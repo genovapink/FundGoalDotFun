@@ -7,6 +7,7 @@ import "./BondingCurve.sol";
 contract ERC20Token is ERC20 {
     address public owner;
     address public immutable deployer;
+    address public bondingCurve;
     uint256 public immutable vestingStartTime;
 
     uint256 public constant TOTAL_SUPPLY = 1_000_000_000 * 10 ** 18;
@@ -28,6 +29,11 @@ contract ERC20Token is ERC20 {
         _;
     }
 
+    modifier onlyBondingCurve() {
+        require(msg.sender == bondingCurve, "Only bonding curve");
+        _;
+    }
+
     constructor(string memory tokenName, string memory tokenSymbol, address _owner, address _deployer)
         ERC20(tokenName, tokenSymbol)
     {
@@ -39,7 +45,14 @@ contract ERC20Token is ERC20 {
         vestingStartTime = block.timestamp;
     }
 
-    function mint(address to, uint256 amount) external {
+    function setBondingCurve(address _bondingCurve) external onlyOwner {
+        require(bondingCurve == address(0), "Bonding curve already set");
+        require(_bondingCurve != address(0), "Zero address");
+        bondingCurve = _bondingCurve;
+    }
+
+    function mint(address to, uint256 amount) external onlyBondingCurve {
+        require(totalSupply() + amount <= TOTAL_SUPPLY, "Exceeds total supply");
         _mint(to, amount);
         emit TokensMinted(to, amount);
     }
@@ -70,6 +83,7 @@ contract ERC20Token is ERC20 {
         uint256 newlyVested = calculateVestedAmount();
         if (newlyVested > vestedAmount) {
             uint256 amountToVest = newlyVested - vestedAmount;
+            require(totalSupply() + amountToVest <= TOTAL_SUPPLY, "Exceeds total supply");
             vestedAmount = newlyVested;
 
             _mint(deployer, amountToVest);
@@ -103,7 +117,7 @@ contract ERC20Token is ERC20 {
 contract TokenFactory {
     address public immutable platform;
     uint256 public constant TOKEN_CREATION_FEE = 0.003 ether;
-    uint256 public constant INITIAL_CURVE_FUNDING = 0.05 ether; // Initial liquidity for curve
+    uint256 public constant INITIAL_CURVE_FUNDING = 0.05 ether;
 
     event TokenCreated(address indexed tokenAddress, string name, string symbol, address indexed deployer);
     event BondingCurveCreated(address indexed bondingCurveAddress, address indexed tokenAddress);
@@ -132,6 +146,7 @@ contract TokenFactory {
         tokenAddress = address(newToken);
         curveAddress = address(bondingCurve);
 
+        newToken.setBondingCurve(curveAddress);
         newToken.transferOwnership(curveAddress);
 
         bondingCurve.initialize{value: INITIAL_CURVE_FUNDING}();

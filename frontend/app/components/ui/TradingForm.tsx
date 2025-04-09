@@ -1,12 +1,13 @@
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { BONDING_CURVE_ABI } from "~/constants/BONDING_CURVE_ABI";
-import { decodeEventLog, parseEther } from "viem";
+import { decodeEventLog, maxUint256, parseEther, parseUnits } from "viem";
 import { useFundWallet } from "@fund/wallet/provider";
 import { ClientOnly } from "remix-utils/client-only";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
 import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { Button } from "@shadcn/button";
 import { useCallback, useEffect } from "react";
+import { ERC20_ABI } from "~/constants/ERC20_ABI";
 
 interface TradingFormProps {
   type: "buy" | "sell";
@@ -20,6 +21,7 @@ interface TradingFormProps {
   isOpen: boolean;
   setTxType: (type: "buy" | "sell") => void;
   bondingCurveAddress: `0x${string}`;
+  contractAddress: `0x${string}`;
 }
 
 export const TradingForm = ({
@@ -34,6 +36,7 @@ export const TradingForm = ({
   setTxType,
   isOpen,
   bondingCurveAddress,
+  contractAddress,
 }: TradingFormProps) => {
   const { isConnected, connectors } = useFundWallet();
   const LIST_SHORTCUT = [25, 50, 75, 100];
@@ -69,18 +72,49 @@ export const TradingForm = ({
     hash: txHash,
   });
 
+  const { writeContract: approve, data: txApprove } = useWriteContract();
+  const { data: approveReceipt } = useWaitForTransactionReceipt({
+    hash: txApprove,
+  });
+
+  const handleApprove = () => {
+    try {
+      approve({
+        abi: ERC20_ABI,
+        address: contractAddress,
+        functionName: "approve",
+        args: [bondingCurveAddress, maxUint256],
+      });
+    } catch (error) {
+      console.error("Approval error:", error);
+    }
+  };
+
   const doTransactions = useCallback(async () => {
     try {
       tx({
         abi: BONDING_CURVE_ABI,
         address: bondingCurveAddress,
         functionName: type === "buy" ? "buy" : "sell",
-        value: type === "buy" ? parseEther(amount) : undefined,
+        ...(type === "buy" ? { value: parseEther(amount) } : { args: [parseEther(amount)] }),
       });
     } catch (error) {
       console.error("Transaction error:", error);
     }
   }, [tx, bondingCurveAddress, type, amount]);
+
+  useEffect(() => {
+    const tokenAmount = parseUnits(amount, 18);
+
+    if (approveReceipt?.status === "success") {
+      tx({
+        abi: BONDING_CURVE_ABI,
+        address: bondingCurveAddress,
+        functionName: type === "buy" ? "buy" : "sell",
+        ...(type === "buy" ? { value: parseEther(amount) } : { args: [tokenAmount] }),
+      });
+    }
+  }, [approveReceipt]);
 
   useEffect(() => {
     if (txReceipt) {
@@ -154,7 +188,7 @@ export const TradingForm = ({
         {() =>
           isConnected ? (
             <ButtonMagnet
-              onClick={() => doTransactions()}
+              onClick={() => (type === "sell" ? handleApprove() : doTransactions())}
               color={type === "buy" ? "green" : "pink"}
             >
               {type === "buy" ? `Buy ` : `Sell `}

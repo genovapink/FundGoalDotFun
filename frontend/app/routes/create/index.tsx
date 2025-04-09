@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { ImageUploader } from "./comp/image-uploader";
 import { ConfirmLaunchModal } from "./comp/modal";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { ABI } from "~/constants/ABI";
+import { ABI } from "~/constants/TOKEN_LAUNCHER_ABI";
 import { CONTRACT_ADDRESS } from "~/constants/CA";
 import { decodeEventLog, parseEther } from "viem";
 import { useNavigate } from "react-router";

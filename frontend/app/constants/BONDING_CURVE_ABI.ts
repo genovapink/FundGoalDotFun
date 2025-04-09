@@ -46,34 +46,9 @@ export const BONDING_CURVE_ABI = [
                 "internalType": "uint256",
                 "name": "platformFee",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "deployerFee",
-                "type": "uint256"
             }
         ],
         "name": "Bought",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "recipient",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "FeesWithdrawn",
         "type": "event"
     },
     {
@@ -88,11 +63,11 @@ export const BONDING_CURVE_ABI = [
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "platformPayout",
+                "name": "liquidityAdded",
                 "type": "uint256"
             }
         ],
-        "name": "GraduationReached",
+        "name": "Graduated",
         "type": "event"
     },
     {
@@ -121,12 +96,6 @@ export const BONDING_CURVE_ABI = [
                 "internalType": "uint256",
                 "name": "platformFee",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "deployerFee",
-                "type": "uint256"
             }
         ],
         "name": "Sold",
@@ -135,6 +104,19 @@ export const BONDING_CURVE_ABI = [
     {
         "inputs": [],
         "name": "BASE_PRICE",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "BURN_PERCENTAGE",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -199,7 +181,7 @@ export const BONDING_CURVE_ABI = [
     },
     {
         "inputs": [],
-        "name": "PLATFORM_FEE",
+        "name": "MIN_BUY",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -212,7 +194,7 @@ export const BONDING_CURVE_ABI = [
     },
     {
         "inputs": [],
-        "name": "PLATFORM_GRADUATION_AMOUNT",
+        "name": "PLATFORM_FEE",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -259,7 +241,7 @@ export const BONDING_CURVE_ABI = [
                 "type": "uint256"
             }
         ],
-        "stateMutability": "pure",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -278,7 +260,7 @@ export const BONDING_CURVE_ABI = [
                 "type": "uint256"
             }
         ],
-        "stateMutability": "pure",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -296,12 +278,12 @@ export const BONDING_CURVE_ABI = [
     },
     {
         "inputs": [],
-        "name": "deployerFeesCollected",
+        "name": "factory",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "address",
                 "name": "",
-                "type": "uint256"
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -351,6 +333,19 @@ export const BONDING_CURVE_ABI = [
         "name": "initialize",
         "outputs": [],
         "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "liquidityAdded",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -407,9 +402,15 @@ export const BONDING_CURVE_ABI = [
     },
     {
         "inputs": [],
-        "name": "withdrawDeployerFees",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "name": "totalEthInvested",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

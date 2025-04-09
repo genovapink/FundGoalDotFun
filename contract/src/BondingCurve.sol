@@ -108,7 +108,8 @@ contract BondingCurve {
     }
 
     function getCurrentPrice() public view returns (uint256) {
-        return BASE_PRICE + (token.totalSupply() * PRICE_INCREASE);
+        if (token.totalSupply() == 0) return BASE_PRICE;
+        return (totalEthInvested * 1e18) / token.totalSupply();
     }
 
     function getMarketCap() public view returns (uint256) {
