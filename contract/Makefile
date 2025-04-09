@@ -3,10 +3,16 @@ deploy:
 	set +a; \
 	source .env; \
 	set -a; \
-	forge script \
+	forge create \
 	script/DeployScript.s.sol:DeployScript \
 	--rpc-url $$RPC_URL \
 	--private-key $$PRIVATE_KEY \
 	--broadcast \
-	--verify \
-	--etherscan-api-key $$ETHERSCAN_API_KEY
+	--optimize \
+	--optimizer-runs 200
+
+# --gas-limit 1000000 \
+# --gas-price 1000000000 \
+
+# --verify \
+# --etherscan-api-key $$ETHERSCAN_API_KEY
