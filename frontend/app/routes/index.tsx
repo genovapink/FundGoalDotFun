@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ButtonMagnet } from "@fund/button";
+import { ButtonMagnet, ForwardLink } from "@fund/button";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { Button } from "@shadcn/button";
 import { Input } from "@shadcn/input";
@@ -190,7 +190,11 @@ export default function Home() {
                   referrerPolicy="strict-origin-when-cross-origin"
                   scrolling="no"
                 />
-                <p className="flex text-inherit justify-end">More ...</p>
+                <p className="flex text-inherit justify-end">
+                  <ForwardLink className="justify-end" to={String(token.contractAddress)}>
+                    More
+                  </ForwardLink>
+                </p>
               </NavLink>
             );
           })}

@@ -77,17 +77,23 @@ export const ConfirmLaunchModal: React.FC<Props> = ({
 
             <div className="border border-input rounded-lg p-4 space-y-2 text-sm sm:text-base">
               <p className="text-muted-foreground">
-                Launch cost: 0.5 EDU (liquidity) + 0.25 EDU (gas)
+                Launch cost: 0.1 EDU (liquidity) + 0.25 EDU (gas)
               </p>
               <p className="text-muted-foreground">Token supply: 1,000,000,000 tokens (fixed)</p>
               <p className="text-muted-foreground">
                 You receive 2% of total supply (20,000,000 tokens)
               </p>
               <p className="text-muted-foreground text-xs sm:text-sm mt-1">
-                • 50% unlocked when market cap reaches $1,000,000
+                • 25% unlocked when market cap reaches $1,000,000
               </p>
               <p className="text-muted-foreground text-xs sm:text-sm">
-                • 50% unlocked when market cap reaches $3,000,000
+                • 25% unlocked when market cap reaches $3,000,000
+              </p>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                • 25% unlocked when market cap reaches $6,000,000
+              </p>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                • 25% unlocked when market cap reaches $10,000,000
               </p>
             </div>
 
@@ -132,7 +138,7 @@ export const ConfirmLaunchModal: React.FC<Props> = ({
                 ) : (
                   <>
                     <Check className="mr-2 h-4 w-4" />
-                    Confirm & Pay
+                    Approve & Launch
                   </>
                 )}
               </button>

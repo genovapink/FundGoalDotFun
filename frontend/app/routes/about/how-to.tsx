@@ -20,7 +20,7 @@ export function HowTo() {
   ];
 
   return (
-    <div className="space-y-12 mb-20 px-4 sm:px-6">
+    <div className="space-y-12 mb-32 px-4 sm:px-6">
       {sections.map((section, index) => (
         <div
           key={index}

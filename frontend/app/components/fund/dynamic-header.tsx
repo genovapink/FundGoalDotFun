@@ -7,6 +7,7 @@ import { ScrambleText } from "./scramble-text";
 import React from "react";
 import { ButtonMagnet } from "./button";
 import { ConnectWallet } from "./wallet/connect-wallet";
+import { Link } from "react-router";
 
 type DynamicHeaderProps = {
   title?: string;
@@ -55,6 +56,7 @@ export function DynamicHeader({ title, titleChild, className }: DynamicHeaderPro
     <div
       className={cn("container mt-12 flex flex-row items-center justify-center gap-5", className)}
     >
+      {title !== "Home" && <Link to="/">Home</Link>}
       {title && <p className="w-max">{title}</p>}
       {titleChild && titleChild}
       <ClientOnly>

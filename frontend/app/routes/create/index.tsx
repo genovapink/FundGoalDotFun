@@ -32,7 +32,7 @@ export default function Create() {
     description: "",
     donationAddress: "",
     initialBuyAmount: "1000",
-    initialTokens: 42000000,
+    initialTokens: 1_000_000,
     embedCode: "",
     // '<iframe width="560" height="315" src="https://www.youtube.com/embed/b6lNZi8cDuo?si=CpOjeyZVs2jYOK75" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   });
@@ -124,14 +124,6 @@ export default function Create() {
   };
 
   useEffect(() => {
-    const loading = loadingCreateToken || loadingCreateTokenReceipt;
-
-    console.log("loading", loading);
-    // if (!loading) {
-    //   console.log("savetoken");
-    //   saveToken();
-    // }
-
     if (createTokenReceipt) {
       for (const log of createTokenReceipt!.logs) {
         try {
@@ -141,15 +133,11 @@ export default function Create() {
             topics: log.topics,
           });
 
-          // const { addr1, addr2 } = decoded.args;
           if (decoded.eventName == "BondingCurveCreated") {
             // @ts-expect-error askdlaskdlkasldk
             const bondingAddress = decoded.args["bondingCurveAddress"];
             // @ts-expect-error askdlaskdlkasldk
             const tokenAddress = decoded.args["tokenAddress"];
-
-            console.log("BondingCurveCreated", bondingAddress);
-            console.log("BondingCurveCreated", tokenAddress);
 
             /* -------------------------------------------------------------------------- */
             /*                                do test here                                */
@@ -171,7 +159,7 @@ export default function Create() {
   return (
     <>
       <DynamicHeader title="Create" />
-      <div className="w-full min-h-screen mx-auto py-6 px-4 sm:px-6 lg:px-8 xl:max-w-6xl mb-20">
+      <div className="w-full min-h-screen mx-auto py-6 px-4 sm:px-6 lg:px-8 xl:max-w-6xl mb-28">
         <p className="text-3xl sm:text-5xl lg:text-8xl my-12 lg:my-24 text-center">
           <ScrambleText title="Launch your token" />
         </p>
@@ -276,7 +264,7 @@ export default function Create() {
                 <label className="block text-lg sm:text-xl mb-2">Embed Code</label>
                 <textarea
                   name="embedCode"
-                  placeholder="Embed code, youtube or linkedin"
+                  placeholder="Embed code, YouTube or LinkedIn"
                   value={formData.embedCode}
                   onChange={handleChange}
                   className="w-full p-3 border border-input rounded-lg bg-background min-h-[100px] sm:min-h-[120px] text-sm sm:text-base"
@@ -299,9 +287,9 @@ export default function Create() {
               <span>
                 I agree that I am creating a funding token with a fixed supply of 1,000,000,000
                 tokens. I understand that as the deployer, I will receive 2% of the total supply
-                with vesting conditions (50% unlocked at $1M market cap, 50% at $3M market cap). I
-                confirm that I have reviewed all information and am ready to deploy this token to
-                the market.
+                with vesting conditions (25% unlocked at $1M market cap, 25% at $3M market cap, 25%
+                at $6M market cap, and 25% at $10 market cap). I confirm that I have reviewed all
+                information and am ready to deploy this token to the market.
               </span>
             </label>
           </div>
@@ -318,7 +306,6 @@ export default function Create() {
             Launch
           </button>
         </form>
-        {JSON.stringify(errorCreateToken)}
         {showModal && (
           <ConfirmLaunchModal
             onClose={() => setShowModal(false)}

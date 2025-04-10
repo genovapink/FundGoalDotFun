@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 export function HowItWorks() {
   return (
     <motion.div
-      className="mb-20 px-4 sm:px-6 space-y-8"
+      className="mb-32 px-4 sm:px-6 space-y-8"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -14,9 +14,9 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        FundFun is your gateway to effortless crypto funding. Whether you're a creator looking to
-        launch a token or an investor exploring exciting opportunities, FundFun makes it simple to
-        connect, trade, and grow.
+        GoFundingDotFun is your gateway to effortless crypto funding. Whether you're a creator
+        looking to launch a token or an investor exploring exciting opportunities, GoFundingDotFun
+        makes it simple to connect, trade, and grow.
       </motion.p>
 
       <motion.ol
@@ -36,7 +36,7 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        With FundFun, you can also create your own funding token in just a few steps:
+        With GoFundingDotFun, you can also create your own funding token in just a few steps:
       </motion.p>
 
       <motion.ol
@@ -57,9 +57,9 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        FundFun ensures a <strong>fair-launch</strong> system where all tokens are created with
-        transparency, giving everyone equal access to buy and sell. As the market grows, creators
-        can earn rewards while traders enjoy a secure and seamless experience.
+        GoFundingDotFun ensures a <strong>fair-launch</strong> system where all tokens are created
+        with transparency, giving everyone equal access to buy and sell. As the market grows,
+        creators can earn rewards while traders enjoy a secure and seamless experience.
       </motion.p>
 
       <motion.p
@@ -68,7 +68,7 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        Start your journey with FundFun and bring your crypto ideas to life!
+        Start your journey with GoFundingDotFun and bring your crypto ideas to life!
       </motion.p>
     </motion.div>
   );

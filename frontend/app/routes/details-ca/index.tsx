@@ -74,17 +74,17 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
   );
 
   return (
-    <div className="grid grid-cols-12 gap-5 mt-8 px-10 h-screen">
+    <div className="grid grid-cols-12 gap-5 mt-12 px-10 h-screen">
       <div className="col-span-full lg:col-span-8 row-auto lg:row-start-1 w-full">
         <NavLink to="/" className="flex flex-row items-center text-sm gap-x-2 underline">
           <ChevronLeft className="size-4" /> Back
         </NavLink>
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row items-center gap-5 text-xs">
-            <p>MCap: $22,833</p>
-            <p>price: 0.0000000337 EDU</p>
-            <p>liquidity: 123456789 EDU</p>
-            <p>remaining: 695,799,225.84</p>
+            <p>Market Cap: $22,833</p>
+            <p>Price: 0.0000000337 EDU</p>
+            <p>Liquidity: 123456789 EDU</p>
+            <p>Remaining: 695,799,225.84 {loaderData.ticker}</p>
           </div>
           <ToggleGroup type="single">
             {TIME_SERIES.map((val, idx) => (
@@ -117,7 +117,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
 
       <div className="col-span-full lg:col-span-8 row-start-4 lg:row-start-3 w-full">
         <Table className="overflow-y-auto relative">
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of your recent transactions.</TableCaption>
           <TableHeader className="sticky top-0 bg-background">
             <TableRow>
               <TableHead>User</TableHead>
@@ -126,7 +126,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               <TableHead>{loaderData.ticker}</TableHead>
               <TableHead>EDU</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead className="text-right">Tx</TableHead>
+              <TableHead>Tx Hash</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -138,7 +138,17 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
                 <TableCell>{invoice.volume}</TableCell>
                 <TableCell>{invoice.edu}</TableCell>
                 <TableCell>{invoice.date}</TableCell>
-                <TableCell className="text-right">{invoice.tx}</TableCell>
+                <TableCell>
+                  <a
+                    href={`https://opencampus-codex.blockscout.com/tx/${invoice.tx}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate block text-blue-500 hover:underline"
+                    title={invoice.tx}
+                  >
+                    {invoice.tx}
+                  </a>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -201,6 +211,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               </div>
             )}
             <div className="h-[1px] bg-white/50 w-full self-start my-8" />
+            <p>Description:</p>
             <p>{loaderData.description}</p>
           </div>
         </div>
