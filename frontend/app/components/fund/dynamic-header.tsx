@@ -28,7 +28,7 @@ export function DynamicHeader({ listTokens, titleChild, className }: DynamicHead
   useEffect(() => {
     const item = listTokens[currentIndex];
     setDisplayed(
-      `$${item.ticker}: ${String(parseFloat((Math.random() * 0.00001 + 0.000001).toFixed(8)))}`
+      `$${item.ticker}: ${String(parseFloat((Math.random() * (10 - 1) + 1).toFixed(2)))}`
     );
   }, [currentIndex]);
 
@@ -39,7 +39,7 @@ export function DynamicHeader({ listTokens, titleChild, className }: DynamicHead
       <img src="/logo-long-white-1.png" className="h-11" />
       {titleChild && titleChild}
       <ClientOnly>
-        {() => <ScrambleText title={displayed as string} className="grow text-center" />}
+        {() => <ScrambleText title={`${displayed}K`} className="grow text-center" />}
       </ClientOnly>
       <ConnectWallet />
     </div>
