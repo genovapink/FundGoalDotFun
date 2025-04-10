@@ -14,10 +14,10 @@ export function Introduction() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        GoFundingDotFun makes crypto trading and token funding{" "}
-        <strong>simple, fast, and accessible</strong>. Whether you're exploring active markets or
-        launching your own funding token, our platform ensures a seamless experience with just a few
-        clicks.
+        <strong>GoFundingDotFun</strong> is a decentralized launchpad designed to fund the future of
+        learning, discovery, and innovation. Built on <strong>EduChain</strong>, it enables anyone
+        to launch fundraising tokens for scholarships, scientific research, creative projects, and
+        early-stage startups—with no gatekeepers, no friction, and full transparency.
       </motion.p>
 
       <motion.p
@@ -26,8 +26,10 @@ export function Introduction() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        Designed for efficiency, GoFundingDotFun empowers users to create tokens, trade
-        effortlessly, and track market growth—all while maintaining full transparency and security.
+        From student-led experiments to decentralized science (DeSci) and open-source ventures,
+        GoFundingDotFun makes it radically simple to bootstrap public-good projects with onchain
+        tokenization, gamified milestones, and programmable incentives.{" "}
+        <strong>Donations flow peer-to-peer, tracked transparently on the blockchain</strong>.
       </motion.p>
 
       <motion.p
@@ -36,7 +38,8 @@ export function Introduction() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        Start your journey with GoFundingDotFun today and turn your crypto ideas into reality!
+        Whether you're a researcher, a student, a builder, or a believer in decentralized change,
+        GoFundingDotFun gives you the tools to turn your vision into reality—one token at a time.
       </motion.p>
     </motion.div>
   );

@@ -3,19 +3,19 @@ import { motion } from "motion/react";
 export function HowTo() {
   const sections = [
     {
-      title: "How to Get Started",
+      title: "Get Started Instantly",
       content:
-        "Explore the Funding Market to find tokens or create your own funding token in just a few simple steps. Connect your wallet, trade tokens, and grow your crypto portfolio.",
+        "Dive into the Funding Market to discover active campaigns or launch your own tokenized project. With just a wallet and a few clicks, you're ready to fund what matters.",
     },
     {
-      title: "Creating Your Own Token",
+      title: "Launch Your Funding Token",
       content:
-        "Fill out a quick form with details like token name, ticker, and description. Upload a logo, optionally add social media links, and deploy your token seamlessly to the marketplace.",
+        "Customize your token with a name, ticker, and description. Upload a logo, plug in your socials, and launch your ERC-20 on EduChain—fully onchain, no code required.",
     },
     {
-      title: "Trading Tokens",
+      title: "Trade and Support Projects",
       content:
-        "Pick a token from the Funding Market, connect your wallet, and start buying or selling. Lock in your profits or minimize your losses with transparent, on-chain transactions.",
+        "Explore live tokens, connect your wallet, and start trading. Support research, creators, or early-stage builders while earning or contributing—transparently and securely.",
     },
   ];
 

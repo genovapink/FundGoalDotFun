@@ -14,9 +14,9 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        GoFundingDotFun is your gateway to effortless crypto funding. Whether you're a creator
-        looking to launch a token or an investor exploring exciting opportunities, GoFundingDotFun
-        makes it simple to connect, trade, and grow.
+        <strong>GoFundingDotFun</strong> is your decentralized gateway to launching and supporting
+        onchain funding campaigns. Whether you're backing community-driven tokens or creating your
+        own, the platform makes crypto-native fundraising simple, transparent, and fast.
       </motion.p>
 
       <motion.ol
@@ -25,9 +25,9 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <li>Pick a coin that you like from the Funding Market.</li>
-        <li>Buy the coin by connecting your wallet.</li>
-        <li>Sell the coin at any time to lock in your profits or losses.</li>
+        <li>Explore live tokens in the Funding Market—each tied to real goals or missions.</li>
+        <li>Connect your wallet and buy tokens directly with full onchain transparency.</li>
+        <li>Sell at any time or hold to support the project’s growth and milestones.</li>
       </motion.ol>
 
       <motion.p
@@ -36,7 +36,7 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        With GoFundingDotFun, you can also create your own funding token in just a few steps:
+        Want to launch your own funding token? It’s as easy as:
       </motion.p>
 
       <motion.ol
@@ -45,10 +45,10 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <li>Fill out a simple form with details like the token name, ticker, and description.</li>
-        <li>Upload a profile image and provide optional social media or website links.</li>
-        <li>Connect your wallet and confirm the deployment of your token.</li>
-        <li>Your token goes live in the marketplace, ready for trading!</li>
+        <li>Fill out a quick form with your token’s name, ticker, and description.</li>
+        <li>Add your logo and optional links (Twitter, website, GitHub, etc.).</li>
+        <li>Connect your wallet and deploy your token—no coding needed.</li>
+        <li>Your token is live on EduChain and ready for trading in seconds.</li>
       </motion.ol>
 
       <motion.p
@@ -57,9 +57,9 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        GoFundingDotFun ensures a <strong>fair-launch</strong> system where all tokens are created
-        with transparency, giving everyone equal access to buy and sell. As the market grows,
-        creators can earn rewards while traders enjoy a secure and seamless experience.
+        All tokens follow a <strong>fair-launch</strong> model—no pre-mints, no hidden allocations.
+        Every trade is onchain, every milestone is visible, and every creator earns transparently as
+        their project grows.
       </motion.p>
 
       <motion.p
@@ -68,7 +68,7 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
-        Start your journey with GoFundingDotFun and bring your crypto ideas to life!
+        Join the future of fundraising. Launch. Donate. Trade. Build—on GoFundingDotFun.
       </motion.p>
     </motion.div>
   );

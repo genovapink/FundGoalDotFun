@@ -1,6 +1,6 @@
 import { DynamicHeader } from "@fund/dynamic-header";
 import { AnimatePresence, motion } from "motion/react";
-import { useState, type JSX } from "react";
+import { useState } from "react";
 import { HowItWorks } from "./how-it-works";
 import { HowTo } from "./how-to";
 import { Introduction } from "./introduction";
@@ -8,12 +8,28 @@ import { AnimatedUnderline } from "@fund/animated-underline";
 import { ScrambleText } from "@fund/scramble-text";
 
 export function meta() {
+  const title = "About GoFundingDotFun | Decentralized Crowdfunding for Research & Innovation";
+  const description =
+    "Learn how GoFundingDotFun empowers students, creators, and researchers to launch decentralized crowdfunding campaigns through tokenization on EduChain.";
+  const image = "/logo.png";
+
   return [
-    { title: "About - Gofunding" },
-    { name: "description", content: "About - Gofunding" },
-    { name: "image", content: "/logo.png" },
-    { name: "og:image", content: "/logo.png" },
-    { name: "twitter:image", content: "/logo.png" },
+    { title },
+    { name: "description", content: description },
+
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://gofunding.fun/about" },
+    { property: "og:image", content: image },
+
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    { name: "twitter:site", content: "@gofundingdotfun" },
+
+    { name: "theme-color", content: "#3F5F15" },
   ];
 }
 
