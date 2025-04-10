@@ -29,12 +29,29 @@ export type TableItem = {
 };
 
 export function meta() {
+  const title = "Token Details | GoFundingDotFun";
+  const description =
+    "View token information, transaction activity, and market data for community-funded projects on GoFundingDotFun.";
+  const image = "/logo.png";
+  const url = "https://gofunding.fun";
+
   return [
-    { title: "Details - Gofunding" },
-    { name: "description", content: "Detail - Gofunding" },
-    { name: "image", content: "/logo.png" },
-    { name: "og:image", content: "/logo.png" },
-    { name: "twitter:image", content: "/logo.png" },
+    { title },
+    { name: "description", content: description },
+
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: url },
+    { property: "og:image", content: image },
+
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    { name: "twitter:site", content: "@gofundingdotfun" },
+
+    { name: "theme-color", content: "#3F5F15" },
   ];
 }
 
@@ -174,11 +191,7 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
               Visit resource
             </ForwardLink>
             <iframe
-              className={cn(
-                "rounded-lg h-full w-full overflow-hidden",
-                "aspect-video"
-                // "aspect-square"
-              )}
+              className={cn("rounded-lg h-full w-full overflow-hidden", "aspect-video")}
               src={String(loaderData.postUrl)}
               frameBorder="0"
               allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -193,7 +206,17 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
             </div>
             <div className="flex flex-row gap-2 items-center">
               <p>Contract Address:</p>
-              <Badge>{addressTrimer(loaderData.contractAddress)}</Badge>
+
+              <a
+                href={`https://edu-chain-testnet.blockscout.com/address/${loaderData.contractAddress}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Badge className="cursor-pointer">
+                  {addressTrimer(loaderData.contractAddress)}
+                </Badge>
+              </a>
+
               <Copy
                 className="size-5 cursor-pointer"
                 onClick={() => navigator.clipboard.writeText(loaderData.contractAddress)}

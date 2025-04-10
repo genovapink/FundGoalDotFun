@@ -1,4 +1,4 @@
-import { useState, useRef, type ChangeEvent, type FormEvent, useEffect } from "react";
+import { useState, type ChangeEvent, type FormEvent, useEffect } from "react";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { ScrambleText } from "@fund/scramble-text";
 import { toast } from "sonner";
@@ -11,12 +11,29 @@ import { decodeEventLog, parseEther } from "viem";
 import { useNavigate } from "react-router";
 
 export function meta() {
+  const title = "Create a Token | GoFundingDotFun";
+  const description =
+    "Launch your own funding token in minutes on EduChain. Customize token name, ticker, image, and description. Empower decentralized fundraising for your project, startup, or research.";
+  const image = "/logo.png";
+  const url = "https://gofunding.fun/create";
+
   return [
-    { title: "Create - Gofunding" },
-    { name: "description", content: "Create - Gofunding" },
-    { name: "image", content: "/logo.png" },
-    { name: "og:image", content: "/logo.png" },
-    { name: "twitter:image", content: "/logo.png" },
+    { title },
+    { name: "description", content: description },
+
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: url },
+    { property: "og:image", content: image },
+
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    { name: "twitter:site", content: "@gofundingdotfun" },
+
+    { name: "theme-color", content: "#3F5F15" },
   ];
 }
 
@@ -202,7 +219,9 @@ export default function Create() {
               </div>
 
               <div>
-                <label className="block text-lg sm:text-xl mb-2">Donation Address (optional)</label>
+                <label className="block text-lg sm:text-xl mb-2">
+                  EVM Donation Address (optional)
+                </label>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <input
