@@ -56,8 +56,9 @@ export function DynamicHeader({ title, titleChild, className }: DynamicHeaderPro
     <div
       className={cn("container mt-12 flex flex-row items-center justify-center gap-5", className)}
     >
-      {title !== "Home" && <Link to="/">Home</Link>}
-      {title && <p className="w-max">{title}</p>}
+      <div className="px-2 rounded-full bg-white/40 flex flex-row items-center">
+        <img src="/logo-long.png" className="h-11" />
+      </div>
       {titleChild && titleChild}
       <ClientOnly>
         {() => <ScrambleText title={displayed} className="grow text-center" />}
