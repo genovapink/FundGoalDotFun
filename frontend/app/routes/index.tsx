@@ -133,7 +133,6 @@ export default function Home() {
 
   return (
     <>
-      <DynamicHeader title="Home" />
       <div className="container flex flex-col mt-8 gap-8">
         <div className="flex flex-row items-center gap-10">
           <div className="relative w-full">

@@ -22,7 +22,6 @@ export function meta() {
 export default function ProfilePage() {
   return (
     <>
-      <DynamicHeader title="Profile" />
       <div className="container mt-8 flex flex-col gap-4">
         <div className="flex flex-row gap-4 justify-center">
           <img

@@ -13,6 +13,8 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FundWalletProvider } from "@fund/wallet/provider";
 import { WAGMI_CONFIG } from "./services/wagmi/config";
+import { DynamicHeader } from "@fund/dynamic-header";
+import { useEffect, useState } from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -47,10 +49,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const queryClient = new QueryClient();
+
+  const [tokens, setTokens] = useState([]);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BE_URL}/api/tokens/ticker/list`)
+      .then((res) => res.json())
+      .then((val) => {
+        // console.log(val);
+        setTokens(val);
+      });
+  }, []);
+
   return (
     <WagmiProvider config={WAGMI_CONFIG}>
       <QueryClientProvider client={queryClient}>
         <FundWalletProvider>
+          {tokens.length !== 0 && <DynamicHeader listTokens={tokens} title="root" />}
           <Outlet />
         </FundWalletProvider>
       </QueryClientProvider>

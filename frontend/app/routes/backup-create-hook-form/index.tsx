@@ -93,7 +93,6 @@ export default function Create() {
 
   return (
     <>
-      <DynamicHeader title="Create" />
       <div className="w-full min-h-screen mx-auto py-6 px-4 sm:px-6 lg:px-8 xl:max-w-6xl mb-20">
         <p className="col-span-12 text-4xl sm:text-6xl lg:text-9xl my-12 lg:my-24 text-center">
           <ScrambleText title="Launch your token" />
