@@ -73,11 +73,12 @@ export const TradingForm = ({
     },
   });
 
-  const receiveAmount = amount
-    ? contractReturn
-      ? (Number(contractReturn) / 1e18).toFixed(2)
-      : "Calculating..."
-    : "0.00";
+  const receiveAmount =
+    !amount || Number(amount) <= 0
+      ? "0.00"
+      : contractReturn
+        ? (Number(contractReturn) / 1e18).toFixed(2)
+        : "Calculating...";
 
   const { writeContract: tx, data: txHash } = useWriteContract();
   const { data: txReceipt } = useWaitForTransactionReceipt({
