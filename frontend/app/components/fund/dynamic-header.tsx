@@ -36,7 +36,7 @@ export function DynamicHeader({ listTokens, titleChild, className }: DynamicHead
     <div
       className={cn("container mt-12 flex flex-row items-center justify-center gap-5", className)}
     >
-      <img src="/logo-long-white.png" className="h-14" />
+      <img src="/logo-long-white-1.png" className="h-11" />
       {titleChild && titleChild}
       <ClientOnly>
         {() => <ScrambleText title={displayed as string} className="grow text-center" />}
