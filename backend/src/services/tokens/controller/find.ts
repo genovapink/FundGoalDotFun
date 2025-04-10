@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { TokenModel } from "../model";
 
-const LIMIT = 3;
+const LIMIT = 6;
 
 export const findItems = async (req: Request, res: Response) => {
   try {
