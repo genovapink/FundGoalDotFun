@@ -6,6 +6,7 @@ import {
   TabsOutlineList,
   TabsOutlineTrigger,
 } from "@fund/tab/tab-outline";
+import { useFundWallet } from "@fund/wallet/provider";
 import { Badge } from "@shadcn/badge";
 import { Pencil } from "lucide-react";
 
@@ -37,6 +38,8 @@ export function meta() {
 }
 
 export default function ProfilePage() {
+  const { address } = useFundWallet();
+
   return (
     <>
       <div className="container mt-8 flex flex-col gap-4">
@@ -59,10 +62,13 @@ export default function ProfilePage() {
         </div>
         <div className="flex flex-col gap-2 justify-center items-center">
           <Badge variant="outline" className="py-2 px-3 mx-auto">
-            0x43133f5D7684E24A7CF82D1Bf547ED73493f6c0E
+            {address}
           </Badge>
-          <ForwardLink to="/" className="text-end">
-            view on etherscan
+          <ForwardLink
+            to={`http://edu-chain-testnet.blockscout.com/address/${address}`}
+            className="text-end"
+          >
+            view on educhain explorer
           </ForwardLink>
         </div>
         <TabsOutline defaultValue="coins-created">
