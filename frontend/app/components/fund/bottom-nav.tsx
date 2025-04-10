@@ -24,7 +24,7 @@ export function BottomNavigation() {
 
   return (
     <div className="fixed bottom-10 flex items-center justify-center w-full">
-      <div className="relative flex items-center justify-center gap-4 px-2 backdrop-blur-lg rounded-full bg-background/30">
+      <div className="relative flex items-center justify-center gap-4 px-2 backdrop-blur-lg rounded-full bg-background/30 border border-white/50">
         <motion.div
           className="absolute left-0 z-10 w-full rounded-[40px]"
           animate={{
@@ -33,7 +33,7 @@ export function BottomNavigation() {
           transition={{ type: "ease-in", duration: 0.5 }}
         >
           <motion.button
-            className="flex size-12 items-center justify-center rounded-full bg-slate-800 sm:size-20 cursor-pointer"
+            className="flex size-12 items-center justify-center rounded-full bg-slate-800 sm:size-20 cursor-pointer border border-white/50"
             onClick={() => setActive(!active)}
             animate={{ rotate: active ? 45 : 0 }}
             transition={{
