@@ -57,7 +57,9 @@ export const TradingForm = ({
   };
 
   const setPercentage = (percentage: number) => {
-    const calculatedAmount = (balance * percentage) / 100 / (type === "buy" ? price : 1);
+    const adjustedPercentage = percentage === 100 ? 98 : percentage; // to avoid 100% for trade, we need gas
+    const calculatedAmount = (balance * adjustedPercentage) / 100;
+
     setAmount(calculatedAmount.toFixed(2));
   };
 
@@ -147,7 +149,13 @@ export const TradingForm = ({
       <div className="relative">
         <div className="flex items-center border rounded-md p-2">
           <img
-            src={displayToken.icon == "" ? "/logo-color.png" : displayToken.icon}
+            src={
+              type === "buy"
+                ? "/logo-color.png"
+                : displayToken.icon === ""
+                  ? "/logo-color.png"
+                  : displayToken.icon
+            }
             alt={displayToken.name || ""}
             className="w-6 h-6 mr-2 rounded-xl"
           />
