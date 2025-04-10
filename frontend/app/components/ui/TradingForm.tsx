@@ -151,7 +151,7 @@ export const TradingForm = ({
           <img
             src={
               type === "buy"
-                ? "/logo-color.png"
+                ? "/edu.jpg"
                 : displayToken.icon === ""
                   ? "/logo-color.png"
                   : displayToken.icon
