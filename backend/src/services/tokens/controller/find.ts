@@ -56,3 +56,9 @@ export const findItemByContract = async (req: Request, res: Response) => {
 
   res.status(200).json(token);
 };
+
+export const allItemsOnlyName = async (req: Request, res: Response) => {
+  const token = await TokenModel.find().select("ticker");
+
+  res.status(200).json(token);
+};
