@@ -16,12 +16,28 @@ const breakpointColumnsObj = {
 };
 
 export function meta() {
+  const title = "GoFundingDotFun | Tokenize Ideas, Fund the Future";
+  const description =
+    "GoFundingDotFun is a decentralized crowdfunding launchpad for research, education, creators, and startups. Tokenize your project and fund it with onchain support.";
+  const image = "/logo.png";
+
   return [
-    { title: "Gofunding" },
-    { name: "description", content: "Gofunding" },
-    { name: "image", content: "/logo.png" },
-    { name: "og:image", content: "/logo.png" },
-    { name: "twitter:image", content: "/logo.png" },
+    { title },
+    { name: "description", content: description },
+
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://gofunding.fun" },
+    { property: "og:image", content: image },
+
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    { name: "twitter:site", content: "@gofundingdotfun" },
+
+    { name: "theme-color", content: "#3F5F15" },
   ];
 }
 

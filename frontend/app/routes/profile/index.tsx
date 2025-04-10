@@ -10,12 +10,29 @@ import { Badge } from "@shadcn/badge";
 import { Pencil } from "lucide-react";
 
 export function meta() {
+  const title = "User Profile | GoFundingDotFun";
+  const description =
+    "View a creator's onchain profile on GoFundingDotFun. Track their fundraising tokens, followers, and community impact.";
+  const image = "/logo.png";
+  const url = "https://gofunding.fun/profile";
+
   return [
-    { title: "Profile - Gofunding" },
-    { name: "description", content: "Profile - Gofunding" },
-    { name: "image", content: "/logo.png" },
-    { name: "og:image", content: "/logo.png" },
-    { name: "twitter:image", content: "/logo.png" },
+    { title },
+    { name: "description", content: description },
+
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "profile" },
+    { property: "og:url", content: url },
+    { property: "og:image", content: image },
+
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:image", content: image },
+    { name: "twitter:site", content: "@gofundingdotfun" },
+
+    { name: "theme-color", content: "#3F5F15" },
   ];
 }
 
