@@ -1,4 +1,4 @@
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { BONDING_CURVE_ABI } from "~/constants/BONDING_CURVE_ABI";
 import { decodeEventLog, maxUint256, parseEther, parseUnits } from "viem";
 import { useFundWallet } from "@fund/wallet/provider";
@@ -63,10 +63,20 @@ export const TradingForm = ({
     setAmount(calculatedAmount.toFixed(2));
   };
 
+  const { data: contractReturn } = useReadContract({
+    abi: BONDING_CURVE_ABI,
+    address: bondingCurveAddress,
+    functionName: type === "buy" ? "calculateBuyReturn" : "calculateSellReturn",
+    args: [parseUnits(amount || "0", 18)],
+    query: {
+      enabled: !!amount && Number(amount) > 0,
+    },
+  });
+
   const receiveAmount = amount
-    ? type === "buy"
-      ? (Number(amount) * price).toFixed(2)
-      : (Number(amount) / price).toFixed(2)
+    ? contractReturn
+      ? (Number(contractReturn) / 1e18).toFixed(2)
+      : "Calculating..."
     : "0.00";
 
   const { writeContract: tx, data: txHash } = useWriteContract();
