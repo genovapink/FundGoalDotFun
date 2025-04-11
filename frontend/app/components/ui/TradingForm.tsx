@@ -6,7 +6,7 @@ import { ClientOnly } from "remix-utils/client-only";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
 import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { Button } from "@shadcn/button";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { ERC20_ABI } from "~/constants/ERC20_ABI";
 
@@ -45,6 +45,7 @@ export const TradingForm = ({
   const receiveToken = type === "buy" ? quoteToken : baseToken;
 
   const { address: userAddress } = useFundWallet();
+  const shouldExecuteAfterApprove = useRef(false);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -118,12 +119,15 @@ export const TradingForm = ({
     try {
       const tokenAmount = parseUnits(amount, 18);
 
-      if (
+      const needsApproval =
+        type === "sell" &&
         currentAllowance !== undefined &&
         currentAllowance !== null &&
-        BigInt(currentAllowance.toString()) < tokenAmount
-      ) {
+        BigInt(currentAllowance.toString()) < tokenAmount;
+
+      if (needsApproval) {
         toast.info("Approving tokens...");
+        shouldExecuteAfterApprove.current = true;
         approve({
           abi: ERC20_ABI,
           address: contractAddress,
@@ -134,21 +138,14 @@ export const TradingForm = ({
       }
 
       toast.info(`Processing ${type} transaction...`);
-      if (type === "buy") {
-        tx({
-          abi: BONDING_CURVE_ABI,
-          address: bondingCurveAddress,
-          functionName: type,
-          value: parseEther(amount),
-        });
-      } else {
-        tx({
-          abi: BONDING_CURVE_ABI,
-          address: bondingCurveAddress,
-          functionName: type,
-          args: [tokenAmount],
-        });
-      }
+      shouldExecuteAfterApprove.current = false;
+      tx({
+        abi: BONDING_CURVE_ABI,
+        address: bondingCurveAddress,
+        functionName: type,
+        ...(type === "sell" && { args: [tokenAmount] }),
+        ...(type === "buy" && { value: parseEther(amount) }),
+      });
     } catch (error) {
       console.error("Transaction error:", error);
       toast.error("Failed to initiate transaction");
@@ -170,10 +167,10 @@ export const TradingForm = ({
   }, [txError, resetTx]);
 
   useEffect(() => {
-    const tokenAmount = parseUnits(amount, 18);
-
-    if (approveReceipt?.status === "success") {
+    if (approveReceipt?.status === "success" && shouldExecuteAfterApprove.current) {
       toast.success("Approval successful!");
+
+      const tokenAmount = parseUnits(amount, 18);
       tx({
         abi: BONDING_CURVE_ABI,
         address: bondingCurveAddress,
@@ -181,6 +178,8 @@ export const TradingForm = ({
         ...(type === "sell" && { args: [tokenAmount] }),
         ...(type === "buy" && { value: parseEther(amount) }),
       });
+
+      shouldExecuteAfterApprove.current = false;
     }
   }, [approveReceipt]);
 
@@ -195,9 +194,13 @@ export const TradingForm = ({
           });
 
           if (decoded.eventName === "Bought") {
-            toast.success("Buy successful! 🥳");
+            setTimeout(() => {
+              toast.success("Buy successful! 🥳");
+            }, 3000);
           } else if (decoded.eventName === "Sold") {
-            toast.success("Sell successful! 🥳");
+            setTimeout(() => {
+              toast.success("Sell successful! 🥳");
+            }, 3000);
           }
         } catch (error) {
           console.error("Decoding error:", error);
