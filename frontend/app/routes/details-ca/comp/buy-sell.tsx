@@ -17,7 +17,7 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
   const [quoteTokenName, setQuoteTokenName] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
-  const [txType, setTxType] = useState<"buy" | "sell">("buy");
+  const [txType, setTxTypeInternal] = useState<"buy" | "sell">("buy");
   const user = useFundWallet();
   const [balance, setBalance] = useState<number>(0);
   const [tokenBalance, setTokenBalance] = useState<number>(0);
@@ -51,6 +51,11 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
     address: contractAddress as Address,
   });
 
+  const setTxType = (type: "buy" | "sell") => {
+    setTxTypeInternal(type);
+    setAmount("");
+  };
+
   useEffect(() => {
     if (tokenBalanceData && typeof tokenBalanceData === "bigint") {
       const balanceInEther = parseFloat(formatEther(tokenBalanceData));
@@ -80,7 +85,15 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
   }
 
   return (
-    <Tabs defaultValue="buy" className="w-full">
+    <Tabs
+      defaultValue="buy"
+      className="w-full"
+      value={txType}
+      onValueChange={(val) => {
+        setTxType(val as "buy" | "sell");
+        setAmount("");
+      }}
+    >
       <TabsList className="w-full grid grid-cols-2">
         <TabsTrigger value="buy" className="cursor-pointer">
           Buy
@@ -100,6 +113,7 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
           isOpen={isOpen}
           bondingCurveAddress={bondingCurveAddress as `0x${string}`}
           contractAddress={contractAddress as `0x${string}`}
+          refetchNativeBalance={refetchBalance}
         />
       </TabsContent>
       <TabsContent value="sell" className="mt-4">
@@ -113,6 +127,7 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
           isOpen={isOpen}
           bondingCurveAddress={bondingCurveAddress as `0x${string}`}
           contractAddress={contractAddress as `0x${string}`}
+          refetchNativeBalance={refetchBalance}
         />
       </TabsContent>
     </Tabs>

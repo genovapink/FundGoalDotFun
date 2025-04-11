@@ -6,7 +6,7 @@ import { ClientOnly } from "remix-utils/client-only";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
 import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { Button } from "@shadcn/button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ERC20_ABI } from "~/constants/ERC20_ABI";
 
@@ -22,6 +22,7 @@ interface TradingFormProps {
   setTxType: (type: "buy" | "sell") => void;
   bondingCurveAddress: `0x${string}`;
   contractAddress: `0x${string}`;
+  refetchNativeBalance?: () => void;
 }
 
 export const TradingForm = ({
@@ -36,6 +37,7 @@ export const TradingForm = ({
   isOpen,
   bondingCurveAddress,
   contractAddress,
+  refetchNativeBalance,
 }: TradingFormProps) => {
   const { isConnected, connectors } = useFundWallet();
   const LIST_SHORTCUT = [25, 50, 75, 100];
@@ -46,6 +48,7 @@ export const TradingForm = ({
 
   const { address: userAddress } = useFundWallet();
   const shouldExecuteAfterApprove = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -115,9 +118,21 @@ export const TradingForm = ({
     hash: txHash,
   });
 
+  // Check balance
+  const { data: tokenBalance, refetch: refetchBalance } = useReadContract({
+    abi: ERC20_ABI,
+    address: contractAddress,
+    functionName: "balanceOf",
+    args: [userAddress],
+    query: {
+      enabled: !!userAddress,
+    },
+  });
+
   const doTransactions = async () => {
     try {
       const tokenAmount = parseUnits(amount, 18);
+      setIsSubmitting(true);
 
       const needsApproval =
         type === "sell" &&
@@ -149,6 +164,7 @@ export const TradingForm = ({
     } catch (error) {
       console.error("Transaction error:", error);
       toast.error("Failed to initiate transaction");
+      setIsSubmitting(false);
     }
   };
 
@@ -163,6 +179,7 @@ export const TradingForm = ({
     if (txError) {
       toast.error("Transaction was rejected");
       resetTx();
+      setIsSubmitting(false);
     }
   }, [txError, resetTx]);
 
@@ -185,6 +202,8 @@ export const TradingForm = ({
 
   useEffect(() => {
     if (txReceipt) {
+      setIsSubmitting(false);
+
       for (const log of txReceipt.logs) {
         try {
           const decoded = decodeEventLog({
@@ -194,13 +213,13 @@ export const TradingForm = ({
           });
 
           if (decoded.eventName === "Bought") {
-            setTimeout(() => {
-              toast.success("Buy successful! 🥳");
-            }, 3000);
+            setTimeout(() => toast.success("Buy successful! 🥳"), 3000);
+            refetchBalance?.();
+            refetchNativeBalance?.();
           } else if (decoded.eventName === "Sold") {
-            setTimeout(() => {
-              toast.success("Sell successful! 🥳");
-            }, 3000);
+            setTimeout(() => toast.success("Sell successful! 🥳"), 3000);
+            refetchBalance?.();
+            refetchNativeBalance?.();
           }
         } catch (error) {
           console.error("Decoding error:", error);
@@ -214,10 +233,6 @@ export const TradingForm = ({
       refetchAllowance?.();
     }
   }, [approveReceipt]);
-
-  useEffect(() => {
-    setTxType(type);
-  }, [type, setTxType]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -251,7 +266,12 @@ export const TradingForm = ({
       </div>
 
       <div className="text-sm text-gray-600">
-        Available: {isConnected ? `${balance.toFixed(2)} ${balanceToken.name}` : "0"}
+        Available:{" "}
+        {isConnected
+          ? type === "buy"
+            ? `${balance.toFixed(4)} ${balanceToken.name}`
+            : `${tokenBalance ? (Number(tokenBalance) / 1e18).toFixed(4) : "0.00"} ${balanceToken.name}`
+          : "0"}
       </div>
 
       <div className="flex flex-row gap-2">
@@ -277,15 +297,15 @@ export const TradingForm = ({
             <ButtonMagnet
               onClick={() => doTransactions()}
               color={type === "buy" ? "green" : "pink"}
-              disabled={isApprovePending || isTxPending}
+              disabled={isApprovePending || isSubmitting}
             >
               {isApprovePending
                 ? "Approving..."
-                : isTxPending
+                : isSubmitting
                   ? "Processing..."
                   : type === "buy"
-                    ? `Buy `
-                    : `Sell `}
+                    ? "Buy"
+                    : "Sell"}
             </ButtonMagnet>
           ) : (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
