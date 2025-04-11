@@ -5,6 +5,7 @@ import { ClientOnly } from "remix-utils/client-only";
 import { ScrambleText } from "./scramble-text";
 import React from "react";
 import { ConnectWallet } from "./wallet/connect-wallet";
+import { Link } from "react-router";
 
 type DynamicHeaderProps = {
   titleChild?: React.ReactNode;
@@ -36,7 +37,9 @@ export function DynamicHeader({ listTokens, titleChild, className }: DynamicHead
     <div
       className={cn("container mt-12 flex flex-row items-center justify-center gap-5", className)}
     >
-      <img src="/logo-long-white-1.png" className="h-11" />
+      <Link to="/">
+        <img src="/logo-long-white-1.png" className="h-11" alt="GoFunding Logo" />
+      </Link>
       {titleChild && titleChild}
       <ClientOnly>
         {() => <ScrambleText title={`${displayed}K`} className="grow text-center" />}

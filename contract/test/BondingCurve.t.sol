@@ -5,6 +5,9 @@ import "forge-std/Test.sol";
 import "../src/BondingCurve.sol";
 import "../src/TokenFactory.sol";
 
+/// @title BondingCurveTest
+/// @notice Test suite for the BondingCurve and TokenFactory contracts
+/// @dev Uses Foundry's Test framework and vm cheatcodes
 contract BondingCurveTest is Test {
     TokenFactory public factory;
     BondingCurve public bondingCurve;
@@ -17,6 +20,7 @@ contract BondingCurveTest is Test {
 
     uint256 constant INITIAL_FUNDS = 0.053 ether;
 
+    /// @notice Sets up initial state with deployed contracts and funded users
     function setUp() public {
         vm.deal(deployer, 10 ether);
         vm.deal(user1, 10 ether);
@@ -32,6 +36,7 @@ contract BondingCurveTest is Test {
         bondingCurve = BondingCurve(curveAddr);
     }
 
+    /// @notice Verifies the bonding curve’s initial state after deployment
     function testInitialState() public view {
         assertEq(bondingCurve.deployer(), deployer);
         assertEq(bondingCurve.platform(), platform);
@@ -40,6 +45,7 @@ contract BondingCurveTest is Test {
         assertFalse(bondingCurve.liquidityAdded());
     }
 
+    /// @notice Expects a revert when trying to buy with less than the minimum required ETH
     function testBuyMinimumAmount() public {
         uint256 buyAmount = 0.049 ether;
 
@@ -48,6 +54,7 @@ contract BondingCurveTest is Test {
         bondingCurve.buy{value: buyAmount}();
     }
 
+    /// @notice Tests token selling flow and verifies ETH payout and platform fee deduction
     function testSellTokens() public {
         uint256 buyAmount = 0.1 ether;
         vm.prank(user1);
@@ -69,6 +76,7 @@ contract BondingCurveTest is Test {
         assertEq(bondingCurve.platformFeesCollected(), ((buyAmount + expectedEth) * 75) / 10000);
     }
 
+    /// @notice Tests platform fee withdrawal by the authorized platform address
     function testWithdrawPlatformFees() public {
         uint256 buyAmount = 1 ether;
         vm.prank(user1);
@@ -85,18 +93,21 @@ contract BondingCurveTest is Test {
         assertEq(bondingCurve.platformFeesCollected(), 0);
     }
 
+    /// @notice Ensures unauthorized accounts cannot withdraw platform fees
     function testUnauthorizedWithdrawPlatformFees() public {
         vm.prank(user1);
         vm.expectRevert("Unauthorized");
         bondingCurve.withdrawPlatformFees();
     }
 
+    /// @notice Validates correct buy return calculation from the bonding curve
     function testCalculateBuyReturn() public view {
         uint256 ethIn = 1 ether;
         uint256 expectedTokens = ((ethIn - ((ethIn * 75) / 10000)) * 1e18) / bondingCurve.getCurrentPrice();
         assertEq(bondingCurve.calculateBuyReturn(ethIn - ((ethIn * 75) / 10000)), expectedTokens);
     }
 
+    /// @notice Validates correct sell return calculation from the bonding curve
     function testCalculateSellReturn() public {
         uint256 buyAmount = 1 ether;
         vm.prank(user1);
@@ -107,6 +118,7 @@ contract BondingCurveTest is Test {
         assertEq(bondingCurve.calculateSellReturn(tokens), expectedEth);
     }
 
+    /// @notice Expects a revert when trying to recover ownership before graduation
     function testFailRecoverBeforeGraduation() public {
         vm.prank(deployer);
         factory.recoverTokenOwnership(address(token));

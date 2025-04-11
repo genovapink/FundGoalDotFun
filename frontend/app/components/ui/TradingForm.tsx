@@ -6,7 +6,8 @@ import { ClientOnly } from "remix-utils/client-only";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@shadcn/drawer";
 import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { Button } from "@shadcn/button";
-import { useCallback, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ERC20_ABI } from "~/constants/ERC20_ABI";
 
 interface TradingFormProps {
@@ -14,7 +15,6 @@ interface TradingFormProps {
   baseToken: { icon: string; name: string };
   quoteToken: { icon: string; name: string | null };
   balance: number;
-  price: number;
   amount: string;
   setAmount: (amount: string) => void;
   setIsOpen: (open: boolean) => void;
@@ -22,6 +22,7 @@ interface TradingFormProps {
   setTxType: (type: "buy" | "sell") => void;
   bondingCurveAddress: `0x${string}`;
   contractAddress: `0x${string}`;
+  refetchNativeBalance?: () => void;
 }
 
 export const TradingForm = ({
@@ -29,7 +30,6 @@ export const TradingForm = ({
   baseToken,
   quoteToken,
   balance,
-  price,
   amount,
   setAmount,
   setIsOpen,
@@ -37,17 +37,18 @@ export const TradingForm = ({
   isOpen,
   bondingCurveAddress,
   contractAddress,
+  refetchNativeBalance,
 }: TradingFormProps) => {
   const { isConnected, connectors } = useFundWallet();
   const LIST_SHORTCUT = [25, 50, 75, 100];
 
-  useEffect(() => {
-    setTxType(type);
-  }, [type, setTxType]);
-
   const displayToken = type === "buy" ? baseToken : quoteToken;
   const balanceToken = type === "buy" ? baseToken : quoteToken;
   const receiveToken = type === "buy" ? quoteToken : baseToken;
+
+  const { address: userAddress } = useFundWallet();
+  const shouldExecuteAfterApprove = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -80,57 +81,129 @@ export const TradingForm = ({
         ? (Number(contractReturn) / 1e18).toFixed(2)
         : "Calculating...";
 
-  const { writeContract: tx, data: txHash } = useWriteContract();
-  const { data: txReceipt } = useWaitForTransactionReceipt({
-    hash: txHash,
+  // Allowance
+  const { data: currentAllowance, refetch: refetchAllowance } = useReadContract({
+    abi: ERC20_ABI,
+    address: contractAddress,
+    functionName: "allowance",
+    args: [userAddress, bondingCurveAddress],
+    query: {
+      enabled: !!userAddress && !!bondingCurveAddress,
+    },
   });
 
-  const { writeContract: approve, data: txApprove } = useWriteContract();
+  // Approve
+  const {
+    writeContract: approve,
+    data: txApprove,
+    isPending: isApprovePending,
+    error: approveError,
+    reset: resetApprove,
+  } = useWriteContract();
+
   const { data: approveReceipt } = useWaitForTransactionReceipt({
     hash: txApprove,
   });
 
-  const handleApprove = () => {
-    try {
-      approve({
-        abi: ERC20_ABI,
-        address: contractAddress,
-        functionName: "approve",
-        args: [bondingCurveAddress, maxUint256],
-      });
-    } catch (error) {
-      console.error("Approval error:", error);
-    }
-  };
+  // Tx
+  const {
+    writeContract: tx,
+    data: txHash,
+    isPending: isTxPending,
+    error: txError,
+    reset: resetTx,
+  } = useWriteContract();
 
-  const doTransactions = useCallback(async () => {
+  const { data: txReceipt } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+
+  // Check balance
+  const { data: tokenBalance, refetch: refetchBalance } = useReadContract({
+    abi: ERC20_ABI,
+    address: contractAddress,
+    functionName: "balanceOf",
+    args: [userAddress],
+    query: {
+      enabled: !!userAddress,
+    },
+  });
+
+  const doTransactions = async () => {
     try {
+      const tokenAmount = parseUnits(amount, 18);
+      setIsSubmitting(true);
+
+      const needsApproval =
+        type === "sell" &&
+        currentAllowance !== undefined &&
+        currentAllowance !== null &&
+        BigInt(currentAllowance.toString()) < tokenAmount;
+
+      if (needsApproval) {
+        toast.info("Approving tokens...");
+        shouldExecuteAfterApprove.current = true;
+        approve({
+          abi: ERC20_ABI,
+          address: contractAddress,
+          functionName: "approve",
+          args: [bondingCurveAddress, maxUint256],
+        });
+        return;
+      }
+
+      toast.info(`Processing ${type} transaction...`);
+      shouldExecuteAfterApprove.current = false;
       tx({
         abi: BONDING_CURVE_ABI,
         address: bondingCurveAddress,
-        functionName: "buy",
-        value: parseEther(amount),
+        functionName: type,
+        ...(type === "sell" && { args: [tokenAmount] }),
+        ...(type === "buy" && { value: parseEther(amount) }),
       });
     } catch (error) {
       console.error("Transaction error:", error);
+      toast.error("Failed to initiate transaction");
+      setIsSubmitting(false);
     }
-  }, [tx, bondingCurveAddress, type, amount]);
+  };
 
   useEffect(() => {
-    const tokenAmount = parseUnits(amount, 18);
+    if (approveError) {
+      toast.error("Approval was rejected");
+      resetApprove();
+    }
+  }, [approveError, resetApprove]);
 
-    if (approveReceipt?.status === "success") {
+  useEffect(() => {
+    if (txError) {
+      toast.error("Transaction was rejected");
+      resetTx();
+      setIsSubmitting(false);
+    }
+  }, [txError, resetTx]);
+
+  useEffect(() => {
+    if (approveReceipt?.status === "success" && shouldExecuteAfterApprove.current) {
+      toast.success("Approval successful!");
+
+      const tokenAmount = parseUnits(amount, 18);
       tx({
         abi: BONDING_CURVE_ABI,
         address: bondingCurveAddress,
-        functionName: "sell",
-        args: [tokenAmount],
+        functionName: type,
+        ...(type === "sell" && { args: [tokenAmount] }),
+        ...(type === "buy" && { value: parseEther(amount) }),
       });
+
+      shouldExecuteAfterApprove.current = false;
     }
   }, [approveReceipt]);
 
   useEffect(() => {
     if (txReceipt) {
+      setIsSubmitting(false);
+
       for (const log of txReceipt.logs) {
         try {
           const decoded = decodeEventLog({
@@ -140,9 +213,13 @@ export const TradingForm = ({
           });
 
           if (decoded.eventName === "Bought") {
-            console.log("Buy successful", decoded.args);
+            setTimeout(() => toast.success("Buy successful! 🥳"), 3000);
+            refetchBalance?.();
+            refetchNativeBalance?.();
           } else if (decoded.eventName === "Sold") {
-            console.log("Sell successful", decoded.args);
+            setTimeout(() => toast.success("Sell successful! 🥳"), 3000);
+            refetchBalance?.();
+            refetchNativeBalance?.();
           }
         } catch (error) {
           console.error("Decoding error:", error);
@@ -150,6 +227,12 @@ export const TradingForm = ({
       }
     }
   }, [txReceipt]);
+
+  useEffect(() => {
+    if (approveReceipt?.status === "success") {
+      refetchAllowance?.();
+    }
+  }, [approveReceipt]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -183,7 +266,12 @@ export const TradingForm = ({
       </div>
 
       <div className="text-sm text-gray-600">
-        Available: {isConnected ? `${balance.toFixed(2)} ${balanceToken.name}` : "0"}
+        Available:{" "}
+        {isConnected
+          ? type === "buy"
+            ? `${balance.toFixed(4)} ${balanceToken.name}`
+            : `${tokenBalance ? (Number(tokenBalance) / 1e18).toFixed(4) : "0.00"} ${balanceToken.name}`
+          : "0"}
       </div>
 
       <div className="flex flex-row gap-2">
@@ -207,10 +295,17 @@ export const TradingForm = ({
         {() =>
           isConnected ? (
             <ButtonMagnet
-              onClick={() => (type === "sell" ? handleApprove() : doTransactions())}
+              onClick={() => doTransactions()}
               color={type === "buy" ? "green" : "pink"}
+              disabled={isApprovePending || isSubmitting}
             >
-              {type === "buy" ? `Buy ` : `Sell `}
+              {isApprovePending
+                ? "Approving..."
+                : isSubmitting
+                  ? "Processing..."
+                  : type === "buy"
+                    ? "Buy"
+                    : "Sell"}
             </ButtonMagnet>
           ) : (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>

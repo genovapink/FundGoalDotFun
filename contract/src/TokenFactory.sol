@@ -4,6 +4,8 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./BondingCurve.sol";
 
+/// @title ERC20Token
+/// @notice Custom ERC20 token with bonding curve integration, ownership control, and vesting mechanics
 contract ERC20Token is ERC20 {
     address public owner;
     address public immutable deployer;
@@ -34,6 +36,11 @@ contract ERC20Token is ERC20 {
         _;
     }
 
+    /// @notice Deploys a new ERC20Token contract
+    /// @param tokenName Name of the token
+    /// @param tokenSymbol Symbol of the token
+    /// @param _owner Initial owner address
+    /// @param _deployer Address that can claim vested tokens
     constructor(string memory tokenName, string memory tokenSymbol, address _owner, address _deployer)
         ERC20(tokenName, tokenSymbol)
     {
@@ -45,38 +52,45 @@ contract ERC20Token is ERC20 {
         vestingStartTime = block.timestamp;
     }
 
+    /// @notice Sets the bonding curve address (only once)
     function setBondingCurve(address _bondingCurve) external onlyOwner {
         require(bondingCurve == address(0), "Bonding curve already set");
         require(_bondingCurve != address(0), "Zero address");
         bondingCurve = _bondingCurve;
     }
 
+    /// @notice Mints tokens to an address (only callable by bonding curve)
     function mint(address to, uint256 amount) external onlyBondingCurve {
         require(totalSupply() + amount <= TOTAL_SUPPLY, "Exceeds total supply");
         _mint(to, amount);
         emit TokensMinted(to, amount);
     }
 
+    /// @notice Burns tokens from the caller's address
     function burn(uint256 amount) external {
         _burn(msg.sender, amount);
         emit TokensBurned(msg.sender, amount);
     }
 
+    /// @notice Approves a spender
     function approve(address spender, uint256 amount) public override returns (bool) {
         _approve(msg.sender, spender, amount);
         return true;
     }
 
+    /// @notice Burns tokens from a specified account (only callable by owner)
     function burnFrom(address account, uint256 amount) external onlyOwner {
         _burn(account, amount);
         emit TokensBurned(account, amount);
     }
 
+    /// @notice Transfers ownership to a new address
     function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "Zero address");
         owner = newOwner;
     }
 
+    /// @notice Claims vested tokens by the deployer according to vesting schedule
     function claimVestedTokens() external {
         require(msg.sender == deployer, "Only deployer");
 
@@ -91,6 +105,7 @@ contract ERC20Token is ERC20 {
         }
     }
 
+    /// @notice Calculates how many tokens are vested for the deployer
     function calculateVestedAmount() public view returns (uint256) {
         if (block.timestamp >= vestingStartTime + VESTING_DURATION) {
             return milestonesReached ? DEPLOYER_ALLOCATION : 0;
@@ -99,11 +114,13 @@ contract ERC20Token is ERC20 {
         return (DEPLOYER_ALLOCATION * timeElapsed) / VESTING_DURATION;
     }
 
+    /// @notice Marks milestones as reached (enables full vesting)
     function setMilestonesReached() external onlyOwner {
         milestonesReached = true;
         emit MilestonesReached();
     }
 
+    /// @notice Burns unvested deployer tokens after vesting ends if milestones not reached
     function burnUnvestedTokens() external {
         require(msg.sender == owner || msg.sender == deployer, "Unauthorized");
         require(block.timestamp > vestingStartTime + VESTING_DURATION, "Vesting ongoing");
@@ -122,11 +139,17 @@ contract TokenFactory {
     event TokenCreated(address indexed tokenAddress, string name, string symbol, address indexed deployer);
     event BondingCurveCreated(address indexed bondingCurveAddress, address indexed tokenAddress);
 
+    /// @notice Initializes TokenFactory with platform fee recipient
     constructor(address _platform) {
         require(_platform != address(0), "Platform zero address");
         platform = _platform;
     }
 
+    /// @notice Creates a new token and bonding curve
+    /// @param name Name of the token
+    /// @param symbol Symbol of the token
+    /// @return tokenAddress The deployed token address
+    /// @return curveAddress The deployed bonding curve address
     function createToken(string memory name, string memory symbol)
         external
         payable
@@ -161,6 +184,8 @@ contract TokenFactory {
         return (tokenAddress, curveAddress);
     }
 
+    /// @notice Allows the deployer to recover token ownership after curve graduation
+    /// @param token Address of the token to recover
     function recoverTokenOwnership(address token) external {
         ERC20Token tokenContract = ERC20Token(token);
         require(msg.sender == tokenContract.deployer(), "Only deployer");
