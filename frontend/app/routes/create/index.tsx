@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent, type FormEvent, useEffect } from "react";
-import { DynamicHeader } from "@fund/dynamic-header";
 import { ScrambleText } from "@fund/scramble-text";
 import { toast } from "sonner";
 import { ImageUploader } from "./comp/image-uploader";
