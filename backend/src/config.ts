@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 dotenv.config({
-  path: process.env.NODE_ENV != "production" ? ".env" : ".env.production",
+  path: ".env-server",
 });
 
 const CONFIG = {
