@@ -8,6 +8,7 @@ import { ABI } from "~/constants/TOKEN_LAUNCHER_ABI";
 import { CONTRACT_ADDRESS } from "~/constants/CA";
 import { decodeEventLog, parseEther } from "viem";
 import { useNavigate } from "react-router";
+import { useFundWallet } from "@fund/wallet/provider";
 
 export function meta() {
   const title = "Create a Token | GoFundingDotFun";
@@ -39,10 +40,6 @@ export function meta() {
 export default function Create() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    // name: "Namenya",
-    // ticker: "Tickernya",
-    // description: "Descriptionnya",
-    // donationAddress: "0xfB19AF4B3BEC6F6fbab7265Cb7e3207F007f6fB1",
     name: "",
     ticker: "",
     description: "",
@@ -50,19 +47,18 @@ export default function Create() {
     initialBuyAmount: "1000",
     initialTokens: 1_000_000,
     embedCode: "",
-    // '<iframe width="560" height="315" src="https://www.youtube.com/embed/b6lNZi8cDuo?si=CpOjeyZVs2jYOK75" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [image, setImage] = useState<File | null>(null);
+  const { isConnected } = useFundWallet();
 
   const {
     writeContract: createToken,
     data: hashCreateToken,
     isPending: loadingCreateToken,
-    error: errorCreateToken,
   } = useWriteContract();
 
   const { data: createTokenReceipt, isLoading: loadingCreateTokenReceipt } =
@@ -155,9 +151,6 @@ export default function Create() {
             // @ts-expect-error askdlaskdlkasldk
             const tokenAddress = decoded.args["tokenAddress"];
 
-            /* -------------------------------------------------------------------------- */
-            /*                                do test here                                */
-            /* -------------------------------------------------------------------------- */
             saveToken({ bondingAddress, tokenAddress });
             toast(`Token created successfully! 🥳`);
 
@@ -171,6 +164,20 @@ export default function Create() {
       }
     }
   }, [loadingCreateToken, loadingCreateTokenReceipt]);
+
+  if (!isConnected) {
+    return (
+      <div className="w-full min-h-screen flex flex-col justify-center items-center text-center px-4">
+        <h1 className="text-4xl sm:text-6xl font-bold mb-4">Connect Your Wallet</h1>
+        <p className="text-lg sm:text-xl text-gray-500 mb-8">
+          Please connect your wallet to create your token on GoFundingDotFun.
+        </p>
+        <p className="text-md text-gray-400">
+          Make sure your wallet is connected to a supported EVM-compatible network.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
