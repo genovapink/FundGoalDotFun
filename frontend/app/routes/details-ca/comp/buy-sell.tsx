@@ -76,7 +76,6 @@ export function BuySellTabs({ contractAddress, imageUrl, bondingCurveAddress }: 
   useEffect(() => {
     if (dataToken?.symbol) {
       setQuoteTokenName(dataToken.symbol);
-      console.log("symbol", dataToken.symbol);
     }
   }, [dataToken]);
 

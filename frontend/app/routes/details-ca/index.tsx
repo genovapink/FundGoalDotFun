@@ -91,25 +91,27 @@ export default function Symbol({ loaderData }: Route.ComponentProps) {
   );
 
   return (
-    <div className="grid grid-cols-12 gap-5 mt-12 px-10 h-screen">
-      <div className="col-span-full lg:col-span-8 row-auto lg:row-start-1 w-full">
-        <NavLink to="/" className="flex flex-row items-center text-sm gap-x-2 underline">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mt-12 px-4 sm:px-6 lg:px-10 min-h-screen">
+      <div className="col-span-full lg:col-span-8">
+        <NavLink to="/" className="flex flex-row items-center text-sm gap-x-2 underline mb-4">
           <ChevronLeft className="size-4" /> Back
         </NavLink>
-        <div className="flex flex-row justify-between items-center">
-          <div className="flex flex-row items-center gap-5 text-xs">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs">
             <p>Market Cap: $22,833</p>
             <p>Price: 0.0000000337 EDU</p>
             <p>Liquidity: 123456789 EDU</p>
             <p>Remaining: 695,799,225.84 {loaderData.ticker}</p>
           </div>
-          <ToggleGroup type="single">
-            {TIME_SERIES.map((val, idx) => (
-              <ToggleGroupItem key={idx} value={val}>
-                {val}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+          <div className="flex flex-wrap gap-2 justify-center sm:justify-end">
+            <ToggleGroup type="single">
+              {TIME_SERIES.map((val, idx) => (
+                <ToggleGroupItem key={idx} value={val}>
+                  {val}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
         </div>
       </div>
 
