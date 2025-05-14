@@ -7,6 +7,7 @@ type PaginationProps = {
   onBack: () => void;
   onNext: () => void;
 } & JSX.IntrinsicElements["div"];
+
 export function Pagination({
   currentPage,
   totalPages,
@@ -17,7 +18,6 @@ export function Pagination({
   return (
     <div className={cn("flex justify-center items-center gap-2 mt-4", className)}>
       <button
-        // onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
         onClick={onBack}
         disabled={currentPage === 1}
         className="px-3 py-1 text-xs sm:text-sm rounded-md border border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -28,7 +28,6 @@ export function Pagination({
         Page {currentPage} of {totalPages}
       </span>
       <button
-        // onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
         onClick={onNext}
         disabled={currentPage === totalPages}
         className="px-3 py-1 text-xs sm:text-sm rounded-md border border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"

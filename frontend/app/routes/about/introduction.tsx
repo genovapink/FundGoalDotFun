@@ -14,7 +14,7 @@ export function Introduction() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <strong>GoFundingDotFun</strong> is a decentralized launchpad designed to fund the future of
+        <strong>FundGoalDotFun</strong> is a decentralized launchpad designed to fund the future of
         learning, discovery, and innovation. Built on <strong>EduChain</strong>, it enables anyone
         to launch fundraising tokens for scholarships, scientific research, creative projects, and
         early-stage startups—with no gatekeepers, no friction, and full transparency.
@@ -27,7 +27,7 @@ export function Introduction() {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         From student-led experiments to decentralized science (DeSci) and open-source ventures,
-        GoFundingDotFun makes it radically simple to bootstrap public-good projects with onchain
+        FundGoalDotFun makes it radically simple to bootstrap public-good projects with onchain
         tokenization, gamified milestones, and programmable incentives.{" "}
         <strong>Donations flow peer-to-peer, tracked transparently on the blockchain</strong>.
       </motion.p>
@@ -39,7 +39,7 @@ export function Introduction() {
         transition={{ duration: 0.5, delay: 0.3 }}
       >
         Whether you're a researcher, a student, a builder, or a believer in decentralized change,
-        GoFundingDotFun gives you the tools to turn your vision into reality—one token at a time.
+        FundGoalDotFun gives you the tools to turn your vision into reality—one token at a time.
       </motion.p>
     </motion.div>
   );

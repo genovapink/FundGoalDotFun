@@ -1,36 +1,34 @@
-import { createContext, useContext, useState } from "react";
-import type { Address } from "viem";
-import { useAccount, useConnect, useDisconnect, type Config } from "wagmi";
-import type { ConnectMutate } from "wagmi/query";
+import { createContext, useContext, useMemo } from "react";
+import {
+  useWallet,
+  useConnection,
+} from "@solana/wallet-adapter-react";
+import type { WalletContextState } from "@solana/wallet-adapter-react/lib/types/wallet";
+import type { PublicKey } from "@solana/web3.js";
 
 export interface FundWalletContextType {
-  // isOpen: boolean;
-  // setIsOpen: (isOpen: boolean) => void;
-  connectors: Config["connectors"];
-  connect: ConnectMutate<Config, unknown>;
-  disconnect: () => void;
-  address: Address;
+  connectors: WalletContextState["wallets"];
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  address: string;
   isConnected: boolean;
 }
 
 const FundWalletContext = createContext<FundWalletContextType | null>(null);
 
 export function FundWalletProvider({ children }: { children: React.ReactNode }) {
-  // const [isOpen, setIsOpen] = useState(false);
-  const { address, isConnected } = useAccount();
-  const { connectors, connect } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { wallets: connectors, connect, disconnect, publicKey, connected } = useWallet();
+
+  const address = useMemo(() => publicKey?.toBase58() ?? "", [publicKey]);
 
   return (
     <FundWalletContext.Provider
       value={{
-        // isOpen,
-        // setIsOpen,
-        address: address ?? "0x0",
-        isConnected,
         connectors,
         connect,
         disconnect,
+        address,
+        isConnected: connected,
       }}
     >
       {children}

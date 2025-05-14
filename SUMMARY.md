@@ -1,3 +1,3 @@
 # Table of contents
 
-* [Welcome to GoFundingdotFun!](README.md)
+* [Welcome to FundGoaldotFun!](README.md)

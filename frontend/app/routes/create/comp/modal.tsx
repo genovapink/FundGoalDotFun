@@ -8,7 +8,6 @@ interface Props {
   formData: {
     name: string;
     ticker: string;
-    initialBuyAmount: string;
     initialTokens: number;
   };
   image?: File | null;
@@ -64,9 +63,6 @@ export const ConfirmLaunchModal: React.FC<Props> = ({
 
                 <div className="text-muted-foreground">Total Supply:</div>
                 <div className="font-medium text-right">1,000,000,000</div>
-
-                <div className="text-muted-foreground">Initial Buy:</div>
-                <div className="font-medium text-right">{formData.initialBuyAmount} EDU</div>
 
                 <div className="text-muted-foreground">Token Amount:</div>
                 <div className="font-medium text-right">

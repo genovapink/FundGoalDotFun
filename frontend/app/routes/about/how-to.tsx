@@ -10,7 +10,7 @@ export function HowTo() {
     {
       title: "Launch Your Funding Token",
       content:
-        "Customize your token with a name, ticker, and description. Upload a logo, plug in your socials, and launch your ERC-20 on EduChain—fully onchain, no code required.",
+        "Customize your token with a name, ticker, and description. Upload a logo, plug in your socials, and launch your ERC-20 on Solana—fully onchain, no code required.",
     },
     {
       title: "Trade and Support Projects",

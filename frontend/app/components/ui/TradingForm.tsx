@@ -1,5 +1,4 @@
 import { useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { BONDING_CURVE_ABI } from "~/constants/BONDING_CURVE_ABI";
 import { decodeEventLog, maxUint256, parseEther, parseUnits } from "viem";
 import { useFundWallet } from "@fund/wallet/provider";
 import { ClientOnly } from "remix-utils/client-only";
@@ -8,7 +7,6 @@ import { ButtonArrow, ButtonMagnet } from "@fund/button";
 import { Button } from "@shadcn/button";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ERC20_ABI } from "~/constants/ERC20_ABI";
 
 interface TradingFormProps {
   type: "buy" | "sell";
@@ -243,13 +241,7 @@ export const TradingForm = ({
       <div className="relative">
         <div className="flex items-center border rounded-md p-2">
           <img
-            src={
-              type === "buy"
-                ? "/edu.jpg"
-                : displayToken.icon === ""
-                  ? "/logo-color.png"
-                  : displayToken.icon
-            }
+            src={displayToken.icon === "" ? "/logo-color.png" : displayToken.icon}
             alt={displayToken.name || ""}
             className="w-6 h-6 mr-2 rounded-xl"
           />

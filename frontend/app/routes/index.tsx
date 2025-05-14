@@ -16,9 +16,9 @@ const breakpointColumnsObj = {
 };
 
 export function meta() {
-  const title = "GoFundingDotFun | Tokenize Ideas, Fund the Future";
+  const title = "FundGoalDotFun | Tokenize Ideas, Fund the Future";
   const description =
-    "GoFundingDotFun is a decentralized crowdfunding launchpad for research, education, creators, and startups. Tokenize your project and fund it with onchain support.";
+    "FundGoalDotFun is a decentralized crowdfunding launchpad for research, education, creators, and startups. Tokenize your project and fund it with onchain support.";
   const image = "/logo.png";
 
   return [
@@ -28,14 +28,14 @@ export function meta() {
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://gofunding.fun" },
+    { property: "og:url", content: "https://fundgoal.fun" },
     { property: "og:image", content: image },
 
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: image },
-    { name: "twitter:site", content: "@gofundingdotfun" },
+    { name: "twitter:site", content: "@fundgoaldotfun" },
 
     { name: "theme-color", content: "#3F5F15" },
   ];

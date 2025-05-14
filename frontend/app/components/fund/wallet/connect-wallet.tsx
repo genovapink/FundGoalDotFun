@@ -19,7 +19,7 @@ export function ConnectWallet() {
 
   useEffect(() => {
     if (isConnected && address) {
-      setIsOpen(false);
+      setIsOpen(false); // Auto-close drawer after successful connection
     }
   }, [isConnected, address]);
 
@@ -72,7 +72,10 @@ export function ConnectWallet() {
                 {connectors.map((connector) => (
                   <ButtonArrow
                     key={connector.id}
-                    onClick={() => connector.connect()}
+                    onClick={async () => {
+                      await connector.connect();
+                      setIsOpen(false); // Optional double safeguard
+                    }}
                     iconB64={connector.icon}
                     direction="left"
                     className="w-max"

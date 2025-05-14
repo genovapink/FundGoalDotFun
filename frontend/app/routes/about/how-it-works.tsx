@@ -14,7 +14,7 @@ export function HowItWorks() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <strong>GoFundingDotFun</strong> is your decentralized gateway to launching and supporting
+        <strong>FundGoalDotFun</strong> is your decentralized gateway to launching and supporting
         onchain funding campaigns. Whether you're backing community-driven tokens or creating your
         own, the platform makes crypto-native fundraising simple, transparent, and fast.
       </motion.p>

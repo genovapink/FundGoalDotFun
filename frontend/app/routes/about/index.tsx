@@ -8,9 +8,9 @@ import { AnimatedUnderline } from "@fund/animated-underline";
 import { ScrambleText } from "@fund/scramble-text";
 
 export function meta() {
-  const title = "About GoFundingDotFun | Decentralized Crowdfunding for Research & Innovation";
+  const title = "About FundGoalDotFun | Decentralized Crowdfunding for Research & Innovation";
   const description =
-    "Learn how GoFundingDotFun empowers students, creators, and researchers to launch decentralized crowdfunding campaigns through tokenization on EduChain.";
+    "Learn how FundGoalDotFun empowers students, creators, and researchers to launch decentralized crowdfunding campaigns through tokenization on EduChain.";
   const image = "/logo.png";
 
   return [
@@ -20,14 +20,14 @@ export function meta() {
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://gofunding.fun/about" },
+    { property: "og:url", content: "https://fundgoal.fun/about" },
     { property: "og:image", content: image },
 
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: image },
-    { name: "twitter:site", content: "@gofundingdotfun" },
+    { name: "twitter:site", content: "@fundgoaldotfun" },
 
     { name: "theme-color", content: "#3F5F15" },
   ];

@@ -29,11 +29,11 @@ export type TableItem = {
 };
 
 export function meta() {
-  const title = "Token Details | GoFundingDotFun";
+  const title = "Token Details | FundGoalDotFun";
   const description =
-    "View token information, transaction activity, and market data for community-funded projects on GoFundingDotFun.";
+    "View token information, transaction activity, and market data for community-funded projects on FundGoalDotFun.";
   const image = "/logo.png";
-  const url = "https://gofunding.fun";
+  const url = "https://fundgoal.fun";
 
   return [
     { title },
@@ -49,7 +49,7 @@ export function meta() {
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: image },
-    { name: "twitter:site", content: "@gofundingdotfun" },
+    { name: "twitter:site", content: "@fundgoaldotfun" },
 
     { name: "theme-color", content: "#3F5F15" },
   ];

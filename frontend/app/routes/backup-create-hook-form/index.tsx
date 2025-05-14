@@ -14,12 +14,10 @@ import { Button } from "@shadcn/button";
 import { Card, CardContent } from "@shadcn/card";
 import { ModalCreate } from "./modal";
 
-// Define form schema with zod
 const formSchema = z.object({
   name: z.string().min(1, "Token name is required"),
   ticker: z.string().min(1, "Ticker is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  initialBuyAmount: z.string().optional(),
   website: z.string().url().optional().or(z.literal("")),
   twitter: z.string().optional(),
   telegram: z.string().optional(),
@@ -37,7 +35,6 @@ export default function Create() {
       name: "",
       ticker: "",
       description: "",
-      initialBuyAmount: "1000",
       website: "",
       twitter: "",
       telegram: "",
@@ -49,7 +46,6 @@ export default function Create() {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showModal, setShowModal] = useState(false);
-  const [initialTokens, setInitialTokens] = useState(42000000);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -80,15 +76,8 @@ export default function Create() {
 
   const confirmLaunch = () => {
     const formData = form.getValues();
-    console.log({ ...formData, image, initialTokens });
+    console.log({ ...formData, image });
     setShowModal(false);
-  };
-
-  // Update initialTokens whenever initialBuyAmount changes
-  const handleBuyAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const amount = e.target.value;
-    form.setValue("initialBuyAmount", amount);
-    setInitialTokens(amount ? Number(amount) * 42000 : 0);
   };
 
   return (
@@ -155,36 +144,6 @@ export default function Create() {
                     </FormItem>
                   )}
                 />
-
-                <div>
-                  <FormLabel className="block text-lg sm:text-xl mb-2">
-                    Initial Buy / Get Token (optional)
-                  </FormLabel>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="relative">
-                      <Input
-                        name="initialBuyAmount"
-                        placeholder="1000"
-                        value={form.watch("initialBuyAmount")}
-                        onChange={handleBuyAmountChange}
-                        className="p-3 pr-12 text-sm sm:text-base"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center">
-                        <div className="h-full flex items-center justify-center px-3 bg-secondary text-secondary-foreground rounded-r-lg border-l border-input text-sm">
-                          EDU
-                        </div>
-                      </div>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        type="text"
-                        readOnly
-                        value={initialTokens ? initialTokens.toLocaleString() : "0"}
-                        className="p-3 text-sm sm:text-base"
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div className="space-y-6">
@@ -346,8 +305,6 @@ export default function Create() {
           <ModalCreate
             name={form.getValues("name")}
             ticker={form.getValues("ticker")}
-            initialBuyAmount={Number(form.getValues("initialBuyAmount"))}
-            initialTokens={initialTokens}
             onClose={() => setShowModal(false)}
             onConfirm={confirmLaunch}
           />

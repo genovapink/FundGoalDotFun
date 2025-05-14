@@ -9,12 +9,30 @@ import {
 
 import type { Route } from "./+types/root";
 import "./assets/styles/app.css";
-import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { FundWalletProvider } from "@fund/wallet/provider";
-import { WAGMI_CONFIG } from "./services/wagmi/config";
 import { DynamicHeader } from "@fund/dynamic-header";
 import { useEffect, useState } from "react";
+
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+
+import {
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  TorusWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
+
+import { clusterApiUrl } from "@solana/web3.js";
+
+// Wallet config
+const endpoint = clusterApiUrl("devnet"); // or "mainnet-beta"
+const wallets = [
+  new PhantomWalletAdapter(),
+  new SolflareWalletAdapter(),
+  new TorusWalletAdapter(),
+];
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,20 +74,21 @@ export default function App() {
     fetch(`${import.meta.env.VITE_BE_URL}/api/tokens/ticker/list`)
       .then((res) => res.json())
       .then((val) => {
-        // console.log(val);
         setTokens(val);
       });
   }, []);
 
   return (
-    <WagmiProvider config={WAGMI_CONFIG}>
-      <QueryClientProvider client={queryClient}>
-        <FundWalletProvider>
-          {tokens.length !== 0 && <DynamicHeader listTokens={tokens} title="root" />}
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <QueryClientProvider client={queryClient}>
+          {tokens.length !== 0 && (
+            <DynamicHeader listTokens={tokens} title="root" />
+          )}
           <Outlet />
-        </FundWalletProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+        </QueryClientProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 }
 
@@ -81,7 +100,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
-      error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;

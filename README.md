@@ -1,126 +1,116 @@
----
 description: >-
-  GoFundingdotFun – The Future of Decentralized Crowdfunding. Empowering
-  Fundraising with Tokenization & Blockchain Transparency.
-cover: .gitbook/assets/Gofund bg.png
+FundGoaldotFun – Transparent Milestone-Based EduCrowdfunding on Solana. Launch fundraising goals with automated milestones, onchain tracking, and permissionless reward logic.
 coverY: 0
----
 
-# 👋 Welcome to GoFundingdotFun
+FundGoaldotFun
+1. Abstract
+FundGoaldotFun is a decentralized fundraising platform built on the Solana blockchain that allows users to create fund goals with milestone-based logic, transparent fund flow, and automatic reward distribution. The platform is designed for educational, research, and community-based projects, empowering donors and creators with real-time visibility and smart contract guarantees.
 
-![GoFund dot Fun](https://github.com/user-attachments/assets/d17cc026-080e-4b67-b665-ae06c4e7a96e)
+2. Problem Statement
+Traditional fundraising often suffers from:
 
-## 1. Abstract  
+Unclear allocation and misused funds
 
-**Gofundingdotfun** is a decentralized token launcher that empowers users to tokenize and crowdfund scholarships, research, startups, and creative projects on **EduChain**. Featuring gamified milestones, deployer incentives, and peer-to-peer donations, it offers a transparent, secure, and scalable way to raise funds onchain.
+Lack of milestone validation or updates
 
-## 2. Problem Statement  
+No automated escrow or fund protection
 
-Traditional crowdfunding platforms are plagued by:
+Low trust from donors toward project owners
 
-- Centralized gatekeeping  
-- High fees  
-- Lack of transparency  
-- Limited automation  
+These issues lead to reduced participation and failed campaigns, especially in the educational and public good sectors.
 
-Many innovative educational and research initiatives go unfunded due to these platform limitations. Web3 opens up possibilities for onchain fundraising, tokenization, and programmable rewards.
+3. Our Solution
+FundGoaldotFun solves these challenges through:
 
-## 3. Our Solution  
+Smart contract-governed fund goals with automatic fund locking
 
-**Gofundingdotfun** offers a permissionless platform to:
+Milestone-based structure to unlock funds in phases
 
-- Instantly deploy funding tokens with fixed tokenomics  
-- Receive 2% deployer allocation (with vesting)  
-- Accept direct donations via wallet integration  
-- Earn fee revenue from early market activity  
-- Track growth with milestone-based rewards  
+Transparent, onchain tracking of progress and fund disbursement
 
-## 4. Platform Architecture  
+Trustless donor experience with refund or burn conditions
 
-- **Frontend:** Remix React [React Router x Vite], WAGMI, Viem, Tailwind, ShadCN, framer-motion and GSAP
-- **Backend:** Express, MongoDB
-- **Smart Contracts:** ERC-20 via Solidity (Foundry)  
-- **Blockchain:** EduChain Test Network (EVM-compatible)  
-- **Storage:** IPFS (Pinata) for images & metadata  
+Solana-based high-speed execution and low fees
 
-## 5. Tokenomics  
+4. Platform Architecture
+Blockchain: Solana
 
-- **Total Supply:** 1,000,000,000 (Fixed)  
-- **Deployer Allocation:** 2% (vesting-based)  
-- **Token Standard:** ERC-20 on EduChain  
-- **Initial Liquidity:** Optional at launch  
-- **Ticker & Name:** Customizable at token creation  
+Smart Contracts: Rust (Anchor Framework)
 
-## 6. Vesting Mechanism  
+Frontend: React + Tailwind + ShadCN + Framer Motion (Vite)
 
-If no milestones are reached within 6 months, all **unvested tokens will be burned** to ensure accountability.
+Backend: Supabase (PostgreSQL) + API Layer
 
-## 7. Fee Structure  
+Storage: Arweave or IPFS for off-chain documents and metadata
 
-- **Token Creation Fee:** 0.003 EDU
-- **Swap Fee per Transaction:** 1.5%  
-  - 0.75% to Deployer (until bonding cap)  
-  - 0.75% to Platform  
+Wallets: Phantom, Solflare, Backpack
 
-**Bonding Graduation:**  
-When token market cap reaches **$50,000**:  
+5. FundGoal Workflow
+User creates a FundGoal by submitting goal title, description, funding target, deadline, and milestone breakdown
 
-- Platform receives $1,000 from LP  
-- Deployer fee sharing ends  
-- Swaps become fully onchain  
+Smart contract (Anchor program) locks incoming donations in escrow
 
-## 8. Key Features  
+Each milestone unlocks a predefined percentage of total funds once the project submits a proof of milestone (PoM) and receives community validation or DAO signal
 
-- ✅ **Create Funding Token** – Simple UI for instant token launch  
-- 💸 **Donate Me Button** – Manual wallet input for direct P2P support  
-- 📈 **Token Market** – Browse and support live fundraising tokens  
-- 🎯 **Milestone Vesting** – Encourages real growth & progress  
-- 🔥 **Burn Safety** – Prevents hoarding or stagnation  
+If milestones are unmet by the deadline, donors can trigger a refund or automatic token burn
 
-## 9. Use Cases  
+All actions are logged onchain for transparency
 
-- Scholarship fundraising  
-- DeSci (Decentralized Science)  
-- Startup and community bootstraps  
-- DAO treasury building  
-- Creator or researcher funding  
+6. Milestone & Escrow System
+Funds are not sent directly to the creator but stored in Solana program-controlled escrow accounts
 
-## 10. Roadmap  
+Milestone progress is submitted via signed updates and optionally verified via DAO vote or trusted validator committee
 
-**Phase 1**  
+Funds are released only after each milestone is validated
 
-- EduChain Hackathon S3 prototype  
-- Testnet launch  
-- Community & funding round kick-off  
+Final milestone triggers full release or community-driven distribution
 
-**Phase 2**  
+7. Governance & Trust
+Optional DAO participation using SPL governance tokens
 
-- Contract audit  
-- LP upgrades & DAO planning  
-- EduChain mainnet launch  
-- Strategic partnerships  
+Public audit trail for each milestone status
 
-**Phase 3**  
+Transparent backer statistics, creator history, and completion rate
 
-- Mobile PWA launch  
+Donor dashboard for tracking goals, refunds, and impact
 
-## 11. Team  
+8. Fee Structure
+FundGoal Creation Fee: 0.01 SOL
 
-- **Mrpunk** – Founder & Product Lead  
-- **Genova** – Smart Contract Developer  
-- **Eliska** – Auditor & Documentation  
-- **Rei** – Frontend & UI/UX  
-- **Rama** – Backend & Database  
+Platform Fee: 1.5% per milestone unlock (deducted automatically)
 
-## 12. Links  
+Refund/Burn logic if project fails or deadline expires without completion
 
-- 🌐 Website: [gofunding.fun](https://gofunding.fun)  
-- 📘 Docs: [docs.gofunding.fun](https://docs.gofunding.fun)  
-- 💻 GitHub: [github.com/funddotfun](https://github.com/funddotfun)  
-- 📄 Whitepaper: [Whitepaper](https://genovaanakdonis-organization.gitbook.io/gofundingdotfun)  
+9. Use Cases
+Research grants for open science
 
-## 13. Contact  
+Scholarships for underserved students
 
-- ✉️ Email: [contact@gofunding.fun](mailto:contact@gofunding.fun) / [fundingdotfun@gmail.com](mailto:fundingdotfun@gmail.com)  
-- 📢 Telegram: [t.me/gofundingdotfun](https://t.me/gofundingdotfun)  
-- 🐦 Twitter/X: [@gofundingfun](https://twitter.com/gofundingfun)
+Community lab and maker projects
+
+Independent curriculum or educational content creation
+
+10. Roadmap
+Phase 1 – Testnet Launch
+
+Anchor smart contract deployment on Solana Devnet
+
+FundGoal creation + donation + milestone submission
+
+Frontend for browsing and supporting FundGoals
+
+Phase 2 – Mainnet Beta
+
+DAO validator module for milestone review
+
+Creator identity and reputation score
+
+SPL token integration for goal rewards
+
+Phase 3 – Ecosystem Expansion
+
+NFT milestone achievement badges
+
+Cross-platform integration (LearnWeb3, DevDAO)
+
+Educational partner onboarding

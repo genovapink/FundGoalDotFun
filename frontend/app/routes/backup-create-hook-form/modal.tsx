@@ -4,7 +4,6 @@ import { AlertCircle, Check, X } from "lucide-react";
 type ModalCreate = {
   name: string;
   ticker: string;
-  initialBuyAmount: number;
   initialTokens: number;
   onClose: () => void;
   onConfirm: () => void;
@@ -13,7 +12,6 @@ type ModalCreate = {
 export function ModalCreate({
   name,
   ticker,
-  initialBuyAmount,
   initialTokens,
   onConfirm,
   onClose,
@@ -37,6 +35,7 @@ export function ModalCreate({
 
             <div className="border border-input rounded-lg p-4 space-y-4">
               <div className="flex justify-center mb-4">
+                {/* Optional logo section, uncomment if needed */}
                 {/* {preview ? (
                   <img
                     src={preview}
@@ -62,9 +61,6 @@ export function ModalCreate({
                 <div className="text-muted-foreground">Total Supply:</div>
                 <div className="font-medium text-right">1,000,000,000</div>
 
-                <div className="text-muted-foreground">Initial Buy:</div>
-                <div className="font-medium text-right">{initialBuyAmount} EDU</div>
-
                 <div className="text-muted-foreground">Token Amount:</div>
                 <div className="font-medium text-right">
                   {initialTokens.toLocaleString()} {ticker}
@@ -74,7 +70,7 @@ export function ModalCreate({
 
             <div className="border border-input rounded-lg p-4 space-y-2 text-sm sm:text-base">
               <p className="text-muted-foreground">
-                Launch cost: 0.5 EDU (liquidity) + 0.25 EDU (gas)
+                Launch cost: 0.5 SOL (liquidity) + 0.25 SOL (gas)
               </p>
               <p className="text-muted-foreground">Token supply: 1,000,000,000 tokens (fixed)</p>
               <p className="text-muted-foreground">
