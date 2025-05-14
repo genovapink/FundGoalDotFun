@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 description: >-
 FundGoaldotFun – Transparent Milestone-Based EduCrowdfunding on Solana. Launch fundraising goals with automated milestones, onchain tracking, and permissionless reward logic.
 coverY: 0
@@ -114,3 +115,8 @@ NFT milestone achievement badges
 Cross-platform integration (LearnWeb3, DevDAO)
 
 Educational partner onboarding
+=======
+#  Welcome to FundGoaldotfun
+
+FundGoalDotFun is a 
+>>>>>>> 1e9dc4a760dd42838988c95ed4650e13ca70d617
