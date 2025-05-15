@@ -17,7 +17,7 @@ import { MoveRight, MoveUp, ChevronDown, User, LogOut, Plus, X, Upload, AlertCir
 import { Drawer as Drawer$1 } from "vaul";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
-import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { PhantomWalletAdapter, } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 import { Slot } from "@radix-ui/react-slot";
 import { Toaster, toast } from "sonner";
@@ -612,7 +612,7 @@ function DynamicHeader({ listTokens, titleChild, className }) {
   );
 }
 const endpoint = clusterApiUrl("devnet");
-const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+const wallets = [new PhantomWalletAdapter(),];
 const links = () => [{
   rel: "preconnect",
   href: "https://fonts.googleapis.com"

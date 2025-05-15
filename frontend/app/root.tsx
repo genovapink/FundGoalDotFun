@@ -20,7 +20,6 @@ import {
 
 import {
   PhantomWalletAdapter,
-  SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 
 import { clusterApiUrl } from "@solana/web3.js";
@@ -29,7 +28,6 @@ import { clusterApiUrl } from "@solana/web3.js";
 const endpoint = clusterApiUrl("devnet"); // or "mainnet-beta"
 const wallets = [
   new PhantomWalletAdapter(),
-  new SolflareWalletAdapter(),
 ];
 
 export const links: Route.LinksFunction = () => [
