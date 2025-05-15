@@ -1,0 +1,1 @@
+import{r as e}from"./chunk-D4RADZKF-BZ4imTJX.js";const n=e.createContext(null);function o(){const t=e.useContext(n);if(!t)throw new Error("useFundWallet must be used within a FundWalletProvider");return t}export{o as u};

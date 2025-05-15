@@ -7,8 +7,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   const page = Number(searchParams.get("page")) + 1 || 1;
 
   const apiUrl = searchTerm
-    ? `${process.env.VITE_BE_URL}/api/solana-tokens?q=${encodeURIComponent(searchTerm)}&page=${page}`
-    : `${process.env.VITE_BE_URL}/api/solana-tokens?page=${page}`;
+    ? `${import.meta.env.VITE_BE_URL}/api/solana-tokens?q=${encodeURIComponent(searchTerm)}&page=${page}`
+    : `${import.meta.env.VITE_BE_URL}/api/solana-tokens?page=${page}`;
 
   const list = await fetch(apiUrl).then((res) => res.json());
 
