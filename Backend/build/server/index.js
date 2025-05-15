@@ -17,7 +17,7 @@ import { MoveRight, MoveUp, ChevronDown, User, LogOut, Plus, X, Upload, AlertCir
 import { Drawer as Drawer$1 } from "vaul";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
-import { PhantomWalletAdapter, SolflareWalletAdapter, TorusWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
 import { Slot } from "@radix-ui/react-slot";
 import { Toaster, toast } from "sonner";
@@ -612,7 +612,7 @@ function DynamicHeader({ listTokens, titleChild, className }) {
   );
 }
 const endpoint = clusterApiUrl("devnet");
-const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new TorusWalletAdapter()];
+const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
 const links = () => [{
   rel: "preconnect",
   href: "https://fonts.googleapis.com"
@@ -875,7 +875,8 @@ async function loader$2({
   } = new URL(request.url);
   const searchTerm = searchParams.get("q");
   const page = Number(searchParams.get("page")) + 1 || 1;
-  const apiUrl = searchTerm ? `${import.meta.env.VITE_BE_URL}/api/tokens?q=${encodeURIComponent(searchTerm)}&page=${page}` : `${process.env.VITE_BE_URL}/api/tokens`;
+  const apiUrl = searchTerm ? `${import.meta.env.VITE_BE_URL
+}/api/tokens?q=${encodeURIComponent(searchTerm)}&page=${page}` : `${process.env.VITE_BE_URL}/api/tokens`;
   const response = await fetch(apiUrl);
   const data = await response.json();
   return {
