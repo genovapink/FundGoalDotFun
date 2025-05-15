@@ -116,3 +116,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     </main>
   );
 }
+
+if (typeof window !== "undefined" && window.ethereum) {
+  try {
+    Object.freeze(window.ethereum);
+  } catch (err) {
+    console.warn("failed freeze window.ethereum:", err);
+  }
+}

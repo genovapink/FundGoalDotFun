@@ -10,6 +10,10 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Badge } from "@shadcn/badge";
 import { Pencil } from "lucide-react";
 
+if (window.ethereum) {
+  Object.freeze(window.ethereum);
+}
+
 export function meta() {
   const title = "User Profile | FundGoalDotFun";
   const description =
