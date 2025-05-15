@@ -1,10 +1,11 @@
 import cors from "cors";
+import express from "express";
 
 const app = express();
 
 const allowedOrigins = [
-  "https://fund-goal-dot-fun-frontend.vercel.app",
   "https://fundgoal.fun",
+  "fundgoal-backend.replit.app",
 ];
 
 app.use(cors({
