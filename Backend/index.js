@@ -56,6 +56,7 @@ app.get("/api/tokens/ticker/list", (req, res) => {
   });
 });
 
+// GET: /api/solana-tokens — simulate search + pagination
 app.get("/api/solana-tokens", (req, res) => {
   const { q = "", page = 1 } = req.query;
   res.json({
@@ -76,6 +77,7 @@ app.get("/api/solana-tokens", (req, res) => {
   });
 });
 
+// Jalankan server
 app.listen(port, () => {
   console.log(`✅ Backend ready on http://localhost:${port}`);
 });
