@@ -1,6 +1,6 @@
 ![image](https://github.com/user-attachments/assets/55f3997a-e9b9-4b4b-afc3-a258feec78da)
 
-# Welcome To FundGoalDotFun
+# Welcome To FundGoalDotFun 
 
 FundGoalDotFun is a decentralized token launcher that empowers users to tokenize and crowdfund scholarships, research, startups, and creative projects. Featuring gamified milestones, deployer incentives, and peer-to-peer donations, it offers a transparent, secure, and scalable way to raise funds onchain.
 
